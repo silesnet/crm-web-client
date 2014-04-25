@@ -120,9 +120,9 @@ function searchCustomers(){
 /*
   add all customer into search result
 */
-function updateCustomers(dempawObj){        
+function updateCustomers(jsondata){        
   $("#customers").append("<li class='list-group-item'><span class='name'>" + $("#searchCustomers").val() + "</span><div class='pull-right'><a href='index.html?action=draft' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nový zákazník</a></div></li>");
-  $.each(dempawObj,function(key, value) {
+  $.each(jsondata,function(key, value) {
     var li = "<li class='list-group-item'><span class='name'>" + value["name"] + "</span>";
     li += "<div class='pull-right'><a href='index.html?action=draft&customer=" + value["id"] + "' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nová služba</a>";
     
