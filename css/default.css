@@ -1,4 +1,15 @@
-#customers li {box-shadow: 0px 0px 1px #888888; margin-bottom: 5px; width: 100%; float: left; clear: both; padding: 5px ;}
+.ds-none {display: none !important;}
+
+.panel.panel-tab {border-top: none ; border-top-right-radius:0; border-top-left-radius:0;}
+
+#customers {display: table; width: 100%; margin: 0 0 20px 0;}
+#customers li {width: 100%; float: left; clear: both; padding: 5px ;}
 #customers li span.name {float: left; font-size: 14px; font-weight: bold; float: left; display: block; margin: 5px 0;}
 #customers li a {margin: 0 0 0 5px;}
+
+#draft_customers span.name {float: left; font-size: 14px; font-weight: bold; float: left; display: block; margin: 5px 0;}
+#draft_customers a {margin: 0 0 0 5px;} 
+
+.row.device {margin-top: 10px;}
+.row.device.first {margin-top: 0;}
 

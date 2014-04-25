@@ -1,0 +1,115 @@
+<div id="data" class="container">
+  
+  <p><strong id="customer_title"></strong></p>
+          
+  <ul id="tabs" class="nav nav-tabs">
+    <li><a data-toggle="tab" href="#customer">Zákazník</a></li>
+    <li><a data-toggle="tab" href="#services">Služby</a></li>
+  </ul>  
+  
+  <input id="method" type="hidden" name="method" value="POST">
+  <input id="url" type="hidden" name="url" value="drafts">
+  <input id="user_id" type="hidden" name="user_id" value="100">
+                                                        
+  <form id="draft" class="form-horizontal" role="form">
+    <input id="customer_id" type="hidden" name="customer_id" value="0">
+    <div class="panel panel-default panel-tab tab-content">
+      <div id="customer" class="tab-pane fade active in">
+      <div class="panel-heading">        
+            <div class="row">
+                <div class="col-xs-6"><label for="name">Customer name</label><input type="text" name="name" class="form-control" id="name" required="required" maxlength="80" placeholder="Full name"></div>
+                <div class="col-xs-6"><label for="supplementary_name">Firm name</label><input type="text" name="supplementary_name" class="form-control" id="supplementary_name" maxlength="50" placeholder="Firm name"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6"><label for="public_id">Public ID</label><input type="text" name="public_id" class="form-control col-md-5" id="public_id" required="required" maxlength="20" placeholder="Public ID"></div>
+                <div class="col-xs-6"><label for="dic">DIC</label><input type="text" name="dic" class="form-control col-md-5" id="dic" maxlength="20" placeholder="DIC"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6"><label for="email">E-mail</label><input type="email" name="email" class="form-control" id="email" required="required" maxlength="50" placeholder="E-mail" /></div>
+                <div class="col-xs-6"><label for="phone">Phone</label><input type="text" name="phone" class="form-control col-md-5" id="phone" maxlength="70" placeholder="Phone"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12"><label for="street">Street</label><input type="text" name="street" class="form-control" id="street" required="required" maxlength="40" placeholder="Street"></div>
+            </div>    
+            <div class="row">
+                <div class="col-xs-5"><label for="city">City</label><input type="text" name="city" class="form-control col-md-5" id="city" required="required" maxlength="40" placeholder="City"></div>
+                <div class="col-xs-3"><label for="postal_code">Postal code</label><input type="number" name="postal_code" class="form-control col-md-5" id="postal_code" required="required" max="99999" placeholder="Postal code"></div>
+                <div class="col-xs-4">
+                <label for="country">Country</label>
+                <select name="country" class="form-control" id="country">
+                    <option value="10">Czech republic</option>
+                    <option value="20">Poland</option>
+                </select>
+              </div>
+            </div> 
+            <div class="row">
+                <div class="col-xs-12"><label for="contact_name">Contact name</label><input type="text" name="contact_name" class="form-control col-md-5" id="contact_name" maxlength="50" placeholder="Contact name"></div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12">
+              <label for="info">Info</label>
+              <textarea name="info" id="info" class="form-control" maxlength="150" placeholder="Aditional informations"></textarea>
+              </div>
+            </div>
+      </div> 
+      </div><!-- /.customer -->      
+      <div id="services" class="tab-pane fade">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-6"><label for="contract">Contract</label><select name="contract" class="form-control" id="contract"><option value="0">New Contract</option></select></div>
+          </div>
+          <div class="row">
+              <div class="col-xs-6"><label for="product">Product</label><select class="form-control" name="product" id="product"></select></div>
+              <div class="col-xs-2"><label for="downlink">Downlink</label><div class="input-group"><input type="text" name="downlink" class="form-control" id="downlink" maxlength="50" placeholder="Downlink" readonly><span class="input-group-addon">Mb/s</span></div></div>
+              <div class="col-xs-2"><label for="uplink">Uplink</label><div class="input-group"><input type="text" name="uplink" class="form-control" id="uplink" maxlength="50" placeholder="Uplink" readonly><span class="input-group-addon">Mb/s</span></div></div>
+              <div class="col-xs-2"><label for="price">Price</label><div class="input-group"><input type="text" name="price" class="form-control" id="price" maxlength="50" placeholder="Price" readonly><span class="input-group-addon">Kč</span></div></div>
+          </div>
+          <div class="row">
+              <div class="col-xs-6"><label for="ssid">SSID</label><input type="text" name="ssid" class="form-control" id="ssid" maxlength="50" placeholder="SSID"></div>
+          </div>
+          <div class="row">
+              <div class="col-xs-6"><label for="core_router">Core router</label><select name="core_router" class="form-control" id="core_router"></select></div>
+          </div>
+          <div class="row">
+              <div class="col-xs-6"><label for="location">Location</label><input type="text" name="location" class="form-control" id="location" maxlength="50" placeholder="Location"></div>
+          </div>           
+          <div class="row">
+              <div class="col-xs-12"><label for="device">Devices</label></div>
+          </div>    
+          <div class="row device first">
+              <div class="col-xs-6"><input type="text" name="device_1" class="form-control" maxlength="50" placeholder="Device"></div>
+              <div class="col-xs-1">
+                <label class="radio">
+                  <input type="radio" name="owner_1" value="silesnet" checked>
+                  SilesNet
+                </label>
+              </div>  
+              <div class="col-xs-1">
+                <label class="radio">
+                  <input type="radio" name="owner_1" value="customer">
+                  Customer
+                </label>
+              </div>
+              <div class="col-xs-4">
+                <a class="btn btn-sm btn-primary add-device"><span class="glyphicon glyphicon-plus"></span> Add device</a>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-xs-6"><label for="config">Config</label><select name="config" class="form-control" id="config"><option value="1">DHCP</option><option value="2">STATIC</option><option value="3">PPOE</option></select></div>
+          </div>
+          <div class="row">
+              <div class="col-xs-6"><label for="activation_fee">Activation fee</label><input type="text" name="activation_fee" class="form-control" id="activation_fee" maxlength="50" placeholder="Activation fee"></div>
+          </div>
+        </div>        
+      </div><!-- /.services -->
+      
+    </div>
+    <div class='pull-left'>
+      <input type="button" class="btn btn-lg btn-warning ds-none" value="Delete" name="delete">
+    </div>    
+    <div class='pull-right'>
+      <input type="submit" class="btn btn-lg btn-primary" value="Import" name="submitButton" disabled>
+      <input type="submit" class="btn btn-lg btn-success" value="Save" name="submitButton" onclick="actionSaveDraft();">   
+    </div>
+  </form>  
+</div><!-- /.container -->
