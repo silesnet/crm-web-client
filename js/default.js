@@ -38,12 +38,12 @@ function initDraft(){
   });
   // load products
   $.getJSON(address + "products", function(jsondata){
-    $.each(jsondata.product,function(key, value) {
+    $.each(jsondata.products,function(key, value) {
       $("#product").append("<option value='" + value.id + "' rel='" + value.is_dedicated + "' dl='" + value.downlink + "' ul='" + value.uplink + "' prc='" + value.price + "' chl='" + value.channel + "'>" + value.name + "</option>");    
     });
     // load routers
     $.getJSON(address + "routers", function(jsondata){
-      $.each(jsondata.core_router,function(key, value) {
+      $.each(jsondata.core_routers,function(key, value) {
         $("#core_router").append("<option value='" + value.id + "'>" + value.name + "</option>");    
       });
       // load draft data
