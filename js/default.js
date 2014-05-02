@@ -1,5 +1,5 @@
 var address = "http://localhost:8080/";
-var userId = 100;
+var loginAddress = "login.txt";
 
 jQuery(document).ready(function() {
   initLoadPages();    
@@ -36,6 +36,7 @@ function initDraft(){
   $("#product").change(function (){
     updateParamProduct(0);
   });
+  loadUserName();
   // load products
   $.getJSON(address + "products", function(jsondata){
     $.each(jsondata.products,function(key, value) {
@@ -51,9 +52,12 @@ function initDraft(){
         $("#customer_id").val(getURLParameter("customer"));
         $.getJSON(address + "customers/" + getURLParameter("customer"), function(jsondata){deserializeDraft(jsondata, 0);setEditableDraft();setTitleDraft();});
       }
-      if(getURLParameter("draft_id") != null){
+      else if(getURLParameter("draft_id") != null){
         $("#draft input[name=delete]").removeClass("ds-none");
         $.getJSON(address + "drafts/" + getURLParameter("draft_id"), function(jsondata){deserializeDraft(jsondata.data); setEditableDraft();setTitleDraft();});
+      }
+      else if(getURLParameter("name") != null){
+        setTitleNewDraft(decodeURIComponent(getURLParameter("name")));
       }
     });
   });
@@ -74,7 +78,7 @@ function initDraftSubmitAction() {
       data: serializeDraft(),  
       success: function() {
         localStorage.setItem("infoClass", "success");
-        localStorage.setItem("infoData", "Save OK!");
+        localStorage.setItem("infoData", "Zákazník byl uložen v pořádku!");
         location.href = "index.html";
       }
     });
@@ -90,7 +94,7 @@ function initDraftDeleteAction() {
       url: address + "drafts/" + getURLParameter("draft_id"),
       success: function() {
         localStorage.setItem("infoClass", "success");
-        localStorage.setItem("infoData", "Delete OK!");
+        localStorage.setItem("infoData", "Zákazník byl smazán v pořádku!");
         location.href = "index.html"
       }
     });
@@ -121,7 +125,7 @@ function searchCustomers(){
   add all customer into search result
 */
 function updateCustomers(jsondata){        
-  $("#customers").append("<li class='list-group-item'><span class='name'>" + $("#searchCustomers").val() + "</span><div class='pull-right'><a href='index.html?action=draft' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nový zákazník</a></div></li>");
+  $("#customers").append("<li class='list-group-item'><span class='name'>" + $("#searchCustomers").val() + "</span><div class='pull-right'><a href='index.html?action=draft&name=" + encodeURIComponent($("#searchCustomers").val()) + "' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nový zákazník</a></div></li>");
   $.each(jsondata,function(key, value) {
     var li = "<li class='list-group-item'><span class='name'>" + value["name"] + "</span>";
     li += "<div class='pull-right'><a href='index.html?action=draft&customer=" + value["id"] + "' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nová služba</a>";
@@ -142,15 +146,19 @@ function updateCustomers(jsondata){
 }
 
 /*
-  load all draft for user
+  load user and when logged in then load all his draft
 */
 function loadDrafts(){
-  $.getJSON(address + 'drafts?user_id=' + userId , function(jsondata){  
-     $.each(jsondata.drafts,function(key, value) {
-      var data = JSON.parse(value.data);
-      var tr = "<tr><td><span class='name'>" + data.customer.name + "</span><div class='pull-right'><a href='index.html?action=draft&draft_id=" + value.id + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> Edit</a></div></td></tr>"
-      $("#draft_customers").append(tr);
-     });
+  $.getJSON(loginAddress , function(jsondata){
+    if(jsondata.user != null){
+      $.getJSON(address + 'drafts?user_id=' + jsondata.user , function(jsondata){  
+       $.each(jsondata.drafts,function(key, value) {
+        var data = JSON.parse(value.data);
+        var tr = "<tr><td><span class='name'>" + data.customer.name + "</span><div class='pull-right'><a href='index.html?action=draft&draft_id=" + value.id + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> Editovat</a></div></td></tr>"
+        $("#draft_customers").append(tr);
+       });
+    });
+    }      
   });
 }
 
@@ -193,6 +201,7 @@ function actionSaveDraft(){
   }else{
     $("#method").val("POST");
   }
+  $("#draft input").prop("required", false);
 }
 
 /*
@@ -240,7 +249,8 @@ data.service = {
   core_router:$("#core_router").val(),
   location:$("#location").val(),
   config:$("#config").val(),
-  activation_fee:$("#activation_fee").val()
+  activation_fee:$("#activation_fee").val(),
+  info_service:$("#info_service").val()
 };
 
 data.service.devices = [];
@@ -289,6 +299,7 @@ function deserializeDraft(jsondata, mode){
     $("#location").val(data.service.location);
     $("#config").val(data.service.config);
     $("#activation_fee").val(data.service.activation_fee);
+    $("#info_service").val(data.service.info_service);
     for(i = 2; i<=data.service.devices.length; i++){
         addDevice();
     }
@@ -315,6 +326,14 @@ function setEditableDraft(){
 */
 function setTitleDraft(){
   $("#customer_title").text($("#name").val() + ", " + $("#street").val() + ", " + $("#city").val());
+}
+
+/*
+  set title new draft (Cusomer name) 
+*/
+function setTitleNewDraft(name){
+  $("#customer_title").text(name);
+  $("#name").val(name);
 }
 
 /*
@@ -372,4 +391,15 @@ function updateContract(contractId){
       $("#contract").val(contractId);    
     });
   }   
+}
+
+/*
+  load user name
+*/ 
+function loadUserName(){
+  $.getJSON(loginAddress , function(jsondata){
+    if(jsondata.user != null){
+      $("#user_id").val(jsondata.user); 
+    }
+  });
 }
