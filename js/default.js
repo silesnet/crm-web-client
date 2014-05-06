@@ -58,6 +58,7 @@ function initDraft(){
       }
       else if(getURLParameter("name") != null){
         setTitleNewDraft(decodeURIComponent(getURLParameter("name")));
+        updateParamProduct(0);
       }
     });
   });
