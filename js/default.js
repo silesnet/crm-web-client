@@ -2,7 +2,7 @@ var address = "http://localhost:8080/";
 var loginAddress = "login.txt";
 
 jQuery(document).ready(function() {
-  initLoadPages();    
+  initLoadPages();   
 });
 
 /*
@@ -14,7 +14,7 @@ function initLoadPages(){
       if(getURLParameter("action") == 'draft'){     
         initDraft();
       }
-      inicialize();  
+      inicialize();
     });
   }else {
     loadDrafts();
@@ -28,6 +28,9 @@ function initLoadPages(){
 function inicialize(){
   showInfoAction();
   initTabs();
+  initCustomerType();
+  initInputNumber(); 
+  initDatePicker();
 }
 /*
   inicialize draft
@@ -71,7 +74,7 @@ function initDraft(){
   inicilize draft form submit action 
 */
 function initDraftSubmitAction() {
-  $("#draft").submit(function (event){     
+  $("#draft").submit(function (event){
   event.preventDefault();
     $.ajax({
       type: $("#method").val(),
@@ -115,7 +118,7 @@ function initTabs(){
 function searchCustomers(){
   $("#searchCustomers").keyup(function (event){  
     if($("#searchCustomers").val().length > 1){       
-      $.getJSON(address + 'customers?q=' + $("#searchCustomers").val() , function(jsondata){ $("#customers li").remove(); updateCustomers(jsondata.customers);});  
+      $.getJSON(address + 'customers?q=' + $("#searchCustomers").val().toLowerCase() , function(jsondata){ $("#customers li").remove(); updateCustomers(jsondata.customers);});  
     }else{       
       $("#customers li").remove();
     }
@@ -155,7 +158,7 @@ function loadDrafts(){
       $.getJSON(address + 'drafts?user_id=' + jsondata.user , function(jsondata){  
        $.each(jsondata.drafts,function(key, value) {
         var data = JSON.parse(value.data);
-        var tr = "<tr><td><span class='name'>" + data.customer.name + "</span><div class='pull-right'><a href='index.html?action=draft&draft_id=" + value.id + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> Editovat</a></div></td></tr>"
+        var tr = "<tr><td><span class='name'>" + data.customer.name + " " + data.customer.surname + "</span><div class='pull-right'><a href='index.html?action=draft&draft_id=" + value.id + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> Editovat</a></div></td></tr>"
         $("#draft_customers").append(tr);
        });
     });
@@ -226,18 +229,26 @@ var data = {};
 
 data.customer = {
   id:$("#customer_id").val(),
+  customer_type:$(".customer-type input:checked").val(),
   name:$("#name").val(),
+  surname:$("#surname").val(),
   supplementary_name:$("#supplementary_name").val(),
   public_id:$("#public_id").val(),
   dic:$("#dic").val(),
+  representative:$("#representative").val(),
   email:$("#email").val(),
   phone:$("#phone").val(),
-  street:$("#street").val(),
-  city:$("#city").val(),
-  postal_code:$("#postal_code").val(),
-  country:$("#country").val(),
   contact_name:$("#contact_name").val(),
   info:$("#info").val()
+};
+
+data.customer.address = {
+  street:$("#street").val(),
+  descriptive_number:$("#descriptive_number").val(),
+  orientation_number:$("#orientation_number").val(),
+  town:$("#town").val(),
+  postal_code:$("#postal_code").val(),
+  country:$("#country").val()
 };
 
 data.service = {
@@ -247,11 +258,22 @@ data.service = {
   uplink:$("#uplink").val(),
   price:$("#price").val(),
   ssid:$("#ssid").val(),
+  mac_address:$("#mac_address").val(),
   core_router:$("#core_router").val(),
-  location:$("#location").val(),
   config:$("#config").val(),
+  activate_on:$("#activate_on").val(),
   activation_fee:$("#activation_fee").val(),
+  operator:$("#operator").val(),
   info_service:$("#info_service").val()
+};
+
+data.service.location_address = {
+  location_street:$("#location_street").val(),
+  location_descriptive_number:$("#location_descriptive_number").val(),
+  location_orientation_number:$("#location_orientation_number").val(),
+  location_town:$("#location_town").val(),
+  location_postal_code:$("#location_postal_code").val(),
+  location_country:$("#location_country").val()
 };
 
 data.service.devices = [];
@@ -262,9 +284,7 @@ $(".row.device").each(function (i){
     owner:$(this).find("input:radio:checked").val()
   }  
 });
-
- return JSON.stringify(data, null, 0);
-  
+ return JSON.stringify(data, null, 0);  
 }
 
 function deserializeDraft(jsondata, mode){
@@ -277,16 +297,28 @@ function deserializeDraft(jsondata, mode){
     data = JSON.parse(jsondata);
   }
   $("#customer_id").val(data.customer.id);
+  $(".customer-type input:radio[value=" + data.customer.customer_type + "]").click();
   $("#name").val(data.customer.name);
+  $("#surname").val(data.customer.surname);
   $("#supplementary_name").val(data.customer.supplementary_name);
   $("#public_id").val(data.customer.public_id);
   $("#dic").val(data.customer.dic);
+  $("#representative").val(data.customer.representative);
   $("#email").val(data.customer.email);
   $("#phone").val(data.customer.phone);
-  $("#street").val(data.customer.street);
-  $("#city").val(data.customer.city);
-  $("#postal_code").val(data.customer.postal_code);
-  $("#country").val(data.customer.country);
+  if(data.customer.address != null){
+    $("#street").val(data.customer.address.street);
+    $("#descriptive_number").val(data.customer.address.descriptive_number);
+    $("#orientation_number").val(data.customer.address.orientation_number);
+    $("#town").val(data.customer.address.town);
+    $("#postal_code").val(data.customer.address.postal_code);
+    $("#country").val(data.customer.address.country);
+  }else{
+    $("#street").val(data.customer.street);
+    $("#town").val(data.customer.city);
+    $("#postal_code").val(data.customer.postal_code.replace(" ", "")); 
+    $("#country").val(data.customer.country);
+  }
   $("#contact_name").val(data.customer.contact_name);
   $("#info").val(data.customer.info);
   if(data.service != null){
@@ -296,10 +328,18 @@ function deserializeDraft(jsondata, mode){
     $("#uplink").val(data.service.uplink);
     $("#price").val(data.service.price);
     $("#ssid").val(data.service.ssid);
+    $("#mac_address").val(data.service.mac_address);
     $("#core_router").val(data.service.core_router);
-    $("#location").val(data.service.location);
+    $("#location_street").val(data.service.location_address.location_street);
+    $("#location_descriptive_number").val(data.service.location_address.location_descriptive_number);
+    $("#location_orientation_number").val(data.service.location_address.location_orientation_number);
+    $("#location_town").val(data.service.location_address.location_town);
+    $("#location_postal_code").val(data.service.location_address.location_postal_code);
+    $("#location_country").val(data.service.location_address.location_country);
     $("#config").val(data.service.config);
+    $("#activate_on").val(data.service.activate_on);
     $("#activation_fee").val(data.service.activation_fee);
+    $("#operator").val(data.service.operator);
     $("#info_service").val(data.service.info_service);
     for(i = 2; i<=data.service.devices.length; i++){
         addDevice();
@@ -319,6 +359,7 @@ function deserializeDraft(jsondata, mode){
 function setEditableDraft(){
   if($("#customer_id").val() > 0){
     $("#customer input, #customer textarea, #customer select").attr('disabled', true);
+    $("#customer .customer-type").addClass("ds-none");
   }
 }
 
@@ -326,7 +367,7 @@ function setEditableDraft(){
   set title draft (Cusomer name, address, city) 
 */
 function setTitleDraft(){
-  $("#customer_title").text($("#name").val() + ", " + $("#street").val() + ", " + $("#city").val());
+  $("#customer_title").text($("#name").val() + " " + $("#surname").val() + ", " + $("#street").val() + ", " + $("#town").val());
 }
 
 /*
@@ -334,7 +375,9 @@ function setTitleDraft(){
 */
 function setTitleNewDraft(name){
   $("#customer_title").text(name);
-  $("#name").val(name);
+  var tmpName = name.split(" ");
+  $("#name").val(tmpName[0]);
+  $("#surname").val(tmpName[1]);
 }
 
 /*
@@ -353,7 +396,7 @@ function initDraftAddDeviceAction(){
 */
 function addDevice(){
   var deviceId = $("#draft .row.device").length + 1;
-  var row = "<div class='row device'><div class='col-xs-6'><input type='text' placeholder='Device' maxlength='50' class='form-control' name='device_" + deviceId + "'></div><div class='col-xs-1'><label class='radio'><input type='radio' checked='' value='silesnet' name='owner_" + deviceId +"'>SilesNet</label></div>  <div class='col-xs-1'><label class='radio'><input type='radio' value='customer' name='owner_" + deviceId + "'>Customer</label></div></div>"
+  var row = "<div class='row device'><div class='col-xs-6'><input type='text' placeholder='Device' maxlength='50' class='form-control' name='device_" + deviceId + "'></div><div class='col-xs-1'><label class='radio'><input type='radio' checked='' value='silesnet' name='owner_" + deviceId +"'>SilesNet</label></div>  <div class='col-xs-1'><label class='radio'><input type='radio' value='customer' name='owner_" + deviceId + "'>Zákazník</label></div></div>"
   $("#draft .row.device:last").after(row);
 }
 
@@ -373,9 +416,11 @@ function updateParamProduct(mode){
   }
   if($("#product option:selected").attr("chl") == 'wireless'){
     $("#ssid").prop("disabled", false);
+    $("#mac_address").prop("disabled", false);
     $("#core_router").prop("disabled", true);
   }else{
     $("#ssid").prop("disabled", true);
+    $("#mac_address").prop("disabled", true);
     $("#core_router").prop("disabled", false);
   }
 }
@@ -403,4 +448,33 @@ function loadUserName(){
       $("#user_id").val(jsondata.user); 
     }
   });
+}
+
+function initCustomerType(){
+  $(".customer-type input").change(function() {
+    if($(this).val() == 1){
+      $("#supplementary_name").prop("disabled", true);
+      $("#public_id").prop("placeholder", "Číslo OP / Rod. číslo / Datum narození");
+      $("#dic").prop("disabled", true);     
+      $("#representative").prop("disabled", true); 
+    }else{
+      $("#supplementary_name").prop("disabled", false);
+      $("#dic").prop("disabled", false);
+      $("#public_id").prop("placeholder", "IČO");
+      $("#representative").prop("disabled", false); 
+    } 
+  });
+}
+
+function initInputNumber(){
+  $("input[type=number]").keypress(function(e){
+	  if (e.which != 44 && e.which != 46 && e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+      return false;
+    }
+  });
+}
+
+function initDatePicker(){
+  $(".date-picker").datepicker({ dateFormat: 'dd.mm.yy', numberOfMonths: 2 });
+  $(".date-picker").datepicker('setDate', 'today');
 }
