@@ -40,29 +40,46 @@ function initDraft(){
     updateParamProduct(0);
   });
   loadUserName();
+  
   // load products
   $.getJSON(address + "products", function(jsondata){
     $.each(jsondata.products,function(key, value) {
       $("#product").append("<option value='" + value.id + "' rel='" + value.is_dedicated + "' dl='" + value.downlink + "' ul='" + value.uplink + "' prc='" + value.price + "' chl='" + value.channel + "'>" + value.name + "</option>");    
     });
-    // load routers
-    $.getJSON(address + "routers", function(jsondata){
-      $.each(jsondata.core_routers,function(key, value) {
-        $("#core_router").append("<option value='" + value.id + "'>" + value.name + "</option>");    
+    
+    // load ssids
+    $.getJSON(address + "networks/ssids", function(jsondata){
+      $.each(jsondata.ssids,function(key, value) {
+        $("#ssid").append("<option value='" + value.id + "' master='" + value.master + "'>" + value.ssid + "</option>");    
       });
-      // load draft data
-      if(getURLParameter("customer") != null){
-        $("#customer_id").val(getURLParameter("customer"));
-        $.getJSON(address + "customers/" + getURLParameter("customer"), function(jsondata){deserializeDraft(jsondata, 0);setEditableDraft();setTitleDraft();});
-      }
-      else if(getURLParameter("draft_id") != null){
-        $("#draft input[name=delete]").removeClass("ds-none");
-        $.getJSON(address + "drafts/" + getURLParameter("draft_id"), function(jsondata){deserializeDraft(jsondata.data); setEditableDraft();setTitleDraft();});
-      }
-      else if(getURLParameter("name") != null){
-        setTitleNewDraft(decodeURIComponent(getURLParameter("name")));
-        updateParamProduct(0);
-      }
+      
+      // load routers
+      $.getJSON(address + "networks/routers", function(jsondata){
+        $.each(jsondata.core_routers,function(key, value) {
+          $("#core_routers").append("<option value='" + value.id + "'>" + value.master + "</option>");    
+        });
+      
+        // load users
+        $.getJSON(address + "users", function(jsondata){
+          $.each(jsondata.users,function(key, value) {
+            $("#operator").append("<option value='" + value.id + "'>" + value.name + "</option>");    
+          });
+          
+          // load draft data
+          if(getURLParameter("customer") != null){
+            $("#customer_id").val(getURLParameter("customer"));
+            $.getJSON(address + "customers/" + getURLParameter("customer"), function(jsondata){deserializeDraft(jsondata, 0);setEditableDraft();setTitleDraft();});
+          }
+          else if(getURLParameter("draft_id") != null){
+            $("#draft input[name=delete]").removeClass("ds-none");
+            $.getJSON(address + "drafts/" + getURLParameter("draft_id"), function(jsondata){deserializeDraft(jsondata.data); setEditableDraft();setTitleDraft();});
+          }
+          else if(getURLParameter("name") != null){
+            setTitleNewDraft(decodeURIComponent(getURLParameter("name")));
+            updateParamProduct(0);
+          }
+       });       
+      });
     });
   });
   
@@ -284,6 +301,7 @@ $(".row.device").each(function (i){
     owner:$(this).find("input:radio:checked").val()
   }  
 });
+
  return JSON.stringify(data, null, 0);  
 }
 
