@@ -414,7 +414,7 @@ function initDraftAddDeviceAction(){
 */
 function addDevice(){
   var deviceId = $("#draft .row.device").length + 1;
-  var row = "<div class='row device'><div class='col-xs-6'><input type='text' placeholder='Device' maxlength='50' class='form-control' name='device_" + deviceId + "'></div><div class='col-xs-1'><label class='radio'><input type='radio' checked='' value='silesnet' name='owner_" + deviceId +"'>SilesNet</label></div>  <div class='col-xs-1'><label class='radio'><input type='radio' value='customer' name='owner_" + deviceId + "'>Zákazník</label></div></div>"
+  var row = "<div class='row device'><div class='col-xs-6'><input type='text' placeholder='Zařízení' maxlength='50' class='form-control' name='device_" + deviceId + "'></div><div class='col-xs-1'><label class='radio'><input type='radio' checked='' value='silesnet' name='owner_" + deviceId +"'>SilesNet</label></div>  <div class='col-xs-1'><label class='radio'><input type='radio' value='customer' name='owner_" + deviceId + "'>Zákazník</label></div></div>"
   $("#draft .row.device:last").after(row);
 }
 
