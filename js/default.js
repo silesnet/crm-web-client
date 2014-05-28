@@ -31,6 +31,7 @@ function inicialize(){
   initCustomerType();
   initInputNumber(); 
   initDatePicker();
+  initSelectSsid();
 }
 /*
   inicialize draft
@@ -56,14 +57,18 @@ function initDraft(){
       // load routers
       $.getJSON(address + "networks/routers", function(jsondata){
         $.each(jsondata.core_routers,function(key, value) {
-          $("#core_routers").append("<option value='" + value.id + "'>" + value.master + "</option>");    
+          $("#core_router").append("<option value='" + value.id + "' name='" + value.master + "'>" + value.master + "</option>");    
         });
       
         // load users
         $.getJSON(address + "users", function(jsondata){
           $.each(jsondata.users,function(key, value) {
-            $("#operator").append("<option value='" + value.id + "'>" + value.name + "</option>");    
+            $("#operator").append("<option value='" + value.id + "' login='" + value.login + "'>" + value.name + "</option>");    
           });
+          
+          // set logged operator
+          var selectedOperator = $("#operator option[login='" + $("#user_id").val() + "']").val();
+          $("#operator").val(selectedOperator); 
           
           // load draft data
           if(getURLParameter("customer") != null){
@@ -149,20 +154,8 @@ function updateCustomers(jsondata){
   $("#customers").append("<li class='list-group-item'><span class='name'>" + $("#searchCustomers").val() + "</span><div class='pull-right'><a href='index.html?action=draft&name=" + encodeURIComponent($("#searchCustomers").val()) + "' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nový zákazník</a></div></li>");
   $.each(jsondata,function(key, value) {
     var li = "<li class='list-group-item'><span class='name'>" + value["name"] + "</span>";
-    li += "<div class='pull-right'><a href='index.html?action=draft&customer=" + value["id"] + "' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nová služba</a>";
-    
-    /*
-    if(value["contracts"] != null){
-      for (var i=0, len = value["contracts"].length; i < len; i++) {
-         li += "<a href='index.html?action=draft&contract=" + value["contracts"][i] + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> " + value["contracts"][i] + "</a>";
-      }
-    }
-    */
-    
-    li += "</div></li>"
-                     
+    li += "<div class='pull-right'><a href='index.html?action=draft&customer=" + value["id"] + "' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nová služba</a></div></li>";
     $("#customers").append(li);
-    
   });
 }
 
@@ -463,7 +456,7 @@ function updateContract(contractId){
 function loadUserName(){
   $.getJSON(loginAddress , function(jsondata){
     if(jsondata.user != null){
-      $("#user_id").val(jsondata.user); 
+      $("#user_id").val(jsondata.user);
     }
   });
 }
@@ -495,4 +488,12 @@ function initInputNumber(){
 function initDatePicker(){
   $(".date-picker").datepicker({ dateFormat: 'dd.mm.yy', numberOfMonths: 2 });
   $(".date-picker").datepicker('setDate', 'today');
+}
+
+function initSelectSsid(){
+ $("#ssid").change(function(){    
+    var selectedSsid = $(this).find("option:selected").attr("master");
+    var selectedCoreRouter = $("#core_router option[name='" + selectedSsid + "']").val();
+    $("#core_router").val(selectedCoreRouter);
+ });
 }
