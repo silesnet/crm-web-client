@@ -1,14 +1,22 @@
+body {font-size: 13px;}
 .ds-none {display: none !important;}
+
+.navbar {margin-bottom: 10px; min-height: 40px;}
+.navbar-brand {height: 40px; padding: 10px 15px;}
+
+.panel {margin-bottom: 10px;}
 
 .panel.panel-tab {border-top: none ; border-top-right-radius:0; border-top-left-radius:0;}
 
-#customers {display: table; width: 100%; margin: 0 0 20px 0;}
+#customers {display: table; width: 100%; margin: 0 0 10px 0;}
 #customers li {width: 100%; float: left; clear: both; padding: 5px ;}
 #customers li span.name {float: left; font-size: 14px; font-weight: bold; float: left; display: block; margin: 5px 0;}
 #customers li a {margin: 0 0 0 5px;}
 
 #draft_customers span.name {float: left; font-size: 14px; font-weight: bold; float: left; display: block; margin: 5px 0;}
 #draft_customers a {margin: 0 0 0 5px;} 
+
+#draft label {margin-bottom: 2px;}
 
 .row.device {margin-top: 10px;}
 .row.device.first {margin-top: 0;}
