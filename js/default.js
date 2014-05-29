@@ -51,13 +51,13 @@ function initDraft(){
     // load ssids
     $.getJSON(address + "networks/ssids", function(jsondata){
       $.each(jsondata.ssids,function(key, value) {
-        $("#ssid").append("<option value='" + value.id + "' master='" + value.master + "'>" + value.ssid + "</option>");    
+        $("#ssid").append("<option value='" + value.id + "' master='" + value.master + "'>" + value.ssid + " (" + value.master + ")</option>");    
       });
       
       // load routers
       $.getJSON(address + "networks/routers", function(jsondata){
         $.each(jsondata.core_routers,function(key, value) {
-          $("#core_router").append("<option value='" + value.id + "' name='" + value.master + "'>" + value.master + "</option>");    
+          $("#core_router").append("<option value='" + value.id + "' name='" + value.name + "'>" + value.name + "</option>");    
         });
       
         // load users
