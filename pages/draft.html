@@ -4,7 +4,8 @@
           
   <ul id="tabs" class="nav nav-tabs">
     <li><a data-toggle="tab" href="#customer">Zákazník</a></li>
-    <li><a data-toggle="tab" href="#services">Služby</a></li>
+    <li><a data-toggle="tab" href="#services">Služba</a></li>
+    <li><a data-toggle="tab" href="#connections">Připojení</a></li>
   </ul>  
   
   <input id="method" type="hidden" name="method" value="POST">
@@ -78,13 +79,6 @@
               <div class="col-xs-2"><label for="price">Cena</label><div class="input-group"><input type="text" name="price" class="form-control" id="price" maxlength="50" placeholder="Cena" readonly><span class="input-group-addon">Kč</span></div></div>
           </div>
           <div class="row">
-              <div class="col-xs-6"><label for="ssid">SSID</label><select name="ssid" class="form-control" id="ssid"></select></div>
-              <div class="col-xs-6"><label for="ssid">MAC</label><input type="text" name="mac_address" class="form-control" id="mac_address" maxlength="50" placeholder="AB:CD:EF:01:23:45:67:89"></div>
-          </div>
-          <div class="row">
-              <div class="col-xs-6"><label for="core_router">Výchozí router</label><select name="core_router" class="form-control" id="core_router"></select></div>
-          </div>
-          <div class="row">
               <div class="col-xs-6"><label for="location_street">Adresa přípojky</label><input type="text" name="location_street" class="form-control" id="location_street" maxlength="50" placeholder="Ulice"></div>
               <div class="col-xs-3"><label for="location_orientation_number">Číslo popisné</label><input type="text" name="location_orientation_number" class="form-control" id="location_orientation_number" required="required" maxlength="10" placeholder="Číslo popisné"></div>
               <div class="col-xs-3"><label for="location_descriptive_number">Číslo orientační</label><input type="text" name="location_descriptive_number" class="form-control" id="location_descriptive_number" maxlength="10" placeholder="Číslo orientační"></div>
@@ -122,9 +116,6 @@
               </div>
           </div>
           <div class="row">
-              <div class="col-xs-6"><label for="config">Konfigurace</label><select name="config" class="form-control" id="config"><option value="1">DHCP</option><option value="2">STATIC</option><option value="3">PPPoE</option></select></div>
-          </div>
-          <div class="row">
               <div class="col-xs-6"><label for="activate_on">Datum aktivace</label>
               
               <div class="input-group">
@@ -143,12 +134,34 @@
           </div>
         </div>        
       </div><!-- /.services -->
+      <div id="connections" class="tab-pane fade">
+        <div class="panel-heading">
+          <div class="row">
+              <div class="col-xs-6"><label for="ssid">SSID</label><select name="ssid" class="form-control" id="ssid"></select></div>
+              <div class="col-xs-6"><label for="core_router">Výchozí router</label><select name="core_router" class="form-control" id="core_router"></select></div>
+          </div>
+          <div class="row">
+              <div class="col-xs-6"><label for="config">Konfigurace</label><select name="config" class="form-control" id="config"><option value="1">DHCP</option><option value="2">STATIC</option><option value="3">PPPoE</option></select></div>
+              <div class="col-xs-6"><label for="ssid">MAC</label><input type="text" name="mac_address" class="form-control" id="mac_address" maxlength="50" placeholder="AB:CD:EF:01:23:45:67:89"></div>
+          </div>
+          <div class="row">
+              <div class="col-xs-6"><label for="auth_type">Autentifikace</label><select name="auth_type" class="form-control" id="auth_type"><option value="1">DHCP</option><option value="2">PPPoE</option></select></div>
+              <div class="col-xs-4"><label for="ip">IP</label><input type="text" name="ip" class="form-control" id="ip" maxlength="15" placeholder="0.0.0.0"></div>
+              <div class="col-xs-2"><label for="is_ip_public">Veřejná IP<input type="checkbox" name="is_ip_public" class="form-control" id="is_ip_public"></label></div>
+          </div>
+          <div class="row">
+              <div class="col-xs-6"><label for="auth_a">Login / Switch</label><input type="text" name="auth_a" class="form-control" id="auth_a" maxlength="15" placeholder=""></div>
+              <div class="col-xs-6"><label for="auth_b">Heslo / Port</label><input type="text" name="auth_b" class="form-control" id="auth_b" maxlength="15" placeholder=""></div>
+          </div>
+        </div>
+      </div><!-- /.connections -->
       
     </div>
     <div class='pull-left'>
       <input type="button" class="btn btn-lg btn-warning ds-none" value="Smazat" name="delete">
     </div>    
     <div class='pull-right'>
+      <input type="submit" class="btn btn-lg btn-info" value="Aktivovat" name="submitButton" disabled>
       <input type="submit" class="btn btn-lg btn-primary" value="Importovat" name="submitButton" disabled>
       <input type="submit" class="btn btn-lg btn-success" value="Uložit" name="submitButton" onclick="actionSaveDraft();">   
     </div>

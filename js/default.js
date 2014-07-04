@@ -295,6 +295,13 @@ $(".row.device").each(function (i){
   }  
 });
 
+data.connections = {
+  auth_type:$("#auth_type").val(),
+  auth_a:$("#auth_a").val(),
+  auth_b:$("#auth_b").val(),
+  ip:$("#ip").val(),
+  is_ip_public:$("#is_ip_public").is(":checked")
+}
  return JSON.stringify(data, null, 0);  
 }
 
@@ -360,6 +367,15 @@ function deserializeDraft(jsondata, mode){
       $(this).find("input:radio[value=" + data.service.devices[i].owner + "]").attr('checked',true);
     });
     updateParamProduct();
+  }
+  if(data.connections != null){
+    $("#auth_type").val(data.connections.auth_type);
+    $("#auth_a").val(data.connections.auth_a);
+    $("#auth_b").val(data.connections.auth_b);
+    $("#ip").val(data.connections.ip);
+    if(data.connections.is_ip_public){
+     $("#is_ip_public").prop("checked", true); 
+    }
   } 
   updateContract(contract);
 }
