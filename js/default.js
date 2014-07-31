@@ -91,6 +91,7 @@ function initDraft(){
   initDraftSubmitAction();
   initDraftAddDeviceAction();
   initDraftDeleteAction();
+  initDraftActivationAction();
 }
 /*
   inicilize draft form submit action 
@@ -98,18 +99,30 @@ function initDraft(){
 function initDraftSubmitAction() {
   $("#draft").submit(function (event){
   event.preventDefault();
-    $.ajax({
-      type: $("#method").val(),
-      url: getUrlDraft(),
-      data: serializeDraft(),  
-      success: function() {
+     saveDraft();
+  });
+}
+
+/*
+  action save draft
+*/
+function saveDraft(isActivate){
+   $.ajax({
+    type: $("#method").val(),
+    url: getUrlDraft(),
+    data: serializeDraft(),  
+    success: function() {
+      if(isActivate){
+        alert("Zákazník byl aktivován!")
+      }else{
         localStorage.setItem("infoClass", "success");
         localStorage.setItem("infoData", "Zákazník byl uložen v pořádku!");
         location.href = "index.html";
       }
-    });
-  });
+    }
+  }); 
 }
+
 /*
   inicialize action onclick delete in draft form
 */
@@ -219,6 +232,118 @@ function actionSaveDraft(){
 }
 
 /*
+  inicialize action onclick activation in draft form
+  1. create or exist customer
+*/
+function initDraftActivationAction() {
+  $("#draft input[name=activation]").click(function (event){
+    if($("#customer_id").val() == 0){
+      $.ajax({
+        type: "POST",
+        data: serializeCustomer(),
+        dataType: "json",
+        contentType:"application/json",
+        url: address + "customers",
+        statusCode: {
+          201: function (data){
+            $("#customer_id").val(data.customers.id);
+            createAgreement(data.customers.id);
+          } 
+        }
+      });
+    }else{    
+      createAgreement($("#customer_id").val());
+    }
+  });
+}
+
+/*
+  2. create or exist agreement
+*/
+function createAgreement(customerId){
+  // bug
+  if($("#contract").val() == 0 && $("#agreements_id").val() == 0){
+    $.ajax({
+      type: "POST",
+      data: serializeAgreement(),
+      dataType: "json",
+      contentType:"application/json",
+      url: address + "customers/" + customerId + "/agreements",
+      statusCode: {
+        201: function (data){
+          $("#agreements_id").val(data.agreements.id);
+          createService(data.agreements.id);
+        } 
+      }
+    });
+  }else{
+      createService($("#contract").val());
+  }
+}
+
+/*
+  3. create service
+*/
+function createService(agreementId){
+  if($("#service_id").val() == 0){
+    $.ajax({
+      type: "POST",
+      data: {},
+      dataType: "json",
+      contentType:"application/json",
+      url: address + "agreements/" + agreementId + "/services",
+      statusCode: {
+        201: function (data){
+          $("#service_id").val(data.services.id);
+          createConnection(data.services.id);
+        } 
+      }
+    });
+   }
+   else{
+     createConnection($("#service_id").val());
+   } 
+}
+
+/*
+  4. create connection
+*/
+function createConnection(serviceId){
+  if($("#connection_id").val() == 0){
+    $.ajax({
+      type: "POST",
+      data: serializeConnection(),
+      dataType: "json",
+      contentType:"application/json",
+      url: address + "services/" + serviceId + "/connections",
+      statusCode: {
+        201: function (data){
+          $("#connection_id").val(data.connections.service_id);
+          //alert('create connection ' + data.connections.service_id);
+        } 
+      }
+    });
+   }else{
+      $.ajax({
+        type: "PUT",
+        data: serializeConnection(),
+        dataType: "json",
+        contentType:"application/json",
+        url: address + "connections/" + serviceId,
+        statusCode: {
+          //bug
+          405: function (data){
+            //alert('update connection');
+          } 
+        }
+      });
+   }
+   // save draft
+   actionSaveDraft();
+   saveDraft(true); 
+}
+
+/*
   url param POST / PUT send
   POST domain/drafts?user_id={userId}
   PUT  domain/drafts/{draftID}
@@ -233,12 +358,53 @@ function getUrlDraft(){
   return tmpUrl;
 }
 
+/*
+  serialize JSON connection
+*/
+function serializeConnection(){
+
+  var data = {};
+  data.connections = {};
+  return JSON.stringify(data, null, 0);
+  
+}
+
+/*
+  serialize JSON agreement
+*/
+function serializeAgreement(){
+
+  var data = {};
+  data.agreements = {
+      country:$("#location_country option:selected").attr("code")
+  };
+  return JSON.stringify(data, null, 0);
+}
+
+/*
+  serialize JSON customer
+*/
+function serializeCustomer(){
+
+  var data = {};
+  data.customers = {
+      name:$("#name").val() + " " + $("#surname").val()
+  };
+  return JSON.stringify(data, null, 0);
+}
+
+/*
+  serialize JSON draft
+*/
 function serializeDraft(){
 
 var data = {};
 
 data.customer = {
   id:$("#customer_id").val(),
+  agreements_id:$("#agreements_id").val(),
+  service_id:$("#service_id").val(),
+  connection_id:$("#connection_id").val(),
   customer_type:$(".customer-type input:checked").val(),
   name:$("#name").val(),
   surname:$("#surname").val(),
@@ -315,6 +481,9 @@ function deserializeDraft(jsondata, mode){
     data = JSON.parse(jsondata);
   }
   $("#customer_id").val(data.customer.id);
+  $("#agreements_id").val(data.customer.agreements_id);
+  $("#service_id").val(data.customer.service_id);
+  $("#connection_id").val(data.customer.connection_id);
   $(".customer-type input:radio[value=" + data.customer.customer_type + "]").click();
   $("#name").val(data.customer.name);
   $("#surname").val(data.customer.surname);
@@ -378,6 +547,7 @@ function deserializeDraft(jsondata, mode){
     }
   } 
   updateContract(contract);
+  updateActivation();
 }
 
 /*
@@ -456,7 +626,7 @@ function updateParamProduct(mode){
   update parameter contract
 */
 function updateContract(contractId){
-  if($("#customer_id").val() != 0){
+  if($("#customer_id").val() != 0 && $("#agreements_id").val() == 0) {
     $.getJSON(address + 'contracts/' + $("#customer_id").val() , function(jsondata){
       $.each(jsondata.contracts,function(key, value) {
         $("#contract").append("<option value='" + value + "'>" + value + "</option>");    
@@ -512,4 +682,14 @@ function initSelectSsid(){
     var selectedCoreRouter = $("#core_router option[name='" + selectedSsid + "']").val();
     $("#core_router").val(selectedCoreRouter);
  });
+}
+
+function updateActivation(){
+  if($("#connection_id").val() != 0){
+    $("#draft input[name=activation]").val('Upravit');
+  }
+}
+
+function initCopyAddress(){
+  // TODO
 }
