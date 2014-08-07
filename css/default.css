@@ -31,3 +31,5 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+.btn.copy-address {display: block;}
+

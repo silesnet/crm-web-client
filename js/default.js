@@ -32,6 +32,8 @@ function inicialize(){
   initInputNumber(); 
   initDatePicker();
   initSelectSsid();
+  initAuthentification();
+  initCustomerAddressCopy();
 }
 /*
   inicialize draft
@@ -99,26 +101,22 @@ function initDraft(){
 function initDraftSubmitAction() {
   $("#draft").submit(function (event){
   event.preventDefault();
-     saveDraft();
+     saveDraft("Zákazník byl uložen v pořádku!");
   });
 }
 
 /*
   action save draft
 */
-function saveDraft(isActivate){
+function saveDraft(message){
    $.ajax({
     type: $("#method").val(),
     url: getUrlDraft(),
     data: serializeDraft(),  
     success: function() {
-      if(isActivate){
-        alert("Zákazník byl aktivován!")
-      }else{
         localStorage.setItem("infoClass", "success");
-        localStorage.setItem("infoData", "Zákazník byl uložen v pořádku!");
+        localStorage.setItem("infoData", message);
         location.href = "index.html";
-      }
     }
   }); 
 }
@@ -295,6 +293,7 @@ function createService(agreementId){
       statusCode: {
         201: function (data){
           $("#service_id").val(data.services.id);
+          $("auth_a").val(data.services.id);
           createConnection(data.services.id);
         } 
       }
@@ -319,7 +318,9 @@ function createConnection(serviceId){
       statusCode: {
         201: function (data){
           $("#connection_id").val(data.connections.service_id);
-          //alert('create connection ' + data.connections.service_id);
+          // save draft
+          actionSaveDraft();
+          saveDraft("Zákazník byl aktivován!");
         } 
       }
     });
@@ -333,14 +334,13 @@ function createConnection(serviceId){
         statusCode: {
           //bug
           405: function (data){
-            //alert('update connection');
+            // save draft
+            actionSaveDraft();
+            saveDraft("Zákazník byl reaktivován!");
           } 
         }
       });
    }
-   // save draft
-   actionSaveDraft();
-   saveDraft(true); 
 }
 
 /*
@@ -548,6 +548,7 @@ function deserializeDraft(jsondata, mode){
   } 
   updateContract(contract);
   updateActivation();
+  initAuthentification();
 }
 
 /*
@@ -690,6 +691,51 @@ function updateActivation(){
   }
 }
 
-function initCopyAddress(){
-  // TODO
+/*
+  generate random password
+  @param lenght password
+*/
+function generatePassword(length){
+    var iteration = 0;
+    var password = "";
+    var randomNumber;
+    while(iteration < length){
+        randomNumber = (Math.floor((Math.random() * 100)) % 94) + 33;
+            if ((randomNumber >=33) && (randomNumber <=47)) { continue; }
+            if ((randomNumber >=58) && (randomNumber <=64)) { continue; }
+            if ((randomNumber >=91) && (randomNumber <=96)) { continue; }
+            if ((randomNumber >=123) && (randomNumber <=126)) { continue; }
+        iteration++;
+        password += String.fromCharCode(randomNumber);
+    }
+  return password;
+}
+
+function initAuthentification(){
+  if($("#auth_type").val() == 2){
+    $("#auth_a").prop("disabled", true);
+  }
+  $("#auth_type").change(function (){ 
+    if($(this).val() == 2){
+      $("#auth_a").prop("disabled", true);
+      if($("#auth_b").val() == ''){
+        $("#auth_b").val(generatePassword(8));
+      }
+    }else{
+      $("#auth_a").prop("disabled", false);
+      $("#auth_b").val("");
+    }   
+  });
+}
+
+function initCustomerAddressCopy(){
+  $(".copy-address").click(function (){
+        $("#location_street").val($("#street").val());
+        $("#location_orientation_number").val($("#orientation_number").val());
+        $("#location_descriptive_number").val($("#descriptive_number").val());
+        $("#location_town").val($("#town").val());
+        $("#location_postal_code").val($("#postal_code").val());
+        $("#location_country").val($("#country").val());
+    } 
+  );
 }
