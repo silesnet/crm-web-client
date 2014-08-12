@@ -76,6 +76,7 @@ function initDraft(){
           if(getURLParameter("customer") != null){
             $("#customer_id").val(getURLParameter("customer"));
             $.getJSON(address + "customers/" + getURLParameter("customer"), function(jsondata){deserializeDraft(jsondata, 0);setEditableDraft();setTitleDraft();});
+            updateParamProduct(0);
           }
           else if(getURLParameter("draft_id") != null){
             $("#draft input[name=delete]").removeClass("ds-none");
@@ -275,7 +276,7 @@ function createAgreement(customerId){
       }
     });
   }else{
-      createService($("#contract").val());
+      createService("10" + $("#contract").val());
   }
 }
 
@@ -292,8 +293,7 @@ function createService(agreementId){
       url: address + "agreements/" + agreementId + "/services",
       statusCode: {
         201: function (data){
-          $("#service_id").val(data.services.id);
-          $("auth_a").val(data.services.id);
+          $("#service_id").val(data.services.id); 
           createConnection(data.services.id);
         } 
       }
@@ -318,7 +318,9 @@ function createConnection(serviceId){
       statusCode: {
         201: function (data){
           $("#connection_id").val(data.connections.service_id);
-          // save draft
+          if($("#auth_type").val() == 2){
+            $("#auth_a").val(data.connections.service_id);
+          } 
           actionSaveDraft();
           saveDraft("Zákazník byl aktivován!");
         } 
@@ -333,7 +335,10 @@ function createConnection(serviceId){
         url: address + "connections/" + serviceId,
         statusCode: {
           //bug
-          405: function (data){
+          200: function (data){
+            if($("#auth_type").val() == 2){
+              $("#auth_a").val(data.connections.service_id);
+            }
             // save draft
             actionSaveDraft();
             saveDraft("Zákazník byl reaktivován!");
@@ -364,9 +369,22 @@ function getUrlDraft(){
 function serializeConnection(){
 
   var data = {};
-  data.connections = {};
-  return JSON.stringify(data, null, 0);
+  data.connections = {
+    service_id:$("#service_id").val(),
+    auth_type:$("#auth_type").val(),
+    auth_name:$("#auth_a").val(),
+    auth_value:$("#auth_b").val(),
+    downlink:parseInt($("#downlink").val()),
+    uplink:parseInt($("#uplink").val()),
+    //area:$("#area").val(),
+    is_public_ip:$("#is_ip_public").is(":checked"),
+    ip:$("#ip").val(),
+    master_router:$("#core_router").val(),
+    ssid:$("#ssid").val(),
+    sa_mac:$("#mac_address").val()
+  }; 
   
+  return JSON.stringify(data, null, 0);  
 }
 
 /*
@@ -535,7 +553,6 @@ function deserializeDraft(jsondata, mode){
       $(this).find("input:text").val(data.service.devices[i].name);
       $(this).find("input:radio[value=" + data.service.devices[i].owner + "]").attr('checked',true);
     });
-    updateParamProduct();
   }
   if(data.connections != null){
     $("#auth_type").val(data.connections.auth_type);
@@ -545,7 +562,8 @@ function deserializeDraft(jsondata, mode){
     if(data.connections.is_ip_public){
      $("#is_ip_public").prop("checked", true); 
     }
-  } 
+  }
+  updateParamProduct(); 
   updateContract(contract);
   updateActivation();
   initAuthentification();
