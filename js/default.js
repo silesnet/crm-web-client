@@ -1,6 +1,5 @@
 var address = "http://localhost:8080/";
 var defaultSessionId = 'test';
-var loginAddress = "http://localhost:8080/users/current";
 
 jQuery(document).ready(function() {
   initLoadPages();
@@ -196,8 +195,7 @@ function loadDrafts(){
 */
 function currentUser() {
   var sessionId = $.cookie('JSESSIONID') || defaultSessionId;
-  var currentUserUrl = loginAddress + '?session=' + sessionId;
-  return $.getJSON(currentUserUrl);
+  return $.getJSON(address + 'users/current?session=' + sessionId);
 }
 
 /*
