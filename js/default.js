@@ -18,6 +18,7 @@ function initLoadPages(){
       inicialize();
     });
   }else {
+    loadUserName();
     loadDrafts();
     searchCustomers();
     inicialize();
@@ -673,6 +674,7 @@ function loadUserName() {
   currentUser().done(function(data) {
     if (data.users != null && data.users.user != null) {
       $("#user_id").val(data.users.user);
+      $("#user_name").text(data.users.user);
     }
   });
 }
