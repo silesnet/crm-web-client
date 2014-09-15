@@ -286,7 +286,7 @@ function createAgreement(customerId){
       }
     });
   }else{
-      createService("10" + $("#contract").val());
+      createService(100000 + parseInt($("#contract").val()));
   }
 }
 
