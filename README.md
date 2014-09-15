@@ -1,3 +1,3 @@
 CRM Service Web Client
 
-[Use Cases](CRM Use Cases)
+[Use Cases](https://github.com/silesnet/crm-web-client/wiki/CRM-Use-Cases)
