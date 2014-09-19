@@ -96,6 +96,7 @@ function initDraft(){
   initDraftAddDeviceAction();
   initDraftDeleteAction();
   initDraftActivationAction();
+  initPrintDraft();
 }
 /*
   inicilize draft form submit action
@@ -622,7 +623,7 @@ function initDraftAddDeviceAction(){
 */
 function addDevice(){
   var deviceId = $("#draft .row.device").length + 1;
-  var row = "<div class='row device'><div class='col-xs-6'><input type='text' placeholder='Zařízení' maxlength='50' class='form-control' name='device_" + deviceId + "'></div><div class='col-xs-1'><label class='radio'><input type='radio' checked='' value='silesnet' name='owner_" + deviceId +"'>SilesNet</label></div>  <div class='col-xs-1'><label class='radio'><input type='radio' value='customer' name='owner_" + deviceId + "'>Zákazník</label></div></div>"
+  var row = "<div class='row device'><div class='col-xs-6'><input type='text' placeholder='Zařízení' maxlength='50' class='form-control' id='device_" + deviceId + "' name='device_" + deviceId + "'></div><div class='col-xs-1'><label class='radio'><input type='radio' checked='' value='silesnet' id='owner_" + deviceId +"_1' name='owner_" + deviceId +"'>SilesNet</label></div>  <div class='col-xs-1'><label class='radio'><input type='radio' value='customer' id='owner_" + deviceId +"_2' name='owner_" + deviceId + "'>Zákazník</label></div></div>"
   $("#draft .row.device:last").after(row);
 }
 
@@ -767,4 +768,32 @@ function initCustomerAddressCopy(){
         $("#location_country").val($("#country").val());
     }
   );
+}
+
+function initPrintDraft(){
+ $("#print_protocol").click(function (event){
+      window.open("/pages/protokol.html?" + serializeToPrint($("#draft")));
+  }); 
+}
+
+function serializeToPrint(form){
+   var params = ""
+   
+   $(form).find("input[type=text], input[type=number], input[type=hidden]").each(function(){
+      params +=  $(this).attr("name") + "=" + $(this).val() + "&";
+   });
+   $(form).find("select").each(function(){
+      params +=  $(this).attr("name") + "=" + $(this).find("option:selected").text()  + "&";
+   });
+   $(form).find("input[type=checkbox]").each(function(){
+      if($(this).is(":checked")){
+        params +=  $(this).attr("name") + "=X&";
+      }
+   });
+   $(form).find("input[type=radio]").each(function(){
+      if($(this).is(":checked") && $(this).attr("id")){
+        params +=  $(this).attr("id") + "=X&";
+      }
+   });
+   return params;
 }
