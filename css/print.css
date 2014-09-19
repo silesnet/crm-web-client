@@ -1,0 +1,60 @@
+body {font-size: 62.5%; background: white; margin: 0 auto; max-width: 595px;}
+
+.clear {zoom:1;clear:both;}
+.clear:after,.clear:before{content:'';display:table;clear:both}
+.f_left {float: left !important;}
+.f_right {float: right !important;}
+.t_left {text-align: left !important;}
+.t_right {text-align: right !important;}
+.t_center {text-align: center !important;}
+.w_100 {width: 100% !important;}
+.f_normal {font-weight: normal;}
+.w_td_all {width: 10000px !important;}
+.w_td_200 {width: 200px;}
+
+input {float: left;}
+.t_center input {float: none;}
+label {float: left; font-size: 1.2em; }
+td label {font-size: 1em;}
+
+h1 {margin: 0; font-size: 1.3em;}
+
+table {display: block; margin-bottom: 5px; font-size: 1.2em;}
+
+th {font-weight: bold; text-align: left;}
+th, td {padding: 0 2px 2px 2px; vertical-align: top;}
+
+th p, td p {margin: 0; float: left;}
+td.separ {padding: 0 !important;}
+td.separ_2 {padding: 0 !important; height: 30px;}
+th.white_space_left, td.white_space_left {padding-left: 20px;}
+th.white_space_right, td.white_space_right {padding-right: 20px;}
+
+.stamp div {width: 220px;}
+.stamp div p, .stamp div span {margin: 50px 0 ;}
+
+.doc_type {float: right; margin-top: -10px;}
+.doc_type p {margin: 0; float: left; padding: 0 3px;}
+
+p.checkbox {border: 1px solid black ; width: 14px; height: 14px; padding: 0 ;}
+td p.checkbox {float: none; margin: 0 auto ;}
+p.orientation_number:after {content: "/";}
+p.orientation_number:empty {display: none;}
+
+.subline {position: relative; bottom: 65px;}
+.subline .line {border-bottom:2px solid black; width: 150px;}
+.subline td {font-size: 0.8em; padding: 0 ;}
+
+.borders th, 
+.borders td {padding-top: 2px; vertical-align: bottom; white-space: nowrap;}
+
+p.white_space {width: 150px; border-bottom: 1px dotted black ; float: left;}
+td span {float: left;}
+
+.border_top {border-top: 1px solid black;}
+.border_ver {border-top: 1px solid black; border-bottom: 1px solid black;}
+.border_hor {border-left: 1px solid black; border-right: 1px solid black;}
+.border_bottom {border-bottom: 1px solid black;}
+.border_left {border-left: 1px solid black;}
+.border_right {border-right: 1px solid black;}
+.border {border: 1px solid black;}
