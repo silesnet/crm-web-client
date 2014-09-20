@@ -272,7 +272,7 @@ function initDraftActivationAction() {
 */
 function createAgreement(customerId){
   // bug
-  if($("#contract").val() == 0 && $("#agreements_id").val() == 0){
+  if($("#contract").val() == 0 && $("#agreement_id").val() == 0){
     $.ajax({
       type: "POST",
       data: serializeAgreement(),
@@ -281,7 +281,7 @@ function createAgreement(customerId){
       url: address + "customers/" + customerId + "/agreements",
       statusCode: {
         201: function (data){
-          $("#agreements_id").val(data.agreements.id);
+          $("#agreement_id").val(data.agreements.id);
           createService(data.agreements.id);
         }
       }
@@ -431,7 +431,7 @@ var data = {};
 
 data.customer = {
   id:$("#customer_id").val(),
-  agreement_id:$("#agreements_id").val(),
+  agreement_id:$("#agreement_id").val(),
   service_id:$("#service_id").val(),
   connection_id:$("#connection_id").val(),
   customer_type:$(".customer-type input:checked").val(),
@@ -510,7 +510,7 @@ function deserializeDraft(jsondata, mode){
     data = JSON.parse(jsondata);
   }
   $("#customer_id").val(data.customer.id);
-  $("#agreements_id").val(data.customer.agreement_id);
+  $("#agreement_id").val(data.customer.agreement_id);
   $("#service_id").val(data.customer.service_id);
   $("#connection_id").val(data.customer.connection_id);
   $(".customer-type input:radio[value=" + data.customer.customer_type + "]").click();
@@ -656,7 +656,7 @@ function updateParamProduct(mode){
   update parameter contract
 */
 function updateContract(contractId){
-  if($("#customer_id").val() != 0 && $("#agreements_id").val() == 0) {
+  if($("#customer_id").val() != 0 && $("#agreement_id").val() == 0) {
     $.getJSON(address + 'contracts/' + $("#customer_id").val() , function(jsondata){
       $.each(jsondata.contracts,function(key, value) {
         $("#contract").append("<option value='" + value + "'>" + value + "</option>");
@@ -771,9 +771,12 @@ function initCustomerAddressCopy(){
 }
 
 function initPrintDraft(){
- $("#print_protocol").click(function (event){
+  $("#print_protocol").click(function (event){
       window.open("/pages/protokol.html?" + serializeToPrint($("#draft")));
-  }); 
+  });
+  $("#print_contract").click(function (event){
+      window.open("/pages/smlouva.html?" + serializeToPrint($("#draft")));
+  });  
 }
 
 function serializeToPrint(form){
