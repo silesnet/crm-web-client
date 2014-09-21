@@ -49,6 +49,7 @@ p.orientation_number:empty {display: none;}
 .borders td {padding-top: 2px; vertical-align: bottom; white-space: nowrap;}
 
 p.white_space {width: 150px; border-bottom: 1px dotted black ; float: left;}
+td.white_space {border-bottom: 1px dotted black ;}
 td span {float: left;}
 
 .border_top {border-top: 1px solid black;}
@@ -58,3 +59,7 @@ td span {float: left;}
 .border_left {border-left: 1px solid black;}
 .border_right {border-right: 1px solid black;}
 .border {border: 1px solid black;}
+
+.contract {padding-left: 100px;}
+.contract h1 {float: left;}
+.contract span {clear: both;}
