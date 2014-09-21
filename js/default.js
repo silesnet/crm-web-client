@@ -782,7 +782,7 @@ function initPrintDraft(){
 function serializeToPrint(form){
    var params = ""
    
-   $(form).find("input[type=text], input[type=number], input[type=hidden]").each(function(){
+   $(form).find("input[type=text], input[type=number], input[type=hidden], input[type=email]").each(function(){
       params +=  $(this).attr("name") + "=" + $(this).val() + "&";
    });
    $(form).find("select").each(function(){
