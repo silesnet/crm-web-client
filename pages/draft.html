@@ -1,23 +1,19 @@
 <div id="data" class="container">
   
-  <p><strong id="customer_title"></strong></p>
+  <p><strong id="customer_title"></strong><strong id="service_title">Služba:&#160;</strong></p>
           
   <ul id="tabs" class="nav nav-tabs">
     <li><a data-toggle="tab" href="#customer">Zákazník</a></li>
     <li><a data-toggle="tab" href="#services">Služba</a></li>
     <li><a data-toggle="tab" href="#connections">Připojení</a></li>
   </ul>  
-  
-  <input id="method" type="hidden" name="method" value="POST">
-  <input id="url" type="hidden" name="url" value="drafts">
-  <input id="user_id" type="hidden" name="user_id" value="">
                                                         
   <form id="draft" class="form-horizontal" role="form">
   
     <input id="customer_id" type="hidden" name="customer_id" value="0">
-    <input id="agreement_id" type="hidden" name="agreement_id" value="0">        
     <input id="service_id" type="hidden" name="service_id" value="0">
-    <input id="connection_id" type="hidden" name="connection_id" value="0">
+    <!-- input id="connection_id" type="hidden" name="connection_id" value="0" -->
+    <input id="status" type="hidden" name="status" value="draft">
         
     <div class="panel panel-default panel-tab tab-content">
       <div id="customer" class="tab-pane fade active in">
@@ -75,7 +71,7 @@
       <div id="services" class="tab-pane fade">
         <div class="panel-heading">
           <div class="row">
-            <div class="col-xs-6"><label for="contract">Smlouva</label><select name="contract" class="form-control" id="contract"><option value="0">Nová smlouva</option></select></div>
+            <div class="col-xs-6"><label for="contract">Smlouva</label><input type="text" name="contract" class="form-control" id="contract" value="0" disabled /></div>
           </div>
           <div class="row">
               <div class="col-xs-6"><label for="product">Produkt</label><select class="form-control" name="product" id="product"></select></div>
@@ -160,7 +156,7 @@
       
     </div>
     <div class='pull-left'>
-      <input type="button" class="btn btn-lg btn-warning ds-none" value="Smazat" name="delete">
+      <input type="button" class="btn btn-lg btn-warning" value="Smazat" name="delete">
     </div>    
     <div class='pull-right'>
       <div class="btn-group open">
@@ -174,9 +170,9 @@
         <li><a id="print_protocol" href="#">Tisknout protokol</a></li>
       </ul>
     </div>
-      <input type="button" class="btn btn-lg btn-info" value="Aktivovat" name="activation">
-      <input type="submit" class="btn btn-lg btn-primary" value="Importovat" name="submitButton" disabled>
-      <input type="submit" class="btn btn-lg btn-success" value="Uložit" name="submitButton" onclick="actionSaveDraft();">   
+      <input type="button" class="btn btn-lg btn-primary" value="Oveřit" name="status" rel="SUBMITTED" msg="ověřen" />
+      <input type="button" class="btn btn-lg btn-danger ds-none" value="Zamítnout" name="statusBack" rel="DRAFT" />
+      <input type="button" class="btn btn-lg btn-success" value="Uložit" name="save" />   
     </div>
   </form>  
 </div><!-- /.container -->
