@@ -1,5 +1,9 @@
 var address = "http://localhost:8080/";
 var defaultSessionId = 'test';
+var products;
+var users;
+var user_id = "";
+var operation_country = "CZ";
 
 jQuery(document).ready(function() {
   initLoadPages();
@@ -9,32 +13,36 @@ jQuery(document).ready(function() {
   load pages and include to index.html
 */
 function initLoadPages(){
+  // load user name
+  loadUserName();
+  
   if(getURLParameter("action") != null){
+    // import pages
     $( "#content" ).load("pages/" + getURLParameter("action") + ".html #data", function(){
       if(getURLParameter("action") == 'draft'){
+        inicialize();
         initDraft();
+        initCustomerType();
+        initSelectSsid();
+        initAuthentification();
+        initCustomerAddressCopy();
+        initTabs();
       }
-      inicialize();
     });
   }else {
-    loadUserName();
+    // inicialize index.html
+    inicialize();
     loadDrafts();
     searchCustomers();
-    inicialize();
   }
 }
 /*
   global function inicialize
 */
 function inicialize(){
-  showInfoAction();
-  initTabs();
-  initCustomerType();
+  showInfoAction();  
   initInputNumber();
   initDatePicker();
-  initSelectSsid();
-  initAuthentification();
-  initCustomerAddressCopy();
 }
 /*
   inicialize draft
@@ -44,78 +52,136 @@ function initDraft(){
     updateParamProduct(0);
   });
   loadUserName();
-
+  
   // load products
-  $.getJSON(address + "products", function(jsondata){
-    $.each(jsondata.products,function(key, value) {
-      $("#product").append("<option value='" + value.id + "' rel='" + value.is_dedicated + "' dl='" + value.downlink + "' ul='" + value.uplink + "' prc='" + value.price + "' chl='" + value.channel + "'>" + value.name + "</option>");
-    });
-
-    // load ssids
-    $.getJSON(address + "networks/ssids", function(jsondata){
-      $.each(jsondata.ssids,function(key, value) {
-        $("#ssid").append("<option value='" + value.id + "' master='" + value.master + "'>" + value.ssid + " (" + value.master + ")</option>");
-      });
-
-      // load routers
-      $.getJSON(address + "networks/routers", function(jsondata){
-        $.each(jsondata.core_routers,function(key, value) {
-          $("#core_router").append("<option value='" + value.id + "' name='" + value.name + "'>" + value.name + "</option>");
-        });
-
-        // load users
-        $.getJSON(address + "users", function(jsondata){
-          $.each(jsondata.users,function(key, value) {
-            $("#operator").append("<option value='" + value.id + "' login='" + value.login + "'>" + value.name + "</option>");
-          });
-
-          // set logged operator
-          var selectedOperator = $("#operator option[login='" + $("#user_id").val() + "']").val();
-          $("#operator").val(selectedOperator);
-
-          // load draft data
-          if(getURLParameter("customer") != null){
-            $("#customer_id").val(getURLParameter("customer"));
-            $.getJSON(address + "customers/" + getURLParameter("customer"), function(jsondata){deserializeDraft(jsondata, 0);setEditableDraft();setTitleDraft();});
-            updateParamProduct(0);
-          }
-          else if(getURLParameter("draft_id") != null){
-            $("#draft input[name=delete]").removeClass("ds-none");
-            $.getJSON(address + "drafts/" + getURLParameter("draft_id"), function(jsondata){deserializeDraft(jsondata.data); setEditableDraft();setTitleDraft();});
-          }
-          else if(getURLParameter("name") != null){
-            setTitleNewDraft(decodeURIComponent(getURLParameter("name")));
-            updateParamProduct(0);
-          }
-       });
-      });
-    });
-  });
-
-  initDraftSubmitAction();
+  loadProducts();
+  // load ssids
+  loadNetworks();
+  // load routers
+  loadRouters();
+  // load users
+  loadUsers();
+  // load draft
+  loadDraft(getURLParameter("draft_id"));
+  
+  // inicialize click action button
+  initDraftSaveAction();
   initDraftAddDeviceAction();
   initDraftDeleteAction();
-  initDraftActivationAction();
   initPrintDraft();
 }
+
+function loadDraft(id){
+   $.ajax({
+    type: "GET",
+    async:false,
+    url: address + "drafts/" + id,
+    success: function(jsondata) {
+      var data = JSON.parse(jsondata.data)
+      if(data.status == "NEW"){
+        $("#contract").val(data.service.contract_no);
+        $("#name").val(data.customer.name);
+        $("#surname").val(data.customer.surname);
+        $("#service_id").val(data.service.service_id);
+        $("#customer_id").val(data.customer.id);
+        $("#service_title").append(data.service.service_id);
+        updateParamProduct(0);        
+        loadCustomer(data.customer.id);
+      }else{
+         deserializeDraft(jsondata);
+      }
+      setTitleDraft();
+    }
+  });
+}
+
+function loadCustomer(id){
+  $.ajax({
+    type: "GET",
+    async:false,
+    url: address + "customers/" + id,
+    success: function(jsondata) {
+      deserializeNewDraft(jsondata);      
+    }
+  }); 
+}
+
+function loadProducts(){
+   $.ajax({
+    type: "GET",
+    url: address + "products",
+    success: function(data) {
+      $.each(data.products,function(key, value) {
+        $("#product").append("<option value='" + value.id + "' rel='" + value.is_dedicated + "' dl='" + value.downlink + "' ul='" + value.uplink + "' prc='" + value.price + "' chl='" + value.channel + "'>" + value.name + "</option>");
+      });
+    }
+  });  
+}
+
+function loadNetworks(){
+   $.ajax({
+    type: "GET",
+    url: address + "networks/ssids",
+    success: function(data) {
+      $.each(data.ssids,function(key, value) {
+        $("#ssid").append("<option value='" + value.id + "' master='" + value.master + "'>" + value.ssid + " (" + value.master + ")</option>");
+      });
+    }
+  });
+}
+
+function loadRouters(){
+   $.ajax({
+    type: "GET",
+    url: address + "networks/routers",
+    success: function(data) {
+        $.each(data.core_routers,function(key, value) {
+          $("#core_router").append("<option value='" + value.id + "' name='" + value.name + "'>" + value.name + "</option>");
+        });
+    }
+  });
+}
+
+function loadUsers(){
+   $.ajax({
+    type: "GET",
+    url: address + "users",
+    success: function(data) {
+          $.each(data.users,function(key, value) {
+            $("#operator").append("<option value='" + value.id + "' login='" + value.login + "'>" + value.name + "</option>");
+          });
+          // set logged operator
+          var selectedOperator = $("#operator option[login='" + user_id + "']").val();
+          $("#operator").val(selectedOperator);
+    }
+  });
+}
+
 /*
   inicilize draft form submit action
 */
-function initDraftSubmitAction() {
-  $("#draft").submit(function (event){
-  event.preventDefault();
-     saveDraft("Zákazník byl uložen v pořádku!");
+function initDraftSaveAction() {
+  $("#draft input[name=save]").click(function (event){
+    saveDraft("Zákazník byl uložen v pořádku!");
+  });
+  $("#draft input[name=status]").click(function (event){
+    saveDraft("Zákazník byl " + $(this).attr('msg') + " v pořádku!", $(this).attr('rel'));
+  });
+  $("#draft input[name=statusBack]").click(function (event){
+    saveDraft("Zákazník byl zamítnut v pořádku!", $(this).attr('rel'));
   });
 }
 
 /*
   action save draft
 */
-function saveDraft(message){
+function saveDraft(message, status){
    $.ajax({
-    type: $("#method").val(),
-    url: getUrlDraft(),
-    data: serializeDraft(),
+    type: "PUT",
+    url: address + "drafts/new/" + getURLParameter("draft_id"),
+    dataType: "json",
+    contentType:"application/json",
+    data: serializeDraft(status),
     success: function() {
         localStorage.setItem("infoClass", "success");
         localStorage.setItem("infoData", message);
@@ -142,10 +208,10 @@ function initDraftDeleteAction() {
 }
 
 /*
-  inicilize tabs, show first tab
+  inicilize tabs, show last tab
 */
 function initTabs(){
-  $("#tabs a:last").tab("show");
+  $("#tabs li:nth-child(2) a").tab("show");
 }
 
 /*
@@ -165,10 +231,17 @@ function searchCustomers(){
   add all customer into search result
 */
 function updateCustomers(jsondata){
-  $("#customers").append("<li class='list-group-item'><span class='name'>" + $("#searchCustomers").val() + "</span><div class='pull-right'><a href='index.html?action=draft&name=" + encodeURIComponent($("#searchCustomers").val()) + "' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nový zákazník</a></div></li>");
+  $("#customers").append("<li class='list-group-item'><span class='name'>" + $("#searchCustomers").val() + "</span><div class='pull-right'><a onclick='createDraft(\"" + $("#searchCustomers").val() + "\")' href='#' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nový zákazník</a></div></li>");
   $.each(jsondata,function(key, value) {
+    var customerId = value["id"];
     var li = "<li class='list-group-item'><span class='name'>" + value["name"] + "</span>";
-    li += "<div class='pull-right'><a href='index.html?action=draft&customer=" + value["id"] + "' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nová služba</a></div></li>";
+    li += "<div class='pull-right'>";
+    if(value["agreements"] != null){
+      for (var i=0, len = value["agreements"].length; i < len; i++) {
+        li += "<a onclick='createDraft(\"" + value["name"] + "\", " + customerId +", " + value["agreements"][i] +  ")' href='#' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> " + value["agreements"][i] + "</a>";
+      }
+    }
+    li += "<a onclick='createDraft(\"" + value["name"] + "\", " + customerId + ")' href='#' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nová smlouva</a></div></li>";
     $("#customers").append(li);
   });
 }
@@ -177,18 +250,59 @@ function updateCustomers(jsondata){
   load user and when logged in then load all his draft
 */
 function loadDrafts(){
+  getProductName();
+  getOperatorName();
   currentUser().done(function(userData) {
     if(userData.users != null && userData.users.user != null) {
       var user = userData.users.user;
       $.getJSON(address + 'drafts?user_id=' + user , function(data) {
         $.each(data.drafts, function(key, value) {
           var data = JSON.parse(value.data);
-          var tr = "<tr><td><span class='name'>" + data.customer.name + " " + data.customer.surname + "</span><div class='pull-right'><a href='index.html?action=draft&draft_id=" + value.id + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> Editovat</a></div></td></tr>"
+          var status = value.status;
+          var tr = "<tr><td><span class='name'>" + data.customer.name + " " + data.customer.surname + "</span><span class='product'>" + getProductName(data.service.product) + "</span><span class='status'>" + status + "</span><span class='operator'>" + getOperatorName(data.service.operator) +"</span><div class='pull-right'><a href='index.html?action=draft&draft_id=" + value.id + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> Editovat</a></div></td></tr>"
           $("#draft_customers").append(tr);
         });
       });
     }
   });
+}
+
+/*
+  get product name by ID
+*/
+function getProductName(id){
+  var ret = "";
+  if(products == null){
+    $.getJSON(address + 'products', function(data){
+      products = data.products;
+    });
+  }else { 
+    $.each(products, function (key, value){
+      if(value.id == id){
+        ret = value.name;
+      }
+    });
+  }
+  return ret;
+}
+
+/*
+  get user name by ID
+*/
+function getOperatorName(id){
+  var ret = "";
+  if(users == null){
+    $.getJSON(address + 'users', function(data){
+      users = data.users;
+    });
+  }else { 
+    $.each(users, function (key, value){
+      if(value.id == id){
+        ret = value.name;
+      }
+    });
+  }
+  return ret;
 }
 
 /*
@@ -230,210 +344,27 @@ function showInfoAction(){
 }
 
 /*
-  onclick action SAVE draft (change method POST / PUT)
-*/
-function actionSaveDraft(){
-  if(getURLParameter("draft_id") != null){
-    $("#method").val("PUT");
-  }else{
-    $("#method").val("POST");
-  }
-  $("#draft input").prop("required", false);
-}
-
-/*
-  inicialize action onclick activation in draft form
-  1. create or exist customer
-*/
-function initDraftActivationAction() {
-  $("#draft input[name=activation]").click(function (event){
-    if($("#customer_id").val() == 0){
-      $.ajax({
-        type: "POST",
-        data: serializeCustomer(),
-        dataType: "json",
-        contentType:"application/json",
-        url: address + "customers",
-        statusCode: {
-          201: function (data){
-            $("#customer_id").val(data.customers.id);
-            createAgreement(data.customers.id);
-          }
-        }
-      });
-    }else{
-      createAgreement($("#customer_id").val());
-    }
-  });
-}
-
-/*
-  2. create or exist agreement
-*/
-function createAgreement(customerId){
-  // bug
-  if($("#contract").val() == 0 && $("#agreement_id").val() == 0){
-    $.ajax({
-      type: "POST",
-      data: serializeAgreement(),
-      dataType: "json",
-      contentType:"application/json",
-      url: address + "customers/" + customerId + "/agreements",
-      statusCode: {
-        201: function (data){
-          $("#agreement_id").val(data.agreements.id);
-          createService(data.agreements.id);
-        }
-      }
-    });
-  }else{
-      createService(100000 + parseInt($("#contract").val()));
-  }
-}
-
-/*
-  3. create service
-*/
-function createService(agreementId){
-  if($("#service_id").val() == 0){
-    $.ajax({
-      type: "POST",
-      data: {},
-      dataType: "json",
-      contentType:"application/json",
-      url: address + "agreements/" + agreementId + "/services",
-      statusCode: {
-        201: function (data){
-          $("#service_id").val(data.services.id);
-          createConnection(data.services.id);
-        }
-      }
-    });
-   }
-   else{
-     createConnection($("#service_id").val());
-   }
-}
-
-/*
-  4. create connection
-*/
-function createConnection(serviceId){
-  if($("#connection_id").val() == 0){
-    $.ajax({
-      type: "POST",
-      data: serializeConnection(),
-      dataType: "json",
-      contentType:"application/json",
-      url: address + "services/" + serviceId + "/connections",
-      statusCode: {
-        201: function (data){
-          $("#connection_id").val(data.connections.service_id);
-          if($("#auth_type").val() == 2){
-            $("#auth_a").val(data.connections.service_id);
-          }
-          actionSaveDraft();
-          saveDraft("Zákazník byl aktivován!");
-        }
-      }
-    });
-   }else{
-      $.ajax({
-        type: "PUT",
-        data: serializeConnection(),
-        dataType: "json",
-        contentType:"application/json",
-        url: address + "connections/" + serviceId,
-        statusCode: {
-          //bug
-          200: function (data){
-            if($("#auth_type").val() == 2){
-              $("#auth_a").val(data.connections.service_id);
-            }
-            // save draft
-            actionSaveDraft();
-            saveDraft("Zákazník byl reaktivován!");
-          }
-        }
-      });
-   }
-}
-
-/*
-  url param POST / PUT send
-  POST domain/drafts?user_id={userId}
-  PUT  domain/drafts/{draftID}
-*/
-function getUrlDraft(){
-  var tmpUrl = address + $("#url").val();
-  if(getURLParameter("draft_id") != null) {
-    tmpUrl += "/" + getURLParameter("draft_id");
-  }else {
-    tmpUrl += "?user_id=" + $("#user_id").val();
-  }
-  return tmpUrl;
-}
-
-/*
-  serialize JSON connection
-*/
-function serializeConnection(){
-
-  var data = {};
-  data.connections = {
-    service_id:$("#service_id").val(),
-    auth_type:$("#auth_type").val(),
-    auth_name:$("#auth_a").val(),
-    auth_value:$("#auth_b").val(),
-    downlink:parseInt($("#downlink").val()),
-    uplink:parseInt($("#uplink").val()),
-    //area:$("#area").val(),
-    is_public_ip:$("#is_ip_public").is(":checked"),
-    ip:$("#ip").val(),
-    master_router:$("#core_router").val(),
-    ssid:$("#ssid").val(),
-    sa_mac:$("#mac_address").val()
-  };
-
-  return JSON.stringify(data, null, 0);
-}
-
-/*
-  serialize JSON agreement
-*/
-function serializeAgreement(){
-
-  var data = {};
-  data.agreements = {
-      country:$("#location_country option:selected").attr("code")
-  };
-  return JSON.stringify(data, null, 0);
-}
-
-/*
-  serialize JSON customer
-*/
-function serializeCustomer(){
-
-  var data = {};
-  data.customers = {
-      name:$("#name").val() + " " + $("#surname").val()
-  };
-  return JSON.stringify(data, null, 0);
-}
-
-/*
   serialize JSON draft
 */
-function serializeDraft(){
+function serializeDraft(status){
+  var serializeData = {};
+  serializeData.drafts = {  
+    id:getURLParameter("draft_id"),
+    data:serializeDraftData(),
+    status:status
+  }
+  return JSON.stringify(serializeData, null, 0);
+}
+/*
+  serialize JSON draft data
+*/
+function serializeDraftData(){
 
 var data = {};
 
 data.customer = {
   id:$("#customer_id").val(),
-  agreement_id:$("#agreement_id").val(),
-  service_id:$("#service_id").val(),
-  connection_id:$("#connection_id").val(),
+  //connection_id:$("#connection_id").val(),
   customer_type:$(".customer-type input:checked").val(),
   name:$("#name").val(),
   surname:$("#surname").val(),
@@ -458,6 +389,7 @@ data.customer.address = {
 
 data.service = {
   contract_no:$("#contract").val(),
+  service_id:$("#service_id").val(),
   product:$("#product").val(),
   downlink:$("#downlink").val(),
   uplink:$("#uplink").val(),
@@ -497,22 +429,15 @@ data.connections = {
   ip:$("#ip").val(),
   is_ip_public:$("#is_ip_public").is(":checked")
 }
+data.status = "UPDATE"   
+
  return JSON.stringify(data, null, 0);
 }
 
-function deserializeDraft(jsondata, mode){
-  var data;
-  var contract = 0;
-  if(mode == 0){
-    data = jsondata;
-  }
-  else{
-    data = JSON.parse(jsondata);
-  }
+function deserializeDraft(jsondata){
+  var data = JSON.parse(jsondata.data);
   $("#customer_id").val(data.customer.id);
-  $("#agreement_id").val(data.customer.agreement_id);
-  $("#service_id").val(data.customer.service_id);
-  $("#connection_id").val(data.customer.connection_id);
+  //$("#connection_id").val(data.customer.connection_id);
   $(".customer-type input:radio[value=" + data.customer.customer_type + "]").click();
   $("#name").val(data.customer.name);
   $("#surname").val(data.customer.surname);
@@ -522,89 +447,72 @@ function deserializeDraft(jsondata, mode){
   $("#representative").val(data.customer.representative);
   $("#email").val(data.customer.email);
   $("#phone").val(data.customer.phone);
-  if(data.customer.address != null){
-    $("#street").val(data.customer.address.street);
-    $("#descriptive_number").val(data.customer.address.descriptive_number);
-    $("#orientation_number").val(data.customer.address.orientation_number);
-    $("#town").val(data.customer.address.town);
-    $("#postal_code").val(data.customer.address.postal_code);
-    $("#country").val(data.customer.address.country);
-  }else{
-    $("#street").val(data.customer.street);
-    $("#town").val(data.customer.city);
-    $("#postal_code").val(data.customer.postal_code.replace(" ", ""));
-    $("#country").val(data.customer.country);
-  }
+  $("#street").val(data.customer.address.street);
+  $("#descriptive_number").val(data.customer.address.descriptive_number);
+  $("#orientation_number").val(data.customer.address.orientation_number);
+  $("#town").val(data.customer.address.town);
+  $("#postal_code").val(data.customer.address.postal_code);
+  $("#country").val(data.customer.address.country);
   $("#contact_name").val(data.customer.contact_name);
   $("#info").val(data.customer.info);
-  if(data.service != null){
-    contract = data.service.contract_no;
-    $("#product").val(data.service.product);
-    $("#downlink").val(data.service.downlink);
-    $("#uplink").val(data.service.uplink);
-    $("#price").val(data.service.price);
-    $("#ssid").val(data.service.ssid);
-    $("#mac_address").val(data.service.mac_address);
-    $("#core_router").val(data.service.core_router);
-    $("#location_street").val(data.service.location_address.location_street);
-    $("#location_descriptive_number").val(data.service.location_address.location_descriptive_number);
-    $("#location_orientation_number").val(data.service.location_address.location_orientation_number);
-    $("#location_town").val(data.service.location_address.location_town);
-    $("#location_postal_code").val(data.service.location_address.location_postal_code);
-    $("#location_country").val(data.service.location_address.location_country);
-    $("#config").val(data.service.config);
-    $("#activate_on").val(data.service.activate_on);
-    $("#activation_fee").val(data.service.activation_fee);
-    $("#operator").val(data.service.operator);
-    $("#info_service").val(data.service.info_service);
-    for(i = 2; i<=data.service.devices.length; i++){
-        addDevice();
-    }
-    $(".row.device").each(function (i){
-      $(this).find("input:text").val(data.service.devices[i].name);
-      $(this).find("input:radio[value=" + data.service.devices[i].owner + "]").attr('checked',true);
-    });
+  $("#contract").val(data.service.contract_no);
+  $("#service_id").val(data.service.service_id);
+  $("#service_title").append(data.service.service_id);
+  $("#product").val(data.service.product);
+  $("#downlink").val(data.service.downlink);
+  $("#uplink").val(data.service.uplink);
+  $("#price").val(data.service.price);
+  $("#ssid").val(data.service.ssid);
+  $("#mac_address").val(data.service.mac_address);
+  $("#core_router").val(data.service.core_router);
+  $("#location_street").val(data.service.location_address.location_street);
+  $("#location_descriptive_number").val(data.service.location_address.location_descriptive_number);
+  $("#location_orientation_number").val(data.service.location_address.location_orientation_number);
+  $("#location_town").val(data.service.location_address.location_town);
+  $("#location_postal_code").val(data.service.location_address.location_postal_code);
+  $("#location_country").val(data.service.location_address.location_country);
+  $("#config").val(data.service.config);
+  $("#activate_on").val(data.service.activate_on);
+  $("#activation_fee").val(data.service.activation_fee);
+  $("#operator").val(data.service.operator);
+  $("#info_service").val(data.service.info_service);
+  for(i = 2; i<=data.service.devices.length; i++){
+      addDevice();
   }
-  if(data.connections != null){
-    $("#auth_type").val(data.connections.auth_type);
-    $("#auth_a").val(data.connections.auth_a);
-    $("#auth_b").val(data.connections.auth_b);
-    $("#ip").val(data.connections.ip);
-    if(data.connections.is_ip_public){
-     $("#is_ip_public").prop("checked", true);
-    }
+  $(".row.device").each(function (i){
+    $(this).find("input:text").val(data.service.devices[i].name);
+    $(this).find("input:radio[value=" + data.service.devices[i].owner + "]").attr('checked',true);
+  });
+  $("#auth_type").val(data.connections.auth_type);
+  $("#auth_a").val(data.connections.auth_a);
+  $("#auth_b").val(data.connections.auth_b);
+  $("#ip").val(data.connections.ip);
+  if(data.connections.is_ip_public){
+   $("#is_ip_public").prop("checked", true);
   }
+  $("#status").val(jsondata.status);
+  
   updateParamProduct();
-  updateContract(contract);
-  updateActivation();
+  updateStatusButton();
   initAuthentification();
 }
 
 /*
   set editable field customer on draft
 */
-function setEditableDraft(){
+/*function setEditableDraft(){
   if($("#customer_id").val() > 0){
     $("#customer input, #customer textarea, #customer select").attr('disabled', true);
     $("#customer .customer-type").addClass("ds-none");
   }
 }
+*/
 
 /*
   set title draft (Cusomer name, address, city)
 */
 function setTitleDraft(){
   $("#customer_title").text($("#name").val() + " " + $("#surname").val() + ", " + $("#street").val() + ", " + $("#town").val());
-}
-
-/*
-  set title new draft (Cusomer name)
-*/
-function setTitleNewDraft(name){
-  $("#customer_title").text(name);
-  var tmpName = name.split(" ");
-  $("#name").val(tmpName[0]);
-  $("#surname").val(tmpName[1]);
 }
 
 /*
@@ -653,27 +561,14 @@ function updateParamProduct(mode){
 }
 
 /*
-  update parameter contract
-*/
-function updateContract(contractId){
-  if($("#customer_id").val() != 0 && $("#agreement_id").val() == 0) {
-    $.getJSON(address + 'contracts/' + $("#customer_id").val() , function(jsondata){
-      $.each(jsondata.contracts,function(key, value) {
-        $("#contract").append("<option value='" + value + "'>" + value + "</option>");
-      });
-      $("#contract").val(contractId);
-    });
-  }
-}
-
-/*
   load user name
 */
 function loadUserName() {
   currentUser().done(function(data) {
     if (data.users != null && data.users.user != null) {
-      $("#user_id").val(data.users.user);
-      $("#user_name").text(data.users.user);
+      user_id = data.users.user;
+      operation_country = data.users.operation_country;
+      $("#user_name").html("<span class='glyphicon glyphicon-user'></span>&#160;" + data.users.name);
     }
   });
 }
@@ -713,12 +608,6 @@ function initSelectSsid(){
     var selectedCoreRouter = $("#core_router option[name='" + selectedSsid + "']").val();
     $("#core_router").val(selectedCoreRouter);
  });
-}
-
-function updateActivation(){
-  if($("#connection_id").val() != 0){
-    $("#draft input[name=activation]").val('Upravit');
-  }
 }
 
 /*
@@ -799,4 +688,233 @@ function serializeToPrint(form){
       }
    });
    return params;
+}
+
+function updateStatusButton(){
+  if($("#status").val() == "SUBMITTED"){
+    $("#draft input[name=status]").val('Akceptovat');
+    $("#draft input[name=status]").attr('rel', 'APPROVED');
+    $("#draft input[name=status]").attr('msg', 'akceptován');
+    $("#draft input[name=statusBack]").removeClass("ds-none");
+  } else if($("#status").val() == "APPROVED"){
+    $("#draft input[name=status]").val('Importovat');
+    $("#draft input[name=status]").attr('rel', 'IMPORTED');
+    $("#draft input[name=status]").attr('msg', 'importován');    
+  }
+}
+
+/*
+  create draft with create customer, agreement, service
+  @name - customer name (name surname)
+  @customerID - id customer
+  @contractID - id contract (agreement)
+*/
+function createDraft(name, customerID, contractID){
+
+  var customer_ID = customerID || createCustomer(name);
+  
+  var contract_ID = contractID || createAgreement(customer_ID);
+    
+  var service_ID = createService(contract_ID);
+  
+  $.ajax({
+    type: "POST",
+    async: false,
+    url: address + "drafts?user_id=test",
+    data: serializeNewDraft(name, customer_ID, contract_ID, service_ID),
+    success: function(data) {
+        location.href = "index.html?action=draft&draft_id=" + data;
+    }
+  }); 
+}
+
+/*
+  1. create or exist customer  
+*/
+function createCustomer(name){
+    var ret = 0;
+    $.ajax({
+      type: "POST",
+      async: false,
+      data: serializeCustomer(name),
+      dataType: "json",
+      contentType:"application/json",
+      url: address + "customers",
+      statusCode: {
+        201: function (data){
+          ret = data.customers.id;
+        }
+      }
+    });
+    return ret;
+}
+
+/*
+  2. create or exist agreement
+*/
+function createAgreement(customerId){
+    var ret = 0;
+    $.ajax({
+      type: "POST",
+      async: false,
+      data: serializeAgreement(),
+      dataType: "json",
+      contentType:"application/json",
+      url: address + "customers/" + customerId + "/agreements",
+      statusCode: {
+        201: function (data){
+          ret = data.agreements.id;
+        }
+      }
+    });
+    return ret;
+}
+
+/*
+  3. create service
+*/
+function createService(agreementId){
+   var ret = 0;
+   $.ajax({
+      type: "POST",
+      async: false,
+      data: {},
+      dataType: "json",
+      contentType:"application/json",
+      url: address + "agreements/" + agreementId + "/services",
+      statusCode: {
+        201: function (data){
+          ret = data.services.id;
+        }
+      }
+    }); 
+   return ret;  
+}
+/*
+  4. create connection
+*/
+/*
+function createConnection(serviceId){
+  if($("#connection_id").val() == 0){
+    $.ajax({
+      type: "POST",
+      data: serializeConnection(),
+      dataType: "json",
+      contentType:"application/json",
+      url: address + "services/" + serviceId + "/connections",
+      statusCode: {
+        201: function (data){
+          $("#connection_id").val(data.connections.service_id);
+          if($("#auth_type").val() == 2){
+            $("#auth_a").val(data.connections.service_id);
+          }
+          saveDraft("Zákazník byl aktivován!");
+        }
+      }
+    });
+   }else{
+      $.ajax({
+        type: "PUT",
+        data: serializeConnection(),
+        dataType: "json",
+        contentType:"application/json",
+        url: address + "connections/" + serviceId,
+        statusCode: {
+          //bug
+          200: function (data){
+            if($("#auth_type").val() == 2){
+              $("#auth_a").val(data.connections.service_id);
+            }
+            // save draft
+            saveDraft("Zákazník byl reaktivován!");
+          }
+        }
+      });
+   }
+}
+*/
+
+/*
+  serialize JSON customer
+*/
+function serializeCustomer(customerName){
+
+  var data = {};
+  data.customers = {
+      name:customerName                     
+  };
+  return JSON.stringify(data, null, 0);
+}
+
+/*
+  serialize JSON agreement
+*/
+function serializeAgreement(){
+
+  var data = {};
+  data.agreements = {
+      country:operation_country
+  };
+  return JSON.stringify(data, null, 0);
+}
+
+/*
+  serialize JSON connection
+*/
+/*
+function serializeConnection(){
+
+  var data = {};
+  data.connections = {
+    service_id:$("#service_id").val(),
+    auth_type:$("#auth_type").val(),
+    auth_name:$("#auth_a").val(),
+    auth_value:$("#auth_b").val(),
+    downlink:parseInt($("#downlink").val()),
+    uplink:parseInt($("#uplink").val()),
+    is_public_ip:$("#is_ip_public").is(":checked"),
+    ip:$("#ip").val(),
+    master_router:$("#core_router").val(),
+    ssid:$("#ssid").val(),
+    sa_mac:$("#mac_address").val()
+  };
+
+  return JSON.stringify(data, null, 0);
+}
+*/
+
+function serializeNewDraft(name, customer, contract, service){
+  var tmpName = name.split(" ");
+  var data = {};
+  data.customer = {
+    id:customer,
+    name:tmpName[0],
+    surname:tmpName[1]
+  }
+  data.service = {
+     contract_no:contract,
+     service_id:service
+  }
+  data.status = "NEW"
+           
+  return (JSON.stringify(data, null, 0));    
+}
+
+function deserializeNewDraft(data){
+  $("#customer_id").val(data.customer.id);
+  //$("#name").val(data.customer.name);
+  $("#supplementary_name").val(data.customer.supplementary_name);
+  $("#public_id").val(data.customer.public_id);
+  $("#dic").val(data.customer.dic);
+  $("#email").val(data.customer.email);
+  $("#phone").val(data.customer.phone);
+  $("#street").val(data.customer.street);
+  $("#town").val(data.customer.city);
+  if(data.customer.postal_code) $("#postal_code").val(data.customer.postal_code.replace(" ", ""));
+  $("#country").val(data.customer.country);
+  $("#contact_name").val(data.customer.contact_name);
+  $("#info").val(data.customer.info);  
+  
+  initAuthentification();
+  
 }

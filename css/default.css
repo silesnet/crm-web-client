@@ -13,7 +13,7 @@ body {font-size: 13px;}
 #customers li span.name {float: left; font-size: 14px; font-weight: bold; float: left; display: block; margin: 5px 0;}
 #customers li a {margin: 0 0 0 5px;}
 
-#draft_customers span.name {float: left; font-size: 14px; font-weight: bold; float: left; display: block; margin: 5px 0;}
+#draft_customers td > span {float: left; font-size: 14px; font-weight: bold; float: left; display: block; margin: 5px 5px 5px 0;}
 #draft_customers a {margin: 0 0 0 5px;} 
 
 #draft label {margin-bottom: 2px;}
@@ -32,4 +32,5 @@ input[type=number] {
 }
 
 .btn.copy-address {display: block;}
+#service_title {float: right;}
 
