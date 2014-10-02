@@ -14,6 +14,10 @@ body {font-size: 13px;}
 #customers li a {margin: 0 0 0 5px;}
 
 #draft_customers td > span {float: left; font-size: 14px; font-weight: bold; float: left; display: block; margin: 5px 5px 5px 0;}
+#draft_customers td .service {width: 10%;}
+#draft_customers td .name {width: 35%;}
+#draft_customers td .product {width: 20%;}
+#draft_customers td .status {width: 10%;}
 #draft_customers a {margin: 0 0 0 5px;} 
 
 #draft label {margin-bottom: 2px;}

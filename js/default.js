@@ -86,11 +86,12 @@ function loadDraft(id){
         $("#customer_id").val(data.customer.id);
         $("#service_title").append(data.service.service_id);
         updateParamProduct(0);        
-        loadCustomer(data.customer.id);
+        loadCustomer(data.customer.id);        
       }else{
          deserializeDraft(jsondata);
       }
       setTitleDraft();
+      setEditableDraft();      
     }
   });
 }
@@ -259,7 +260,7 @@ function loadDrafts(){
         $.each(data.drafts, function(key, value) {
           var data = JSON.parse(value.data);
           var status = value.status;
-          var tr = "<tr><td><span class='name'>" + data.customer.name + " " + data.customer.surname + "</span><span class='product'>" + getProductName(data.service.product) + "</span><span class='status'>" + status + "</span><span class='operator'>" + getOperatorName(data.service.operator) +"</span><div class='pull-right'><a href='index.html?action=draft&draft_id=" + value.id + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> Editovat</a></div></td></tr>"
+          var tr = "<tr><td><span class='service'>" + data.service.service_id + "</span><span class='name'>" + data.customer.name + " " + data.customer.surname + "</span><span class='product'>" + getProductName(data.service.product) + "</span><span class='status'>" + status + "</span><span class='operator'>" + getOperatorName(data.service.operator) +"</span><div class='pull-right'><a href='index.html?action=draft&draft_id=" + value.id + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> Editovat</a></div></td></tr>"
           $("#draft_customers").append(tr);
         });
       });
@@ -374,6 +375,7 @@ data.customer = {
   representative:$("#representative").val(),
   email:$("#email").val(),
   phone:$("#phone").val(),
+  customer_status:$("#customer_status").val(),
   contact_name:$("#contact_name").val(),
   info:$("#info").val()
 };
@@ -447,6 +449,7 @@ function deserializeDraft(jsondata){
   $("#representative").val(data.customer.representative);
   $("#email").val(data.customer.email);
   $("#phone").val(data.customer.phone);
+  $("#customer_status").val(data.customer.customer_status);
   $("#street").val(data.customer.address.street);
   $("#descriptive_number").val(data.customer.address.descriptive_number);
   $("#orientation_number").val(data.customer.address.orientation_number);
@@ -500,13 +503,12 @@ function deserializeDraft(jsondata){
 /*
   set editable field customer on draft
 */
-/*function setEditableDraft(){
-  if($("#customer_id").val() > 0){
+function setEditableDraft(){
+  if($("#customer_status").val() == "ACTIVE"){
     $("#customer input, #customer textarea, #customer select").attr('disabled', true);
     $("#customer .customer-type").addClass("ds-none");
   }
 }
-*/
 
 /*
   set title draft (Cusomer name, address, city)
@@ -913,7 +915,8 @@ function deserializeNewDraft(data){
   if(data.customer.postal_code) $("#postal_code").val(data.customer.postal_code.replace(" ", ""));
   $("#country").val(data.customer.country);
   $("#contact_name").val(data.customer.contact_name);
-  $("#info").val(data.customer.info);  
+  $("#info").val(data.customer.info);
+  $("#customer_status").val(data.customer.customer_status);  
   
   initAuthentification();
   
