@@ -220,7 +220,7 @@ function initTabs(){
 */
 function searchCustomers(){
   $("#searchCustomers").keyup(function (event){
-    if($("#searchCustomers").val().length > 1){
+    if($("#searchCustomers").val().length > 2){
       $.getJSON(address + 'customers?q=' + $("#searchCustomers").val().toLowerCase() , function(jsondata){ $("#customers li").remove(); updateCustomers(jsondata.customers);});
     }else{
       $("#customers li").remove();
@@ -235,9 +235,18 @@ function updateCustomers(jsondata){
   $("#customers").append("<li class='list-group-item'><span class='name'>" + $("#searchCustomers").val() + "</span><div class='pull-right'><a onclick='createDraft(\"" + $("#searchCustomers").val() + "\")' href='#' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nový zákazník</a></div></li>");
   $.each(jsondata,function(key, value) {
     var customerId = value["id"];
-    var li = "<li class='list-group-item'><span class='name'>" + value["name"] + "</span>";
-    li += "<div class='pull-right'>";
-    if(value["agreements"] != null){
+    var li = "<li class='list-group-item'><span class='name'>" + value["name"] + "</span><span class='address'>";
+    if(value["street"] !== null){
+     li += value["street"];  
+    }
+    if(value["city"] !== null){
+     li += ", " + value["city"];  
+    }
+    if(value["postal_code"] !== null){
+     li +=  ", " + value["postal_code"];  
+    }
+    li += "</span><div class='pull-right'>";
+    if(value["agreements"] !== null){
       for (var i=0, len = value["agreements"].length; i < len; i++) {
         li += "<a onclick='createDraft(\"" + value["name"] + "\", " + customerId +", " + value["agreements"][i] +  ")' href='#' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> " + value["agreements"][i] + "</a>";
       }
