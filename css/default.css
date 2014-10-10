@@ -10,7 +10,8 @@ body {font-size: 13px;}
 
 #customers {display: table; width: 100%; margin: 0 0 10px 0;}
 #customers li {width: 100%; float: left; clear: both; padding: 5px ;}
-#customers li span.name {float: left; font-size: 14px; font-weight: bold; float: left; display: block; margin: 5px 0;}
+#customers li span.name {min-width: 18%;}
+#customers li span {float: left; font-size: 14px; font-weight: bold; float: left; display: block; margin: 5px 0;}
 #customers li a {margin: 0 0 0 5px;}
 
 #draft_customers td > span {float: left; font-size: 14px; font-weight: bold; float: left; display: block; margin: 5px 5px 5px 0;}
