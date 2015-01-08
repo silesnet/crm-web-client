@@ -53,7 +53,7 @@ function initDraft(){
   $("#product").change(function (){
     updateParamProduct(0);
   });
-  loadUserName();  
+//  loadUserName();  
   // load products
   loadProducts();
   // load ssids
@@ -535,7 +535,7 @@ function deserializeDraftDataService(jsonData){
   if(data.contract_no != null){
     $("#contract").val(data.contract_no);
     $("#service_id").val(data.service_id);
-    $("#service_title").append(data.service_id);
+    // $("#service_title").html(data.service_id);
     $("#product").val(data.product);
     $("#downlink").val(data.downlink);
     $("#uplink").val(data.uplink);
@@ -705,10 +705,10 @@ function initCustomerAddressCopy(){
 
 function initPrintDraft(){
   $("#print_protocol").click(function (event){
-      window.open("/pages/protokol.html?" + serializeToPrint($("#draft")));
+      window.open("pages/protokol.html?" + serializeToPrint($("#draft")));
   });
   $("#print_contract").click(function (event){
-      window.open("/pages/smlouva.html?" + serializeToPrint($("#draft")));
+      window.open("pages/smlouva.html?" + serializeToPrint($("#draft")));
   });  
 }
 
@@ -913,7 +913,7 @@ function serializeAgreement(customerId, customerLink){
 }
 
 /*
-  serialize JSON service
+  serialize JSON service 
 */
 function serializeService(customerId, agreementId, customerLink, agreementLink){
 
