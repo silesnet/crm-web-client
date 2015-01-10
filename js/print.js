@@ -6,4 +6,20 @@ function initLoadDocumentData(){
         var sParameterName = sURLVariables[i].split('=');
         $("#" + sParameterName[0]).html(decodeURI(sParameterName[1]));
     }
+    initAddEmptyClass();
+    initPPPoEDisabled();
+}
+
+function initAddEmptyClass(){
+  $("p").each(function (){
+    if($(this).html().length == 0){
+      $(this).addClass("empty");
+    }
+  });
+}
+
+function initPPPoEDisabled(){
+  if($(".pppoe .empty").length > 1){
+    $(".pppoe").addClass("ds-none");
+  }
 }

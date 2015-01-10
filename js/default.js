@@ -6,6 +6,7 @@ var user_id = "";
 var operation_country = "CZ";
 var customerDraftId = 0;
 var agreementDraftId = 0;
+var tabId = 2;
 
 jQuery(document).ready(function() {
   initLoadPages();
@@ -83,6 +84,7 @@ function loadDraft(id){
       var tmpAgreementId = jsondata.drafts.links["agreements"] || jsondata.drafts.links["drafts.agreements"];
       
       $("#contract").val(tmpAgreementId);
+      $("#contractTMP").val(Number(String(tmpAgreementId).substring(1)));
       $("#service_id").val(jsondata.drafts.entityId);
       $("#customer_id").val(tmpCustomerId);
       $("#service_title").append(jsondata.drafts.entityId);
@@ -90,6 +92,7 @@ function loadDraft(id){
       if(jsondata.drafts.links["customers"] != null){
         deserializeNewDraft(loadDraftCustomer(tmpCustomerId, "customers/")); 
       }else {
+        tabId = 1;
         var tmpCustomerDraft = loadDraftCustomer(tmpCustomerId, "drafts2/customers/");
         customerDraftId = tmpCustomerDraft.drafts.id;
         $("#name").val(tmpCustomerDraft.drafts.entityName.split(' ')[0]);
@@ -251,7 +254,7 @@ function initDraftDeleteAction() {
   inicilize tabs, show last tab
 */
 function initTabs(){
-  $("#tabs li:nth-child(2) a").tab("show");
+  $("#tabs li:nth-child(" + tabId + ") a").tab("show");
 }
 
 /*
@@ -287,7 +290,7 @@ function updateCustomers(jsondata){
     li += "</span><div class='pull-right'>";
     if(value["agreements"] !== null){
       for (var i=0, len = value["agreements"].length; i < len; i++) {
-        li += "<a onclick='createDraft(\"" + value["name"] + "\", " + customerId +", " + value["agreements"][i] +  ")' href='#' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> " + value["agreements"][i] + "</a>";
+        li += "<a onclick='createDraft(\"" + value["name"] + "\", " + customerId +", " + value["agreements"][i] +  ")' href='#' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-plus'></span> " + value["agreements"][i] + "</a>";
       }
     }
     li += "<a onclick='createDraft(\"" + value["name"] + "\", " + customerId + ")' href='#' class='btn btn-sm btn-primary'><span class='glyphicon glyphicon-plus'></span> Nová smlouva</a></div></li>";
@@ -535,7 +538,6 @@ function deserializeDraftDataService(jsonData){
   if(data.contract_no != null){
     $("#contract").val(data.contract_no);
     $("#service_id").val(data.service_id);
-    // $("#service_title").html(data.service_id);
     $("#product").val(data.product);
     $("#downlink").val(data.downlink);
     $("#uplink").val(data.uplink);
@@ -681,11 +683,13 @@ function initAuthentification(){
   $("#auth_type").change(function (){
     if($(this).val() == 2){
       $("#auth_a").prop("disabled", true);
+      $("#auth_a").val($("#service_id").val());
       if($("#auth_b").val() == ''){
         $("#auth_b").val(generatePassword(8));
       }
     }else{
       $("#auth_a").prop("disabled", false);
+      $("#auth_a").val("");
       $("#auth_b").val("");
     }
   });

@@ -1,5 +1,6 @@
 body {font-size: 62.5%; background: white; margin: 0 auto; max-width: 595px;}
 
+.ds-none {display: none !important;}
 .clear {zoom:1;clear:both;}
 .clear:after,.clear:before{content:'';display:table;clear:both}
 .f_left {float: left !important;}
@@ -63,3 +64,7 @@ td span {float: left;}
 .contract {padding-left: 100px;}
 .contract h1 {float: left;}
 .contract span {clear: both;}
+
+#name {padding-right: 5px;}
+#descriptive_number:not(.empty), #orientation_number:not(.empty) {padding-left: 4px;}
+#descriptive_number:not(.empty):after {content: " /";}

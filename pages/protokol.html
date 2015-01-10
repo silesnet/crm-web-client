@@ -21,7 +21,7 @@
       </div>
       <div class="w_100 clear">
         <table cellspacing="0" cellpadding="0">
-          <tr><th>1.</th><th>Poskytovatel:</th><th>SilesNET s.r.o.</th></tr>
+          <tr><th>1.</th><th>Poskytovatel:</th><th>SilesNet s.r.o.</th></tr>
           <tr><td>&#160;</td><td>sídlo:</td><td>Český Těšín, Ostravská 584/12, PSČ 737 01</td></tr>
           <tr><td>&#160;</td><td>jednající prostřednictvím:</td><td>Ing. Gražyny Hlinšťákové, jednatelky společnosti</td></tr>
           <tr><td>&#160;</td><td>IČ:</td><td>25392280</td></tr>
@@ -31,7 +31,7 @@
           <tr><td>&#160;</td><td>technická podpora:</td><td>telefon: 558 711 585, gsm: 777 27 28 28, e-mail: podpora@silesnet.cz</td></tr>
         </table>
         <table class="borders w_100" cellspacing="0" cellpadding="0">
-          <tr><th>2.</th><th>Uživatel:</th><th class="border_top border_left f_normal w_td_all"><p id="name">&#160;</p></th><th class="border_top border_left t_right f_normal">číslo smlouvy:</th><th class="border_top border_hor f_normal white_space_left"><p id="contract">&#160;</p></th></tr>
+          <tr><th>2.</th><th>Uživatel:</th><th class="border_top border_left f_normal w_td_all"><p id="name">&#160;</p><p id="surname">&#160;</p></th><th class="border_top border_left t_right f_normal">číslo smlouvy:</th><th class="border_top border_hor f_normal white_space_left"><p id="contractTMP">&#160;</p></th></tr>
           <tr><td>&#160;</td><td>původní adresa přípojného místa:</td><td class="border_top border_hor" colspan="3">&#160;</td></tr>
           <tr><td>&#160;</td><td>nová adresa přípojného místa:</td><td class="border_ver border_left"><p id="location_street">&#160;</p><p>&#160;</p><p class="orientation_number" id="location_orientation_number">&#160;</p><p id="location_descriptive_number">&#160;</p><p>,&#160;</p><p id="location_town">&#160;</p><p>&#160;</p><p id="location_postal_code">&#160;</p></td><td class="border_ver border_left t_right">ID služby:</td><td class="border white_space_left"><p id="service_id">&#160;</p></td></tr>
         </table>
@@ -45,7 +45,9 @@
           <tr><td>&#160;</td><td class="t_right">Cena (aktivace) bez DPH:</td><td class="border_bottom border_hor t_right"><p class="f_right">&#160;Kč</p><p id="activation_fee" class="f_right">&#160;</p></td><td>&#160;</td><td>&#160;</td></tr>
         </table>
         <table class="w_100" cellspacing="0" cellpadding="0">
-          <tr><th>5.</th><td class="t_left"><p>Typ služby:&#160;</p><p id="product">&#160;</p></td><td class="t_center"><p>Rychlost (Downlink/Uplink):&#160;</p><p id="downlink">&#160;</p><p>/</p><p id="uplink">&#160;</p><p>&#160;Mb/s</p></td><td class="t_right"><p>Měsíční paušál:</p><p id="price">&#160;</p><p>Kč / měsíc bez DPH</p></td></tr>
+          <tr><th>5.</th><td><p>Typ služby:&#160;</p><p id="product">&#160;</p></td></tr>
+          <tr><td>&#160;</td><td><p>Rychlost (Downlink/Uplink):&#160;</p><p id="downlink">&#160;</p><p>/</p><p id="uplink">&#160;</p><p>&#160;Mb/s</p></td></tr>
+          <tr><td>&#160;</td><td><p>Měsíční paušál:&#160;</p><p id="price">&#160;</p><p>Kč / měsíc bez DPH</p></td></tr>
         </table>
         <table class="w_100" cellspacing="0" cellpadding="0">
           <tr><th>6.</th><td>Uživatel souhlasí s provedenou instalací zařízení, zejména s umístěním a kotvením přijímací antény do stávajících konstrukcí.</td></tr>
@@ -56,9 +58,9 @@
         <h1 class="w_100 t_center">TECHNICKÁ SPECIFIKACE PŘIPOJENÍ</h1>
         <table class="borders w_100" cellspacing="0" cellpadding="0">
           <tr><td colspan="5"><p>Typ konfigurace:&#160;</p><p id="auth_type">&#160;</p><!--input type="checkbox" id="check_01"><label for="check_01">router - nat</label><input type="checkbox" id="check_01"><label for="check_01">bridge - lan</label --></td></tr>
-          <tr><td class="border_top border_hor">PPPoE login:</td><td class="border_top border_right w_td_all"><p id="auth_a">&#160;</p></td><td>&#160;</td><td class="border_top border_hor">IP adresa(y):</td><td class="border_top border_right w_td_all"><p id="ip">&#160;</p></td></tr>
-          <tr><td class="border">PPPoE heslo:</td><td class="border_ver border_right"><p id="auth_b">&#160;</p></td><td>&#160;</td><td class="border_top border_hor">Maska:</td><td class="border_top border_right">&#160;</td></tr>
-          <tr><td colspan="3">&#160;</td><td class="border_ver border_hor">Brána:</td><td class="border_ver border_right">&#160;</td></tr>
+          <tr><td class="border_top border_hor pppoe">PPPoE login:</td><td class="border_top border_right w_td_all pppoe"><p id="auth_a">&#160;</p></td><td class="pppoe">&#160;</td><td class="border_top border_hor">IP adresa(y):</td><td class="border_top border_right w_td_all"><p id="ip">&#160;</p></td></tr>
+          <tr><td class="border pppoe">PPPoE heslo:</td><td class="border_ver border_right pppoe"><p id="auth_b">&#160;</p></td><td class="pppoe">&#160;</td><td class="border_top border_hor">Maska:</td><td class="border_top border_right">&#160;</td></tr>
+          <tr><td class="pppoe" colspan="3">&#160;</td><td class="border_ver border_hor">Brána:</td><td class="border_ver border_right">&#160;</td></tr>
           <tr><td colspan="5" class="separ">&#160;</td></tr>
         </table>
         <table class="borders w_100" cellspacing="0" cellpadding="0">
