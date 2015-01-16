@@ -1,10 +1,9 @@
 function initLoadDocumentData(){
-    var sPageURL = window.location.search.substring(1);
-    var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++)
-    {
-        var sParameterName = sURLVariables[i].split('=');
-        $("#" + sParameterName[0]).html(decodeURI(sParameterName[1]));
+    for (var key in localStorage){
+      if(key.indexOf("_" + getURLParameter("draft_id")) > -1 ){
+        tmpKey = key.replace("_" + getURLParameter("draft_id"),"");
+        $("#" + tmpKey).html(localStorage.getItem(key));
+      }
     }
     initAddEmptyClass();
     initPPPoEDisabled();
