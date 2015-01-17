@@ -647,7 +647,7 @@ function loadUserName() {
     if (data.users != null && data.users.user != null) {
       user_id = data.users.user;
       operation_country = data.users.operation_country;
-      $("#user_name").html("<span class='glyphicon glyphicon-user'></span>&#160;" + data.users.name);
+      $("#user_name").html("<span class='glyphicon glyphicon-user'></span>&#160;" + data.users.name + "|" + operation_country);
     }
   });
 }
