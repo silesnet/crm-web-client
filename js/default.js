@@ -709,30 +709,31 @@ function initCustomerAddressCopy(){
 
 function initPrintDraft(){
   $("#print_protocol").click(function (event){
-      window.open("pages/protokol.html?" + serializeToPrint($("#draft")));
+      window.open("pages/protokol.html?" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
   });
   $("#print_contract").click(function (event){
-      window.open("pages/smlouva.html?" + serializeToPrint($("#draft")));
+      window.open("pages/smlouva.html?" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
   });  
 }
 
-function serializeToPrint(form){
-   var params = ""
+function serializeToPrint(form, draftId){
+
+   var params = "draft_id=" + draftId;
    
    $(form).find("input[type=text], input[type=number], input[type=hidden], input[type=email]").each(function(){
-      params +=  $(this).attr("name") + "=" + $(this).val() + "&";
+      localStorage.setItem($(this).attr("name") + "_" + draftId, $(this).val());
    });
    $(form).find("select").each(function(){
-      params +=  $(this).attr("name") + "=" + $(this).find("option:selected").text()  + "&";
+      localStorage.setItem($(this).attr("name") + "_" + draftId, $(this).find("option:selected").text());
    });
    $(form).find("input[type=checkbox]").each(function(){
       if($(this).is(":checked")){
-        params +=  $(this).attr("name") + "=X&";
+        localStorage.setItem($(this).attr("name") + "_" + draftId, "X");
       }
    });
    $(form).find("input[type=radio]").each(function(){
       if($(this).is(":checked") && $(this).attr("id")){
-        params +=  $(this).attr("id") + "=X&";
+        localStorage.setItem($(this).attr("id") + "_" + draftId, "X");
       }
    });
    return params;
