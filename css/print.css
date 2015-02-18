@@ -1,4 +1,4 @@
-body {font-size: 62.5%; background: white; margin: 0 auto; max-width: 595px;}
+body {font-family: "Times New Roman", Times, serif; font-size: 62.5%; background: white; margin: 0 auto; max-width: 595px;}
 
 .ds-none {display: none !important;}
 .clear {zoom:1;clear:both;}
