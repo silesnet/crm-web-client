@@ -13,6 +13,7 @@ body {font-family: "Times New Roman", Times, serif; font-size: 62.5%; background
 .w_td_all {width: 10000px !important;}
 .w_td_200 {width: 200px;}
 .a_justify {text-align: justify;}
+.page-break {page-break-before: always;}
 
 input {float: left;}
 .t_center input {float: none;}
