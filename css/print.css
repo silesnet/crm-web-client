@@ -16,6 +16,7 @@ body {font-family: "Times New Roman", Times, serif; font-size: 62.5%; background
 .page-break {page-break-before: always;}
 .w_logo {width: 120px;}
 .pad_above {padding-top: 1.3em;}
+.w_col1 {width: 28% !important;}
 
 input {float: left;}
 .t_center input {float: none;}
