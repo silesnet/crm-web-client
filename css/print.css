@@ -56,13 +56,13 @@ p.white_space {width: 150px; border-bottom: 1px dotted black ; float: left;}
 td.white_space {border-bottom: 1px dotted black ;}
 td span {float: left;}
 
-.border_top {border-top: 1px solid black;}
-.border_ver {border-top: 1px solid black; border-bottom: 1px solid black;}
-.border_hor {border-left: 1px solid black; border-right: 1px solid black;}
-.border_bottom {border-bottom: 1px solid black;}
-.border_left {border-left: 1px solid black;}
-.border_right {border-right: 1px solid black;}
-.border {border: 1px solid black;}
+.border_top {border-top: 0.3pt solid black;}
+.border_ver {border-top: 0.3pt solid black; border-bottom: 0.3pt solid black;}
+.border_hor {border-left: 0.3pt solid black; border-right: 0.3pt solid black;}
+.border_bottom {border-bottom: 0.3pt solid black;}
+.border_left {border-left: 0.3pt solid black;}
+.border_right {border-right: 0.3pt solid black;}
+.border {border: 0.3pt solid black;}
 
 .contract {padding-left: 100px;}
 .contract h1 {float: left;}
