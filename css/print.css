@@ -12,6 +12,7 @@ body {font-family: "Times New Roman", Times, serif; font-size: 62.5%; background
 .f_normal {font-weight: normal;}
 .w_td_all {width: 10000px !important;}
 .w_td_200 {width: 200px;}
+.a_justify {text-align: justify;}
 
 input {float: left;}
 .t_center input {float: none;}
