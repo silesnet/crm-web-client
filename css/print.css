@@ -9,6 +9,8 @@ body {font-family: "Times New Roman", Times, serif; font-size: 62.5%; background
 .t_right {text-align: right !important;}
 .t_center {text-align: center !important;}
 .w_100 {width: 100% !important;}
+.w_10 {width: 10% !important;}
+.min_w_70 {min-width: 70px;}
 .f_normal {font-weight: normal;}
 .w_td_all {width: 10000px !important;}
 .w_td_200 {width: 200px;}
@@ -70,6 +72,29 @@ td span {float: left;}
 .contract h1 {float: left;}
 .contract span {clear: both;}
 
+.header {padding-left: 75px;}
+.header p {margin: 0; font-size: 1.4em; font-weight: bold;}
+
+.bold {font-weight: bold;}
+.break:before {content: " "; width: 2em; height: 1.2em; float: left;}
+
+.nowrap {white-space: nowrap;}
+
 #name {padding-right: 5px;}
-#descriptive_number:not(.empty), #orientation_number:not(.empty) {padding-left: 4px;}
+.cz #descriptive_number:not(.empty), #orientation_number:not(.empty) {padding-left: 4px;}
 #descriptive_number:not(.empty):after {content: " /";}
+.pl #location_descriptive_number:not(.empty):after {content: " /";}
+.pl #location_descriptive_number:not(.empty) {padding-left: 4px;}
+
+input[type="checkbox"] {position: absolute; top:-9999px;}
+input[type="checkbox"] + label:before {
+    content: "";
+    width: 10px;
+    height: 14px;
+    border: 0.3pt solid black;
+    padding: 1px 3px ;
+    float: left;
+}
+input[type="checkbox"]:checked + label:before {
+  content: "X";
+}
