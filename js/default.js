@@ -709,11 +709,18 @@ function initCustomerAddressCopy(){
 }
 
 function initPrintDraft(){
+  var lng = "cz";
   $("#print_protocol").click(function (event){
-      window.open("pages/protokol.html?" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
+      if($("#service_id").val().substr(0,1) == 2){
+        lng = "pl"
+      }
+      window.open("pages/protokol-" + lng + ".html?" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
   });
   $("#print_contract").click(function (event){
-      window.open("pages/smlouva.html?" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
+      if($("#service_id").val().substr(0,1) == 2){
+        lng = "pl"
+      }
+      window.open("pages/smlouva-" + lng + ".html?" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
   });  
 }
 
