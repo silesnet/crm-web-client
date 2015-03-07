@@ -26,6 +26,7 @@ label {float: left; font-size: 1.2em; }
 td label {font-size: 1em;}
 
 h1 {margin: 0; font-size: 1.3em;}
+h2 {margin: 0; font-size: 1em;}
 
 table {display: block; margin-bottom: 5px; font-size: 1.2em;}
 
@@ -98,3 +99,6 @@ input[type="checkbox"] + label:before {
 input[type="checkbox"]:checked + label:before {
   content: "X";
 }
+
+.protocol_type {width: 33.33%; text-align: left;}
+.protocol_type:before {content: ""; width: 14px; height: 14px; border: 0.3pt solid black ; float: left; margin: 0 10px 0 50px;}
