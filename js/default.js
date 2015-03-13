@@ -187,38 +187,58 @@ function initDraftSaveAction() {
   
 */
 function saveDraft(idCustomer, idAgreement, idService, message, status){
-   if(idCustomer > 0) { 
-     $.ajax({
-      type: "PUT",
-      url: address + "drafts2/" + idCustomer,
-      dataType: "json",
-      contentType:"application/json",
-      data: serializeDraftDataCustomer(status)
-      });
+   if (status != "IMPORTED") {
+     if(idCustomer > 0) { 
+       $.ajax({
+        type: "PUT",
+        url: address + "drafts2/" + idCustomer,
+        dataType: "json",
+        contentType:"application/json",
+        data: serializeDraftDataCustomer(status)
+        });
+     }
+     if(idAgreement > 0) {
+      $.ajax({
+        type: "PUT",
+        url: address + "drafts2/" + idAgreement,
+        dataType: "json",
+        contentType:"application/json",
+        data: serializeDraftDataAgreement(status)
+        });
+     }
+     if(idService > 0) { 
+       $.ajax({
+        type: "PUT",
+        url: address + "drafts2/" + idService,
+        dataType: "json",
+        contentType:"application/json",
+        data: serializeDraftDataService(status),
+        success: function() {
+            localStorage.setItem("infoClass", "success");
+            localStorage.setItem("infoData", message);
+            location.href = "index.html";
+          }
+        });
+     }
+   } else {
+      // import service draft
+      if (idService > 0) {
+        $.ajax({
+          type: "POST",
+          url: address + "drafts2/" + idService,
+          dataType: "json",
+          contentType:"application/json",
+          success: function() {
+            localStorage.setItem("infoClass", "success");
+            localStorage.setItem("infoData", message);
+            location.href = "index.html";
+          },
+          error: function(err) {
+            console.log('IMPORT ERROR: ' + err);
+          }
+        });
+      }
    }
-   if(idAgreement > 0) {
-    $.ajax({
-      type: "PUT",
-      url: address + "drafts2/" + idAgreement,
-      dataType: "json",
-      contentType:"application/json",
-      data: serializeDraftDataAgreement(status)
-      });
-   }
-   if(idService > 0) { 
-     $.ajax({
-      type: "PUT",
-      url: address + "drafts2/" + idService,
-      dataType: "json",
-      contentType:"application/json",
-      data: serializeDraftDataService(status),
-      success: function() {
-          localStorage.setItem("infoClass", "success");
-          localStorage.setItem("infoData", message);
-          location.href = "index.html";
-        }
-      });
-   }     
 }
 
 /*
@@ -754,9 +774,11 @@ function updateStatusButton(){
     $("#draft input[name=status]").attr('msg', 'akceptován');
     $("#draft input[name=statusBack]").removeClass("ds-none");
   } else if($("#service_status").val() == "APPROVED"){
+    $("#draft input[name=delete]").attr('disabled', 'disabled');
     $("#draft input[name=status]").val('Importovat');
     $("#draft input[name=status]").attr('rel', 'IMPORTED');
-    $("#draft input[name=status]").attr('msg', 'importován');    
+    $("#draft input[name=status]").attr('msg', 'importován');
+    $("#draft input[name=save]").attr('disabled', 'disabled');
   }
 }
 
