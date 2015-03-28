@@ -16,28 +16,26 @@ jQuery(document).ready(function() {
   load pages and include to index.html
 */
 function initLoadPages(){
-  // load user name
-  loadUserName();
-  
-  if(getURLParameter("action") != null){
-    // import pages
-    $( "#content" ).load("pages/" + getURLParameter("action") + ".html #data", function(){
-      if(getURLParameter("action") == 'draft'){
-        inicialize();
-        initCustomerType();
-        initDraft();
-        initSelectSsid();
-        initAuthentification();
-        initCustomerAddressCopy();
-        initTabs();
-      }
-    });
-  }else {
-    // inicialize index.html
-    inicialize();
-    loadDrafts();
-    searchCustomers();
-  }
+  loadUserName().done(function() {
+    if(getURLParameter("action") != null){
+      $( "#content" ).load("pages/" + getURLParameter("action") + ".html #data", function(){
+        if(getURLParameter("action") == 'draft'){
+          inicialize();
+          initCustomerType();
+          initDraft();
+          initSelectSsid();
+          initAuthentification();
+          initCustomerAddressCopy();
+          initTabs();
+        }
+      });
+    } else {
+      // inicialize index.html
+      inicialize();
+      loadDrafts();
+      searchCustomers();
+    }
+  });
 }
 /*
   global function inicialize
@@ -116,7 +114,7 @@ function loadDraft(id){
   });
 }
 
-function loadProducts(){
+function loadProducts() {
    $.ajax({
     type: "GET",
     url: address + "products",
@@ -324,26 +322,22 @@ function updateCustomers(jsondata){
 function loadDrafts(){
   getProductName();
   getOperatorName();
-  currentUser().done(function(userData) {
-    if(userData.users != null && userData.users.user != null) {
-      var user = userData.users.user;
-      $.getJSON(address + 'drafts2?entityType=services&owner=' + user , function(data) {
-        $.each(data.drafts, function(key, value){
-          var tmpName = ""
-          var tmpProduct = "";
-          if(value.links["drafts.customers"] != null){
-            tmpName = loadDraftCustomer(value.links["drafts.customers"], "drafts2/customers/").drafts.entityName;
-          }else {
-            tmpName = loadDraftCustomer(value.links["customers"], "customers/").customer.name;
-          }
-          if(value.data.length > 2){
-            tmpProduct = getProductName($.parseJSON(value.data).product);
-          }
-          var tr = "<tr><td><span class='service'>" + value.entityId + "</span><span class='name'>" + tmpName + "</span><span class='product'>" + tmpProduct + "</span><span class='status'>" + value.status + "</span><span class='operator'>" + value.owner + "</span><div class='pull-right'><a href='index.html?action=draft&draft_id=" + value.id + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> Editovat</a></div></td></tr>"
-          $("#draft_customers").append(tr);
-        });
-      });
-    }
+  var user = user_id;
+  $.getJSON(address + 'drafts2?entityType=services&owner=' + user , function(data) {
+    $.each(data.drafts, function(key, value){
+      var tmpName = ""
+      var tmpProduct = "";
+      if(value.links["drafts.customers"] != null){
+        tmpName = loadDraftCustomer(value.links["drafts.customers"], "drafts2/customers/").drafts.entityName;
+      }else {
+        tmpName = loadDraftCustomer(value.links["customers"], "customers/").customer.name;
+      }
+      if(value.data.length > 2){
+        tmpProduct = getProductName($.parseJSON(value.data).product);
+      }
+      var tr = "<tr><td><span class='service'>" + value.entityId + "</span><span class='name'>" + tmpName + "</span><span class='product'>" + tmpProduct + "</span><span class='status'>" + value.status + "</span><span class='operator'>" + value.owner + "</span><div class='pull-right'><a href='index.html?action=draft&draft_id=" + value.id + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> Editovat</a></div></td></tr>"
+      $("#draft_customers").append(tr);
+    });
   });
 }
 
@@ -664,7 +658,7 @@ function updateParamProduct(mode){
   load user name
 */
 function loadUserName() {
-  currentUser().done(function(data) {
+  return currentUser().done(function(data) {
     if (data.users != null && data.users.user != null) {
       user_id = data.users.user;
       operation_country = data.users.operation_country;
