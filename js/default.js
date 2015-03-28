@@ -122,6 +122,7 @@ function loadProducts() {
       $.each(data.products,function(key, value) {
         $("#product").append("<option value='" + value.id + "' rel='" + value.is_dedicated + "' dl='" + value.downlink + "' ul='" + value.uplink + "' prc='" + value.price + "' chl='" + value.channel + "'>" + value.name + "</option>");
       });
+      updateParamProduct(0);
     }
   });  
 }
