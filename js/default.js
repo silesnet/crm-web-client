@@ -157,7 +157,7 @@ function loadUsers(){
     url: address + "users",
     success: function(data) {
           $.each(data.users,function(key, value) {
-            $("#operator").append("<option value='" + value.id + "' login='" + value.login + "'>" + value.name + "</option>");
+            $("#operator").append("<option value='" + value.id + "' login='" + value.login + "'>" + value.fullName + "</option>");
           });
           // set logged operator
           var selectedOperator = $("#operator option[login='" + user_id + "']").val();
