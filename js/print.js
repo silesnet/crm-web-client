@@ -11,6 +11,7 @@ function initLoadDocumentData(){
     }
     initAddEmptyClass();
     initPPPoEDisabled();
+    disablePlPppoe();
 }
 
 function initAddEmptyClass(){
@@ -21,8 +22,15 @@ function initAddEmptyClass(){
   });
 }
 
-function initPPPoEDisabled(){
-  if($(".cz .pppoe .empty").length > 1){
+function initPPPoEDisabled() {
+  if($(".cz .pppoe .empty").length > 1) {
     $(".cz .pppoe").addClass("ds-none");
+  }
+}
+
+function disablePlPppoe() {
+  if ($('table#pppoe_table p#auth_a').text().length === 0) {
+    $('#pppoe_table').addClass('ds-none');
+    $('#tech_spec_header').addClass('ds-none');
   }
 }
