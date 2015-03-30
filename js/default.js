@@ -61,6 +61,8 @@ function initDraft(){
   loadRouters();
   // load users
   loadUsers();
+
+  initFormDefaults(operation_country); // has to be called before loadDraft()
   // load draft
   loadDraft(getURLParameter("draft_id"));
   
@@ -69,6 +71,14 @@ function initDraft(){
   initDraftAddDeviceAction();
   initDraftDeleteAction();
   initPrintDraft();
+}
+
+function initFormDefaults(operation_country) {
+  if (operation_country === 'PL') {
+    $('#service_currency').text('PLN');
+    $('#services #location_country.form-control').val(20);
+    $('#customer select#country.form-control').val(20);
+  }
 }
 
 function loadDraft(id){
