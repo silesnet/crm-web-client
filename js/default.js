@@ -125,12 +125,17 @@ function loadDraft(id){
 }
 
 function loadProducts() {
+   var productName;
    $.ajax({
     type: "GET",
     url: address + "products?country=" + operation_country,
     success: function(data) {
       $.each(data.products,function(key, value) {
-        $("#product").append("<option value='" + value.id + "' rel='" + value.is_dedicated + "' dl='" + value.downlink + "' ul='" + value.uplink + "' prc='" + value.price + "' chl='" + value.channel + "'>" + value.name + "</option>");
+        productName = value.name;
+        if (!value.is_dedicated) {
+          productName = productName + " " + value.downlink + "/" + value.uplink + " Mbps";
+        }
+        $("#product").append("<option value='" + value.id + "' rel='" + value.is_dedicated + "' dl='" + value.downlink + "' ul='" + value.uplink + "' prc='" + value.price + "' chl='" + value.channel+ "' service='" + value.name + "'>" + productName + "</option>");
       });
       updateParamProduct(0);
     }
@@ -455,7 +460,7 @@ function serializeDraftDataService(status){
     contract_no:$("#contract").val(),
     service_id:$("#service_id").val(),
     product:$("#product").val(),
-    product_name:$("#product :selected").text(),
+    product_name:$("#product :selected").attr('service'),
     downlink:$("#downlink").val(),
     uplink:$("#uplink").val(),
     price:$("#price").val(),
