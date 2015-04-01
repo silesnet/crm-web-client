@@ -1,3 +1,4 @@
+var homeUrl = 'http://localhost';
 var address = "http://localhost:8080/";
 var defaultSessionId = 'test';
 var products;
@@ -35,6 +36,9 @@ function initLoadPages(){
       loadDrafts();
       searchCustomers();
     }
+  })
+  .fail(function() {
+    $(location).attr("href", homeUrl);
   });
 }
 /*
