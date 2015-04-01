@@ -17,6 +17,7 @@ jQuery(document).ready(function() {
   load pages and include to index.html
 */
 function initLoadPages(){
+  $('a#sis_home').attr('href', homeUrl);
   loadUserName().done(function() {
     if(getURLParameter("action") != null){
       $( "#content" ).load("pages/" + getURLParameter("action") + ".html #data", function(){
