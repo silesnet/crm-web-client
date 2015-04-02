@@ -1,17 +1,27 @@
 function initLoadDocumentData(){
-    for (var key in localStorage){
-      if(key.indexOf("_" + getURLParameter("draft_id")) > -1 ){
-        tmpKey = key.replace("_" + getURLParameter("draft_id"),"");
-        if($("." + tmpKey).is(":checkbox")){
-          $("#" + tmpKey + "_" + localStorage.getItem(key)).prop("checked", true);
-        }else{
-          $("#" + tmpKey).html(localStorage.getItem(key));
-        }  
-      }
+  var draftId = getURLParameter("draft_id");
+  for (var key in localStorage){
+    if(key.indexOf("_" + draftId) > -1 ){
+      tmpKey = key.replace("_" + draftId, "");
+      if($("." + tmpKey).is(":checkbox")){
+        $("#" + tmpKey + "_" + localStorage.getItem(key)).prop("checked", true);
+      }else{
+        $("#" + tmpKey).html(localStorage.getItem(key));
+      }  
     }
-    initAddEmptyClass();
-    initPPPoEDisabled();
-    disablePlPppoe();
+  }
+  // when no town is provided leave some fields blank so it can be added by hand
+  if (localStorage.getItem('town_' + draftId) === '') {
+    $('p#town').parent().html('');
+    $('p#descriptive_number').parent().html('');
+  }
+  // when no location town is provided leave some fields blank so it can be added by hand
+  if (localStorage.getItem('location_town_' + draftId) === '') {
+    $('p#location_town').parent().html('');
+  }
+  initAddEmptyClass();
+  initPPPoEDisabled();
+  disablePlPppoe();
 }
 
 function initAddEmptyClass(){
