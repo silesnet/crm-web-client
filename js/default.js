@@ -19,6 +19,7 @@ jQuery(document).ready(function() {
 function initLoadPages(){
   $('a#sis_home').attr('href', homeUrl);
   loadUserName().done(function() {
+    console.log('user loaded: ' + user_id);
     if(getURLParameter("action") != null){
       $( "#content" ).load("pages/" + getURLParameter("action") + ".html #data", function(){
         if(getURLParameter("action") == 'draft'){
@@ -39,6 +40,7 @@ function initLoadPages(){
     }
   })
   .fail(function() {
+    console.log('failed to load user');
     $(location).attr("href", homeUrl);
   });
 }
