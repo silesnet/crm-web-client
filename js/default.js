@@ -193,13 +193,13 @@ function loadUsers(){
 */
 function initDraftSaveAction() {
   $("#draft input[name=save]").click(function (event){
-    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Zákazník byl uložen v pořádku!", $("#service_status").val());
+    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Návrh služby byl uložen!", $("#service_status").val());
   });
   $("#draft input[name=status]").click(function (event){
-    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Zákazník byl " + $(this).attr('msg') + " v pořádku!", $(this).attr('rel'));
+    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Návrh služby byl " + $(this).attr('msg') + "!", $(this).attr('rel'));
   });
   $("#draft input[name=statusBack]").click(function (event){
-    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Zákazník byl zamítnut v pořádku!", $(this).attr('rel'));
+    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Návrh služby byl zamítnut!", $(this).attr('rel'));
   });
 }
 
@@ -284,7 +284,7 @@ function initDraftDeleteAction() {
       url: address + "drafts2/" + getURLParameter("draft_id"),
       success: function() {
         localStorage.setItem("infoClass", "success");
-        localStorage.setItem("infoData", "Zákazník byl smazán v pořádku!");
+        localStorage.setItem("infoData", "Návrh služby byl smazán!");
         location.href = "index.html"
       }
     });
