@@ -304,7 +304,7 @@ function initTabs(){
 function searchCustomers(){
   $("#searchCustomers").keyup(function (event){
     if($("#searchCustomers").val().length > 2){
-      $.getJSON(address + 'customers?q=' + $("#searchCustomers").val().toLowerCase() , function(jsondata){ $("#customers li").remove(); updateCustomers(jsondata.customers);});
+      $.getJSON(address + 'customers?q=' + $("#searchCustomers").val().toLowerCase() + '&country=' + operation_country, function(jsondata){ $("#customers li").remove(); updateCustomers(jsondata.customers);});
     }else{
       $("#customers li").remove();
     }
