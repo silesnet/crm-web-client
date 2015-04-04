@@ -110,8 +110,8 @@ function loadDraft(id){
         tabId = 1;
         var tmpCustomerDraft = loadDraftCustomer(tmpCustomerId, "drafts2/customers/");
         customerDraftId = tmpCustomerDraft.drafts.id;
-        $("#name").val(tmpCustomerDraft.drafts.entityName.split(' ')[0]);
-        $("#surname").val(tmpCustomerDraft.drafts.entityName.split(' ')[1]);
+        $("#surname").val(tmpCustomerDraft.drafts.entityName.split(' ')[0]);
+        $("#name").val(tmpCustomerDraft.drafts.entityName.split(' ')[1]);
         deserializeDraftDataCustomer(tmpCustomerDraft.drafts);
       }
       if(jsondata.drafts.links["agreements"] != null){
@@ -515,13 +515,21 @@ function serializeDraftDataAgreement(status){
   return JSON.stringify(jsonData);
 }
 
+function customerNameFromForm() {
+  if ($('input#customer_type_1').is(":checked")) { // residential
+    return $('#surname').val() + ' ' + $('#name').val();
+  } else { // business
+    return $('#supplementary_name').val();
+  }
+}
+
 /*
   serialize JSON draft data for customer
 */
 function serializeDraftDataCustomer(status){
   var jsonData = {};
   jsonData.drafts = {
-    entityName: $("#name").val() + " " + $("#surname").val(),
+    entityName: customerNameFromForm(),
     status:status
   };
   jsonData.drafts.data = {
@@ -629,7 +637,7 @@ function setEditableDraft(){
   set title draft (Cusomer name, address, city)
 */
 function setTitleDraft(){
-  $("#customer_title").text($("#name").val() + " " + $("#surname").val() + ", " + $("#street").val() + ", " + $("#town").val());
+  $("#customer_title").text(customerNameFromForm() + ", " + $("#street").val() + ", " + $("#town").val());
 }
 
 /*
@@ -692,16 +700,29 @@ function loadUserName() {
 
 function initCustomerType(){
   $(".customer-type input").change(function() {
-    if($(this).val() == 1){
+    if($(this).val() == 1) {
+      $('#surname').val($('#supplementary_name').val().split(' ')[0]);
+      $('#name').val($('#supplementary_name').val().split(' ')[1]);
+      $('#supplementary_name').val('');
+      $('#representative').val('');
+      $('#surname').prop('disabled', false);
+      $('#name').prop('disabled', false);
       $("#supplementary_name").prop("disabled", true);
       $("#public_id").prop("placeholder", "Číslo OP / Rod. číslo / Datum narození");
       $("#dic").prop("disabled", true);
       $("#representative").prop("disabled", true);
-    }else{
+      setTitleDraft();
+    } else {
+      $('#supplementary_name').val($('#surname').val() + ' ' + $('#name').val());
+      $('#surname').val('');
+      $('#name').val('');
+      $('#surname').prop('disabled', true);
+      $('#name').prop('disabled', true);
       $("#supplementary_name").prop("disabled", false);
       $("#dic").prop("disabled", false);
       $("#public_id").prop("placeholder", "IČO");
       $("#representative").prop("disabled", false);
+      setTitleDraft();
     }
   });
 }
@@ -779,6 +800,8 @@ function serializeToPrint(form, draftId){
    $(form).find("input[type=radio]").each(function(){
       if($(this).is(":checked") && $(this).attr("id")){
         localStorage.setItem($(this).attr("id") + "_" + draftId, "X");
+      } else {
+        localStorage.setItem($(this).attr("id") + "_" + draftId, "");
       }
    });
    return params;
