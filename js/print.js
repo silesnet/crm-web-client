@@ -19,6 +19,14 @@ function initLoadDocumentData(){
   if (localStorage.getItem('location_town_' + draftId) === '') {
     $('p#location_town').parent().html('');
   }
+  // compute name
+  if (localStorage.getItem('customer_type_1_' + draftId) === 'X') { // residential customer
+    console.log('residential customer');
+    $('p#name').html(localStorage.getItem('surname_' + draftId) + ' ' + localStorage.getItem('name_' + draftId));
+  } else { // business customer
+    console.log('business customer');
+    $('p#name').html(localStorage.getItem('supplementary_name_' + draftId));
+  }
   initAddEmptyClass();
   initPPPoEDisabled();
   disablePlPppoe();
