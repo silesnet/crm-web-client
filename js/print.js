@@ -1,5 +1,6 @@
 function initLoadDocumentData(){
   var draftId = getURLParameter("draft_id");
+  var isPolishPrintout = $('#regon').length === 1;
   for (var key in localStorage){
     if(key.indexOf("_" + draftId) > -1 ){
       tmpKey = key.replace("_" + draftId, "");
@@ -21,11 +22,15 @@ function initLoadDocumentData(){
   }
   // compute name
   if (localStorage.getItem('customer_type_1_' + draftId) === 'X') { // residential customer
-    console.log('residential customer');
     $('p#name').html(localStorage.getItem('surname_' + draftId) + ' ' + localStorage.getItem('name_' + draftId));
+    if (isPolishPrintout) {
+      $('p#pesel').html(localStorage.getItem('public_id_' + draftId));
+    }
   } else { // business customer
-    console.log('business customer');
     $('p#name').html(localStorage.getItem('supplementary_name_' + draftId));
+    if (isPolishPrintout) {
+      $('p#regon').html(localStorage.getItem('public_id_' + draftId));
+    }
   }
   initAddEmptyClass();
   initPPPoEDisabled();
