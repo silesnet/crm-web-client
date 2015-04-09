@@ -59,20 +59,13 @@ function initDraft(){
   $("#product").change(function (){
     updateParamProduct(0);
   });
-//  loadUserName();  
-  // load products
-  loadProducts();
-  // load ssids
   loadNetworks();
-  // load routers
   loadRouters();
-  // load users
   loadUsers();
-
   initFormDefaults(operation_country); // has to be called before loadDraft()
-  // load draft
-  loadDraft(getURLParameter("draft_id"));
-  
+  loadProducts().done(function() {
+    loadDraft(getURLParameter("draft_id"));
+  });
   // inicialize click action button
   initDraftSaveAction();
   initDraftAddDeviceAction();
@@ -133,7 +126,7 @@ function loadDraft(id){
 
 function loadProducts() {
    var productName;
-   $.ajax({
+   return $.ajax({
     type: "GET",
     url: address + "products?country=" + operation_country,
     success: function(data) {
@@ -669,7 +662,7 @@ function updateParamProduct(mode){
   }else{
     $("#downlink, #uplink, #price").prop("readonly", false);
   }
-  if(mode == 0){
+  if(mode == 0 && $("#product option:selected").attr("rel") == "false") {
     $("#downlink").val($("#product option:selected").attr("dl"));
     $("#uplink").val($("#product option:selected").attr("ul"));
     $("#price").val($("#product option:selected").attr("prc"));
