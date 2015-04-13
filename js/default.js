@@ -59,11 +59,14 @@ function initDraft(){
   $("#product").change(function (){
     updateParamProduct(0);
   });
-  loadNetworks();
-  loadRouters();
-  loadUsers();
-  initFormDefaults(operation_country); // has to be called before loadDraft()
-  loadProducts().done(function() {
+  $.when(
+    loadNetworks(),
+    loadRouters(),
+    loadUsers(),
+    loadProducts()
+  ).then(function() {
+    console.log('prerequisites loaded...');
+    initFormDefaults(operation_country); // has to be called before loadDraft()
     loadDraft(getURLParameter("draft_id"));
   });
   // inicialize click action button
@@ -87,7 +90,8 @@ function loadDraft(id){
     async:false,
     url: address + "drafts2/" + id,
     success: function(jsondata) {
-      
+      console.log('got draft');
+     
       var tmpCustomerId = jsondata.drafts.links["customers"] || jsondata.drafts.links["drafts.customers"];
       var tmpAgreementId = jsondata.drafts.links["agreements"] || jsondata.drafts.links["drafts.agreements"];
       
@@ -130,6 +134,7 @@ function loadProducts() {
     type: "GET",
     url: address + "products?country=" + operation_country,
     success: function(data) {
+      console.log('got products');
       $.each(data.products,function(key, value) {
         productName = value.name;
         if (!value.is_dedicated) {
@@ -143,10 +148,11 @@ function loadProducts() {
 }
 
 function loadNetworks(){
-   $.ajax({
+   return $.ajax({
     type: "GET",
     url: address + "networks/ssids",
     success: function(data) {
+      console.log('got networks');
       $.each(data.ssids,function(key, value) {
         $("#ssid").append("<option value='" + value.id + "' master='" + value.master + "'>" + value.ssid + " (" + value.master + ")</option>");
       });
@@ -155,10 +161,11 @@ function loadNetworks(){
 }
 
 function loadRouters(){
-   $.ajax({
+   return $.ajax({
     type: "GET",
     url: address + "networks/routers",
     success: function(data) {
+        console.log('got routers');
         $.each(data.core_routers,function(key, value) {
           $("#core_router").append("<option value='" + value.id + "' name='" + value.name + "'>" + value.name + "</option>");
         });
@@ -167,10 +174,11 @@ function loadRouters(){
 }
 
 function loadUsers(){
-   $.ajax({
+   return $.ajax({
     type: "GET",
     url: address + "users",
     success: function(data) {
+          console.log('got users');
           $.each(data.users,function(key, value) {
             $("#operator").append("<option value='" + value.id + "' login='" + value.login + "'>" + value.fullName + "</option>");
           });
