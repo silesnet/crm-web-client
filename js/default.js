@@ -68,12 +68,12 @@ function initDraft(){
     console.log('prerequisites loaded...');
     initFormDefaults(operation_country); // has to be called before loadDraft()
     loadDraft(getURLParameter("draft_id"));
+    // inicialize click action button
+    initDraftSaveAction();
+    initDraftAddDeviceAction();
+    initDraftDeleteAction();
+    initPrintDraft();
   });
-  // inicialize click action button
-  initDraftSaveAction();
-  initDraftAddDeviceAction();
-  initDraftDeleteAction();
-  initPrintDraft();
 }
 
 function initFormDefaults(operation_country) {
@@ -684,6 +684,9 @@ function updateParamProduct(mode){
     $("#mac_address").prop("disabled", true);
     $("#core_router").prop("disabled", false);
   }
+  if($("#service_status").val() == "APPROVED") {
+    $('#core_router').attr('disabled', 'disabled');
+  }
 }
 
 /*
@@ -820,6 +823,8 @@ function updateStatusButton(){
     $("#draft input[name=status]").attr('rel', 'IMPORTED');
     $("#draft input[name=status]").attr('msg', 'importován');
     $("#draft input[name=save]").attr('disabled', 'disabled');
+    $('#draft input, #draft textarea, #draft select, #draft a.btn').attr('disabled', 'disabled');
+    $("#draft input[name=status]").attr('disabled', false);
   }
 }
 
