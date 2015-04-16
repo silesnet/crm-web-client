@@ -1016,9 +1016,26 @@ function serializeService(customerId, agreementId, customerLink, agreementLink){
 }
 
 function deserializeNewDraft(data){
-  $("#name").val(data.customer.name.split(' ')[0]);
-  $("#surname").val(data.customer.name.split(' ')[1]);
-  $("#supplementary_name").val(data.customer.supplementary_name);
+  var words, fullName;
+  if (data.customer.dic) { // business customer
+    $("input#customer_type_1").prop('checked', false);
+    $("input#customer_type_2").prop('checked', true);
+    $("#name").val('');
+    $("#surname").val('');
+    $("#supplementary_name").val(data.customer.name);
+    $("#representative").val(data.customer.supplementary_name);
+
+  } else { // residential customer
+    words = data.customer.name.split(' ');
+    fullName = words.splice(0, 1);
+    fullName.push(words.join(' '));
+    $("input#customer_type_1").prop('checked', true);
+    $("input#customer_type_2").prop('checked', false);
+    $("#name").val(fullName[1]);
+    $("#surname").val(fullName[0]);
+    $("#supplementary_name").val('');
+    $("#representative").val('');
+  }
   $("#public_id").val(data.customer.public_id);
   $("#dic").val(data.customer.dic);
   $("#email").val(data.customer.email);
