@@ -628,7 +628,7 @@ function deserializeDraftDataService(jsonData){
   set editable field customer on draft
 */
 function setEditableDraft(){
-  if($("#customer_status").val() == "ACTIVE"){
+  if($("#customer_status").val() !== "DRAFT"){
     $("#customer input, #customer textarea, #customer select").attr('disabled', true);
     $("#customer .customer-type").addClass("ds-none");
   }
