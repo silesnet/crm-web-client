@@ -1,5 +1,6 @@
 var homeUrl = 'http://localhost';
-var address = "http://localhost:8080/";
+var address = "http://localhost:8090/";
+var sisBaseUrl = 'https://localhost:8443/sis'
 var defaultSessionId = 'test';
 var products;
 var users;
@@ -253,7 +254,7 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
           success: function() {
             localStorage.setItem("infoClass", "success");
             localStorage.setItem("infoData", message);
-            location.href = "index.html";
+            location.href = sisBaseUrl + '/customer/view.html?action=showDetail&_navPushUrl=1&customerId=' + $("#customer_id").val();
           },
           error: function(err) {
             console.log('IMPORT ERROR: ' + err);
