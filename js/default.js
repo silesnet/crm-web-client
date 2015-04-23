@@ -1,6 +1,6 @@
 var homeUrl = 'http://localhost';
 var address = "http://localhost:8090/";
-var sisBaseUrl = 'https://localhost:8443/sis'
+var sisBaseUrl = 'https://localhost:8443/sis';
 var defaultSessionId = 'test';
 var products;
 var users;
