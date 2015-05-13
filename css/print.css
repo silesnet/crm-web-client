@@ -28,8 +28,6 @@ td label {font-size: 1em;}
 h1 {margin: 0; font-size: 1.3em;}
 h2 {margin: 0; font-size: 1em;}
 
-em {font-style: normal;}
-
 table {display: block; margin-bottom: 5px; font-size: 1.2em;}
 
 th {font-weight: bold; text-align: left;}
@@ -85,7 +83,6 @@ td span {float: left;}
 
 #name {padding-right: 5px;}
 .cz #descriptive_number:not(.empty), #orientation_number:not(.empty) {padding-left: 4px;}
-#location_orientation_number:not(.empty) {padding-left: 4px;}
 #descriptive_number:not(.empty):after {content: " /";}
 .pl #location_descriptive_number:not(.empty):after {content: " /";}
 .pl #location_descriptive_number:not(.empty) {padding-left: 4px;}
@@ -103,8 +100,5 @@ input[type="checkbox"]:checked + label:before {
   content: "X";
 }
 
-.protocol_type {width: auto; text-align: left; font-weight: normal; padding: 10px 0;}
-.protocol_type:before {content: ""; width: 12px; height: 12px; border: 0.3pt solid black ; float: left; margin: 0 10px 0 10px;}
-.protocol_type:first-child:before{margin-left: 0;}
-
-#pppoe_table td {padding: 2px 0;}
+.protocol_type {width: 33.33%; text-align: left;}
+.protocol_type:before {content: ""; width: 14px; height: 14px; border: 0.3pt solid black ; float: left; margin: 0 10px 0 50px;}
