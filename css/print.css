@@ -35,7 +35,7 @@ table {display: block; margin-bottom: 5px; font-size: 1.2em;}
 th {font-weight: bold; text-align: left;}
 th, td {padding: 0 2px 2px 2px; vertical-align: top;}
 
-th p, td p {margin: 0; float: left;}
+th p, td p {margin: 0; float: left; padding: 0 2px;}
 td.separ {padding: 0 !important;}
 td.separ_2 {padding: 0 !important; height: 30px;}
 th.white_space_left, td.white_space_left {padding-left: 20px;}
@@ -77,6 +77,7 @@ td span {float: left;}
 
 .header {padding-left: 75px;}
 .header p {margin: 0; font-size: 1.4em; font-weight: bold;}
+.header span {color: #656565; font-size: 1.3em; padding-left: 135px;}
 
 .bold {font-weight: bold;}
 .break:before {content: " "; width: 2em; height: 1.2em; float: left;}
@@ -84,7 +85,7 @@ td span {float: left;}
 .nowrap {white-space: nowrap;}
 
 #name {padding-right: 5px;}
-.cz #descriptive_number:not(.empty), #orientation_number:not(.empty) {padding-left: 4px;}
+#descriptive_number:not(.empty), #orientation_number:not(.empty) {padding-left: 4px;}
 #location_orientation_number:not(.empty) {padding-left: 4px;}
 #descriptive_number:not(.empty):after {content: " /";}
 .pl #location_descriptive_number:not(.empty):after {content: " /";}
