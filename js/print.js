@@ -54,8 +54,6 @@ function initPPPoEDisabled() {
 function disablePlPppoe() {
   if ($('table#pppoe_table p#auth_a').text().length === 0) {
     $('#pppoe_table').addClass('ds-none');
-    //$('#tech_spec_header').addClass('ds-none');
-  }else{
-    $('#dhcp_table').addClass('ds-none');
+    $('#tech_spec_header').addClass('ds-none');
   }
 }
