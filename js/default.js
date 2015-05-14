@@ -62,6 +62,7 @@ function initDraft(){
   });
   $.when(
     loadNetworks(),
+    loadSwitches(),
     loadRouters(),
     loadUsers(),
     loadProducts()
@@ -156,6 +157,19 @@ function loadNetworks(){
       console.log('got networks');
       $.each(data.ssids,function(key, value) {
         $("#ssid").append("<option value='" + value.id + "' master='" + value.master + "'>" + value.ssid + " (" + value.master + ")</option>");
+      });
+    }
+  });
+}
+
+function loadSwitches(){   
+   return $.ajax({
+    type: "GET",
+    url: address + "networks/switches?country=" + operation_country,
+    success: function(data) {
+      console.log('got switch');
+      $.each(data.switches,function(key, value) {
+        $("#dhcp_switch").append("<option value='" + value.id + "'>" + value.name + "</option>");
       });
     }
   });
@@ -474,6 +488,7 @@ function serializeDraftDataService(status){
     uplink:$("#uplink").val(),
     price:$("#price").val(),
     ssid:$("#ssid").val(),
+    dhcp_switch:$("#dhcp_switch").val(),
     mac_address:$("#mac_address").val(),
     core_router:$("#core_router").val(),
     config:$("#config").val(),
@@ -592,6 +607,7 @@ function deserializeDraftDataService(jsonData){
     $("#uplink").val(data.uplink);
     $("#price").val(data.price);
     $("#ssid").val(data.ssid);
+    $("#dhcp_switch").val(data.dhcp_switch);
     $("#mac_address").val(data.mac_address);
     $("#core_router").val(data.core_router);
     $("#location_street").val(data.location_street);
@@ -745,16 +761,19 @@ function initSelectSsid(){
 function initAuthentification(){
   if($("#auth_type").val() == 2){
     $("#auth_a").prop("disabled", true);
+    $("#dhcp_switch").prop("disabled", true);
   }
   $("#auth_type").change(function (){
     if($(this).val() == 2){
       $("#auth_a").prop("disabled", true);
+      $("#dhcp_switch").prop("disabled", true);
       $("#auth_a").val($("#service_id").val());
       if($("#auth_b").val() == ''){
         $("#auth_b").val(generatePassword(8));
       }
     }else{
       $("#auth_a").prop("disabled", false);
+      $("#dhcp_switch").prop("disabled", false);
       $("#auth_a").val("");
       $("#auth_b").val("");
     }
