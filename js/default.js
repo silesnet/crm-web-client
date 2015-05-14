@@ -484,6 +484,7 @@ function serializeDraftDataService(status){
     location_street:$("#location_street").val(),
     location_descriptive_number:$("#location_descriptive_number").val(),
     location_orientation_number:$("#location_orientation_number").val(),
+    location_flat:$("#location_flat").val(),
     location_town:$("#location_town").val(),
     location_postal_code:$("#location_postal_code").val(),
     location_country:$("#location_country").val(),
@@ -596,6 +597,7 @@ function deserializeDraftDataService(jsonData){
     $("#location_street").val(data.location_street);
     $("#location_descriptive_number").val(data.location_descriptive_number);
     $("#location_orientation_number").val(data.location_orientation_number);
+    $("#location_flat").val(data.location_flat);
     $("#location_town").val(data.location_town);
     $("#location_postal_code").val(data.location_postal_code);
     $("#location_country").val(data.location_country);
