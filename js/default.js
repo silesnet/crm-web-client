@@ -165,10 +165,10 @@ function loadNetworks(){
 function loadSwitches(){   
    return $.ajax({
     type: "GET",
-    url: address + "networks/switches?country=" + operation_country,
+    url: address + "networks/" + operation_country + "/devices?deviceType=switch",
     success: function(data) {
       console.log('got switch');
-      $.each(data.switches,function(key, value) {
+      $.each(data.devices,function(key, value) {
         $("#dhcp_switch").append("<option value='" + value.id + "'>" + value.name + "</option>");
       });
     }
