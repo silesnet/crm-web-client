@@ -169,7 +169,7 @@ function loadSwitches(){
     success: function(data) {
       console.log('got switch');
       $.each(data.devices,function(key, value) {
-        $("#dhcp_switch").append("<option value='" + value.id + "'>" + value.name + "</option>");
+        $("#auth_a_switch").append("<option value='" + value.id + "'>" + value.name + "</option>");
       });
     }
   });
@@ -475,6 +475,12 @@ function showInfoAction(){
 */
 function serializeDraftDataService(status){
 
+  var auth_a_tmp = "";
+  if($("#auth_type").val() == 1){
+    auth_a_tmp = $("#auth_a_switch").val();
+  }else {
+    auth_a_tmp = $("#auth_a").val();
+  } 
   var jsonData = {};        
   jsonData.drafts = {
     status:status
@@ -488,7 +494,6 @@ function serializeDraftDataService(status){
     uplink:$("#uplink").val(),
     price:$("#price").val(),
     ssid:$("#ssid").val(),
-    dhcp_switch:$("#dhcp_switch").val(),
     mac_address:$("#mac_address").val(),
     core_router:$("#core_router").val(),
     config:$("#config").val(),
@@ -504,7 +509,7 @@ function serializeDraftDataService(status){
     location_postal_code:$("#location_postal_code").val(),
     location_country:$("#location_country").val(),
     auth_type:$("#auth_type").val(),
-    auth_a:$("#auth_a").val(),
+    auth_a:auth_a_tmp,
     auth_b:$("#auth_b").val(),
     ip:$("#ip").val(),
     is_ip_public:$("#is_ip_public").is(":checked")
@@ -607,7 +612,6 @@ function deserializeDraftDataService(jsonData){
     $("#uplink").val(data.uplink);
     $("#price").val(data.price);
     $("#ssid").val(data.ssid);
-    $("#dhcp_switch").val(data.dhcp_switch);
     $("#mac_address").val(data.mac_address);
     $("#core_router").val(data.core_router);
     $("#location_street").val(data.location_street);
@@ -630,7 +634,12 @@ function deserializeDraftDataService(jsonData){
       $(this).find("input:radio[value=" + data.devices[i].owner + "]").attr('checked',true);
     });
     $("#auth_type").val(data.auth_type);
-    $("#auth_a").val(data.auth_a);
+    if(data.auth_type == 1){
+      //alert(data.auth_a);
+      $("#auth_a_switch").val(data.auth_a);
+    }else{
+      $("#auth_a").val(data.auth_a);
+    }
     $("#auth_b").val(data.auth_b);
     $("#ip").val(data.ip);
     if(data.is_ip_public){
@@ -760,21 +769,26 @@ function initSelectSsid(){
 
 function initAuthentification(){
   if($("#auth_type").val() == 2){
-    $("#auth_a").prop("disabled", true);
-    $("#dhcp_switch").prop("disabled", true);
+    $("#auth_a").prop("disabled", false);
+    $("#auth_a_switch").prop("disabled", true);
+    $("#auth_a").removeClass("ds-none");
+    $("#auth_a_switch").addClass("ds-none");
   }
   $("#auth_type").change(function (){
     if($(this).val() == 2){
       $("#auth_a").prop("disabled", true);
-      $("#dhcp_switch").prop("disabled", true);
+      $("#auth_a").removeClass("ds-none");
+      $("#auth_a_switch").prop("disabled", true);
+      $("#auth_a_switch").addClass("ds-none");
       $("#auth_a").val($("#service_id").val());
       if($("#auth_b").val() == ''){
         $("#auth_b").val(generatePassword(8));
       }
     }else{
-      $("#auth_a").prop("disabled", false);
-      $("#dhcp_switch").prop("disabled", false);
-      $("#auth_a").val("");
+      $("#auth_a").prop("disabled", true);
+      $("#auth_a").addClass("ds-none");
+      $("#auth_a_switch").prop("disabled", false);
+      $("#auth_a_switch").removeClass("ds-none");
       $("#auth_b").val("");
     }
   });

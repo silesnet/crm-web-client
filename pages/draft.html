@@ -147,12 +147,11 @@
               <div class="col-xs-6"><label for="ssid">MAC</label><input type="text" name="mac_address" class="form-control" id="mac_address" maxlength="23" placeholder="AB:CD:EF:01:23:45:67:89"></div>
           </div>
           <div class="row">
-              <div class="col-xs-6"><label for="ip">DHCP switch</label><select name="dhcp_switch" class="form-control" id="dhcp_switch"></select></div>
-              <div class="col-xs-4"><label for="ip">IP</label><input type="text" name="ip" class="form-control" id="ip" maxlength="15" placeholder="0.0.0.0"></div>
+              <div class="col-xs-6"><label for="ip">IP</label><input type="text" name="ip" class="form-control" id="ip" maxlength="15" placeholder="0.0.0.0"></div>
               <div class="col-xs-2"><label for="is_ip_public">Veřejná IP<input type="checkbox" name="is_ip_public" class="form-control" id="is_ip_public"></label></div>
           </div>
           <div class="row">
-              <div class="col-xs-6"><label for="auth_a">Login / Switch</label><input type="text" name="auth_a" class="form-control" id="auth_a" maxlength="15" placeholder=""></div>
+              <div class="col-xs-6"><label for="auth_a">Login / Switch</label><select name="auth_a" class="form-control" id="auth_a_switch"></select><input type="text" name="auth_a" class="form-control ds-none" id="auth_a" maxlength="15" placeholder="" disabled></div>
               <div class="col-xs-6"><label for="auth_b">Heslo / Port</label><input type="text" name="auth_b" class="form-control" id="auth_b" maxlength="15" placeholder=""></div>
           </div>
         </div>
