@@ -823,14 +823,17 @@ function initPrintDraft(){
 }
 
 function serializeToPrint(form, draftId){
-
    var params = "draft_id=" + draftId;
-   
+   var auth = $('select#auth_type').find('option:selected').text();
+   var input_name;  
    $(form).find("input[type=text], input[type=number], input[type=hidden], input[type=email]").each(function(){
       localStorage.setItem($(this).attr("name") + "_" + draftId, $(this).val());
    });
-   $(form).find("select").each(function(){
-      localStorage.setItem($(this).attr("name") + "_" + draftId, $(this).find("option:selected").text());
+   $(form).find("select").each(function() {
+      input_name = $(this).attr('name');
+      if (input_name != 'auth_a' || (input_name != 'auth_a' && auth == 'DHCP')) {
+        localStorage.setItem($(this).attr("name") + "_" + draftId, $(this).find("option:selected").text());
+      }
    });
    $(form).find("input[type=checkbox]").each(function(){
       if($(this).is(":checked")){

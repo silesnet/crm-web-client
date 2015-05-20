@@ -25,11 +25,13 @@ function initLoadDocumentData(){
     $('p#name').html(localStorage.getItem('surname_' + draftId) + ' ' + localStorage.getItem('name_' + draftId));
     if (isPolishPrintout) {
       $('p#pesel').html(localStorage.getItem('public_id_' + draftId));
+      $('p#regon').addClass('ds-none');
     }
   } else { // business customer
     $('p#name').html(localStorage.getItem('supplementary_name_' + draftId));
     if (isPolishPrintout) {
       $('p#regon').html(localStorage.getItem('public_id_' + draftId));
+      $('p#pesel').addClass('ds-none');
     }
   }
   initAddEmptyClass();
@@ -52,7 +54,8 @@ function initPPPoEDisabled() {
 }
 
 function disablePlPppoe() {
-  if ($('table#pppoe_table p#auth_a').text().length === 0) {
+  var auth = localStorage.getItem('auth_type_' + getURLParameter("draft_id"));
+  if (auth == 'DHCP') {
     $('#pppoe_table').addClass('ds-none');
     //$('#tech_spec_header').addClass('ds-none');
   }else{
