@@ -315,7 +315,11 @@ function initDraftDeleteAction() {
   inicilize tabs, show last tab
 */
 function initTabs(){
-  $("#tabs li:nth-child(" + tabId + ") a").tab("show");
+  if($("#service_status").val() == "SUBMITTED" || $("#service_status").val() == "APPROVED"){
+    $("#tabs li:nth-child(1) a").tab("show");
+  } else{
+    $("#tabs li:nth-child(" + tabId + ") a").tab("show");
+  }
 }
 
 /*
