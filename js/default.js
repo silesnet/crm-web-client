@@ -169,7 +169,11 @@ function loadSwitches(){
     success: function(data) {
       console.log('got switch');
       $.each(data.devices,function(key, value) {
-        $("#auth_a_switch").append("<option value='" + value.id + "'>" + value.name + "</option>");
+        $("#auth_a_switch").append("<option value='" + value.id + "' rel='" + value.master + "'>" + value.name + "</option>");
+      });
+      $("#auth_a_switch").change(function (){
+        $("#core_router option[name='" + $(this).find("option:selected").attr("rel") + "']").prop("selected", true);
+        $("#core_router").prop("disabled", true);
       });
     }
   });
