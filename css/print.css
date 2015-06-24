@@ -59,7 +59,7 @@ p.orientation_number:empty {display: none;}
 .borders th, 
 .borders td {padding-top: 2px; vertical-align: bottom; white-space: nowrap;}
 
-p.white_space {width: 150px; border-bottom: 1px dotted black ; float: left;}
+p.white_space {width: 140px; border-bottom: 1px dotted black ; float: left;}
 td.white_space {border-bottom: 1px dotted black ;}
 td span {float: left;}
 

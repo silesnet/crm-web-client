@@ -56,9 +56,8 @@ function initPPPoEDisabled() {
 function disablePlPppoe() {
   var auth = localStorage.getItem('auth_type_' + getURLParameter("draft_id"));
   if (auth == 'DHCP') {
-    $('#pppoe_table').addClass('ds-none');
-    //$('#tech_spec_header').addClass('ds-none');
+    $('#pppoe_table, #pppoe_tr').addClass('ds-none');
   }else{
-    $('#dhcp_table').addClass('ds-none');
+    $('#dhcp_table, #pppoe_tr').removeClass('ds-none');
   }
 }
