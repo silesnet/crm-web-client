@@ -30,7 +30,6 @@ function initLoadPages(){
           initSelectSsid();
           initAuthentification();
           initCustomerAddressCopy();
-          initTabs();
           initConfigComboBox();
         }
       });
@@ -88,7 +87,7 @@ function initFormDefaults(operation_country) {
 }
 
 function loadDraft(id){
-   $.ajax({
+   return $.ajax({
     type: "GET",
     async:false,
     url: address + "drafts2/" + id,
@@ -659,6 +658,7 @@ function deserializeDraftDataService(jsonData){
   updateParamProduct();
   updateStatusButton();
   initAuthentification();
+  initTabs();
 }
 
 /*
