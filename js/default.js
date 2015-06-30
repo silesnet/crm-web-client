@@ -315,7 +315,7 @@ function initDraftDeleteAction() {
   inicilize tabs, show last tab
 */
 function initTabs(){
-  if($("#service_status").val() == "SUBMITTED" || $("#service_status").val() == "APPROVED"){
+  if($("#service_status").val().toLowerCase() == "submitted" || $("#service_status").val().toLowerCase() == "approved"){
     $("#tabs li:nth-child(1) a").tab("show");
   } else{
     $("#tabs li:nth-child(" + tabId + ") a").tab("show");
