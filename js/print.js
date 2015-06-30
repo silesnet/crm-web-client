@@ -37,6 +37,7 @@ function initLoadDocumentData(){
   initAddEmptyClass();
   initPPPoEDisabled();
   disablePlPppoe();
+  disableCzPppoe();
 }
 
 function initAddEmptyClass(){
@@ -56,8 +57,17 @@ function initPPPoEDisabled() {
 function disablePlPppoe() {
   var auth = localStorage.getItem('auth_type_' + getURLParameter("draft_id"));
   if (auth == 'DHCP') {
-    $('#pppoe_table, #pppoe_tr').addClass('ds-none');
+    $('#pppoe_table').addClass('ds-none');
   }else{
-    $('#dhcp_table, #pppoe_tr').removeClass('ds-none');
+    $('#dhcp_table').removeClass('ds-none');
+  }
+}
+
+function disableCzPppoe() {
+   var config = localStorage.getItem('config_' + getURLParameter("draft_id"));
+   if (config == 'DHCP') {
+    $('#pppoe_tr').addClass('ds-none');
+  }else{
+    $('#pppoe_tr').removeClass('ds-none');
   }
 }
