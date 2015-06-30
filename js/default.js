@@ -31,6 +31,7 @@ function initLoadPages(){
           initAuthentification();
           initCustomerAddressCopy();
           initTabs();
+          initConfigComboBox();
         }
       });
     } else {
@@ -1097,4 +1098,23 @@ function deserializeNewDraft(data){
   
   initAuthentification();
   
+}
+
+/*
+  inicilize change value config
+*/
+function initConfigComboBox() {
+  $("#config").change(function (){
+    if($(this).val() == 3){
+      $("#auth_type").val(2);
+      $("#auth_a").prop("disabled", true);
+      $("#auth_a").removeClass("ds-none");
+      $("#auth_a_switch").prop("disabled", true);
+      $("#auth_a_switch").addClass("ds-none");
+      $("#auth_a").val($("#service_id").val());
+      if($("#auth_b").val() == ''){
+        $("#auth_b").val(generatePassword(8));
+      }
+    }
+  })
 }
