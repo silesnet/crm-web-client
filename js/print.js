@@ -3,7 +3,7 @@ function initLoadDocumentData(){
   var isPolishPrintout = $('#regon').length === 1;
   for (var key in localStorage){
     if(key.indexOf("_" + draftId) > -1 ){
-      tmpKey = key.replace("_" + draftId, "");
+      tmpKey = key.replace("_" + draftId, "");      
       if($("." + tmpKey).is(":checkbox")){
         $("#" + tmpKey + "_" + localStorage.getItem(key)).prop("checked", true);
       }else{
@@ -55,11 +55,13 @@ function initPPPoEDisabled() {
 }
 
 function disablePlPppoe() {
-  var auth = localStorage.getItem('auth_type_' + getURLParameter("draft_id"));
+  var auth = localStorage.getItem('config_' + getURLParameter("draft_id"));
   if (auth == 'DHCP') {
     $('#pppoe_table').addClass('ds-none');
+    $('#dhcp_table').removeClass('ds-none');
   }else{
     $('#dhcp_table').removeClass('ds-none');
+    $('#dhcp_table').addClass('ds-none');
   }
 }
 
