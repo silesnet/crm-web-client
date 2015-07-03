@@ -383,7 +383,9 @@ function loadDrafts(){
         tmpProduct = getProductName($.parseJSON(value.data).product);
       }
       var tr = "<tr><td><span class='service'>" + value.entityId + "</span><span class='name'>" + tmpName + "</span><span class='product'>" + tmpProduct + "</span><span class='status'>" + value.status + "</span><span class='operator'>" + value.owner + "</span><div class='pull-right'><a href='index.html?action=draft&draft_id=" + value.id + "' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-edit'></span> Editovat</a></div></td></tr>"
-      $("#draft_customers").append(tr);
+      if (undefined != tmpName) {
+        $("#draft_customers").append(tr);
+      }
     });
   });
 }
@@ -399,6 +401,10 @@ function loadDraftCustomer(customerId, urlParams){
     url: address + urlParams + customerId,
     success: function(jsondata) {
       ret = jsondata;
+    },
+    error: function(err) {
+      console.log('failed to fetch customer ' + customerId + ', skipping it, ERROR: ' + err);
+      ret = { drafts: {}, customer: {}};
     }
   });
   return ret;
