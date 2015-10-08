@@ -39,3 +39,16 @@ input[type=number] {
 .btn.copy-address {display: block;}
 #service_title {float: right;}
 
+/*  glyph icon check boxes */
+input[type=checkbox].glyphicon:before {
+  visibility: visible;
+  color: #ccc;
+}
+input[type=checkbox].glyphicon.glyphicon-user:checked:before {
+  color: #444;
+}
+
+input[type=checkbox].glyphicon {
+    visibility: hidden;
+}
+
