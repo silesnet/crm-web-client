@@ -504,6 +504,7 @@ function serializeDraftDataService(status){
     service_id:$("#service_id").val(),
     product:$("#product").val(),
     product_name:$("#product :selected").attr('service'),
+    product_channel:$("#product :selected").attr('chl'),
     downlink:$("#downlink").val(),
     uplink:$("#uplink").val(),
     price:$("#price").val(),
