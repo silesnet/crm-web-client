@@ -73,8 +73,6 @@ function disableCzPppoe() {
     $('#auth_a_cell').addClass('ds-none');
     $('#auth_b_label').addClass('ds-none');
     $('#auth_b_cell').addClass('ds-none');
-    $('#pppoe_spacer').addClass('ds-none');
-    $('#pppoe_spacer').addClass('border');
     $('#pppoe_spacer').attr('colspan', 1);
   } else {
     $('#pppoe_tr').removeClass('ds-none');
@@ -82,8 +80,6 @@ function disableCzPppoe() {
     $('#auth_a_cell').removeClass('ds-none');
     $('#auth_b_label').removeClass('ds-none');
     $('#auth_b_cell').removeClass('ds-none');
-    $('#pppoe_spacer').removeClass('ds-none');
-    $('#pppoe_spacer').removeClass('border');
     $('#pppoe_spacer').attr('colspan', 3);
   }
 }
