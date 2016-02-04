@@ -75,6 +75,7 @@ function disableCzPppoe() {
     $('#auth_b_cell').addClass('ds-none');
     $('#pppoe_spacer').addClass('ds-none');
     $('#pppoe_spacer').addClass('border');
+    $('#pppoe_spacer').attr('colspan', 1);
   } else {
     $('#pppoe_tr').removeClass('ds-none');
     $('#auth_a_label').removeClass('ds-none');
@@ -83,5 +84,6 @@ function disableCzPppoe() {
     $('#auth_b_cell').removeClass('ds-none');
     $('#pppoe_spacer').removeClass('ds-none');
     $('#pppoe_spacer').removeClass('border');
+    $('#pppoe_spacer').attr('colspan', 3);
   }
 }
