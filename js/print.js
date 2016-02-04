@@ -67,7 +67,7 @@ function disablePlPppoe() {
 
 function disableCzPppoe() {
    var config = localStorage.getItem('config_' + getURLParameter("draft_id"));
-   if (config == 'DHCP') {
+   if (config == 'DHCP' || config == 'STATIC') {
     $('#pppoe_tr').addClass('ds-none');
     $('#auth_a_label').addClass('ds-none');
     $('#auth_a_cell').addClass('ds-none');
