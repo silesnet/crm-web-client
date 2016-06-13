@@ -49,7 +49,7 @@ function initLoadPages(){
   global function inicialize
 */
 function inicialize(){
-  showInfoAction();  
+  showInfoAction();
   initInputNumber();
   initDatePicker();
 }
@@ -93,18 +93,18 @@ function loadDraft(id){
     url: address + "drafts2/" + id,
     success: function(jsondata) {
       console.log('got draft');
-     
+
       var tmpCustomerId = jsondata.drafts.links["customers"] || jsondata.drafts.links["drafts.customers"];
       var tmpAgreementId = jsondata.drafts.links["agreements"] || jsondata.drafts.links["drafts.agreements"];
-      
+
       $("#contract").val(tmpAgreementId);
       $("#contractTMP").val(Number(String(tmpAgreementId).substring(1)));
       $("#service_id").val(jsondata.drafts.entityId);
       $("#customer_id").val(tmpCustomerId);
       $("#service_title").append(jsondata.drafts.entityId);
-      
+
       if(jsondata.drafts.links["customers"] != null){
-        deserializeNewDraft(loadDraftCustomer(tmpCustomerId, "customers/")); 
+        deserializeNewDraft(loadDraftCustomer(tmpCustomerId, "customers/"));
       }else {
         tabId = 1;
         var tmpCustomerDraft = loadDraftCustomer(tmpCustomerId, "drafts2/customers/");
@@ -114,18 +114,18 @@ function loadDraft(id){
         deserializeDraftDataCustomer(tmpCustomerDraft.drafts);
       }
       if(jsondata.drafts.links["agreements"] != null){
-        // TODO load and deserialize agreements 
+        // TODO load and deserialize agreements
       }else {
         var tmpAgreementDraft = loadDraftCustomer(tmpAgreementId, "drafts2/agreements/");
         agreementDraftId = tmpAgreementDraft.drafts.id;
-        // TODO deserialize agreements 
+        // TODO deserialize agreements
       }
-     
+
       deserializeDraftDataService(jsondata.drafts);
-      
-      updateParamProduct(0);        
+
+      updateParamProduct(0);
       setTitleDraft();
-      setEditableDraft();      
+      setEditableDraft();
     }
   });
 }
@@ -146,7 +146,7 @@ function loadProducts() {
       });
       updateParamProduct(0);
     }
-  });  
+  });
 }
 
 function loadNetworks(){
@@ -162,7 +162,7 @@ function loadNetworks(){
   });
 }
 
-function loadSwitches(){   
+function loadSwitches(){
    return $.ajax({
     type: "GET",
     url: address + "networks/" + operation_country + "/devices?deviceType=switch",
@@ -225,11 +225,11 @@ function initDraftSaveAction() {
 
 /*
   action save draft
-  
+
 */
 function saveDraft(idCustomer, idAgreement, idService, message, status){
    if (status != "IMPORTED") {
-     if(idCustomer > 0) { 
+     if(idCustomer > 0) {
        $.ajax({
         type: "PUT",
         url: address + "drafts2/" + idCustomer,
@@ -247,7 +247,7 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
         data: serializeDraftDataAgreement(status)
         });
      }
-     if(idService > 0) { 
+     if(idService > 0) {
        $.ajax({
         type: "PUT",
         url: address + "drafts2/" + idService,
@@ -255,6 +255,23 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
         contentType:"application/json",
         data: serializeDraftDataService(status),
         success: function() {
+            var authType = $("#auth_type").val(),
+            pppoeLogin = $("#auth_a").val(),
+            pppoeMaster = $("#core_router option:selected").text();
+            if (authType === '2' && pppoeLogin && pppoeMaster) {
+              console.log('#####' + authType + '#' + pppoeLogin + '#' + pppoeMaster);
+              $.ajax({
+                type: "PUT",
+                url: address + 'networks/pppoe/' + pppoeLogin + '/kick/' + pppoeMaster,
+                dataType: "json",
+                contentType:"application/json",
+                data: "{}",
+                success: function() {
+                  localStorage.setItem("infoClass", "success");
+                  localStorage.setItem("infoData", "'" + pppoeMaster + "' kicked '" + pppoeLogin + "'");
+                }
+              });
+            }
             localStorage.setItem("infoClass", "success");
             localStorage.setItem("infoData", message);
             location.href = "index.html";
@@ -344,13 +361,13 @@ function updateCustomers(jsondata){
     var customerId = value["id"];
     var li = "<li class='list-group-item'><span class='name'>" + value["name"] + "</span><span class='address'>";
     if(value["street"] !== null){
-     li += value["street"];  
+     li += value["street"];
     }
     if(value["city"] !== null){
-     li += ", " + value["city"];  
+     li += ", " + value["city"];
     }
     if(value["postal_code"] !== null){
-     li +=  ", " + value["postal_code"];  
+     li +=  ", " + value["postal_code"];
     }
     li += "</span><div class='pull-right'>";
     if(value["agreements"] !== null){
@@ -435,7 +452,7 @@ function getProductName(id){
     $.getJSON(address + 'products', function(data){
       products = data.products;
     });
-  }else { 
+  }else {
     $.each(products, function (key, value){
       if(value.id == id){
         ret = value.name;
@@ -454,7 +471,7 @@ function getOperatorName(id){
     $.getJSON(address + 'users', function(data){
       users = data.users;
     });
-  }else { 
+  }else {
     $.each(users, function (key, value){
       if(value.id == id){
         ret = value.name;
@@ -494,8 +511,8 @@ function serializeDraftDataService(status){
     auth_a_tmp = $("#auth_a_switch").val();
   }else {
     auth_a_tmp = $("#auth_a").val();
-  } 
-  var jsonData = {};        
+  }
+  var jsonData = {};
   jsonData.drafts = {
     status:status
   };
@@ -528,7 +545,7 @@ function serializeDraftDataService(status){
     auth_b:$("#auth_b").val(),
     ip:$("#ip").val(),
     is_ip_public:$("#is_ip_public").is(":checked")
-  }; 
+  };
 
   jsonData.drafts.data.devices = [];
 
@@ -537,7 +554,7 @@ $(".row.device").each(function (i){
     name:$(this).find("input").val(),
     owner:$(this).find("input:radio:checked").val()
   }
-}); 
+});
 
  return JSON.stringify(jsonData, null, 0);
 }
@@ -659,7 +676,7 @@ function deserializeDraftDataService(jsonData){
     $("#ip").val(data.ip);
     if(data.is_ip_public){
      $("#is_ip_public").prop("checked", true);
-    }                                
+    }
     $("#service_status").val(jsonData.status);
   }
   updateParamProduct();
@@ -835,13 +852,13 @@ function initPrintDraft(){
         lng = "pl"
       }
       window.open("pages/smlouva-" + lng + ".html?" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
-  });  
+  });
 }
 
 function serializeToPrint(form, draftId){
    var params = "draft_id=" + draftId;
    var auth = $('select#auth_type').find('option:selected').text();
-   var input_name;  
+   var input_name;
    $(form).find("input[type=text], input[type=number], input[type=hidden], input[type=email]").each(function(){
       localStorage.setItem($(this).attr("name") + "_" + draftId, $(this).val());
    });
@@ -889,7 +906,7 @@ function updateStatusButton(){
   @customerID - id customer
   @contractID - id contract (agreement)
 */
-function createDraft(name, customerID, contractID){   
+function createDraft(name, customerID, contractID){
   var customer_ID = customerID;
   var contract_ID = contractID;
   var customerLink = "customers";
@@ -900,15 +917,15 @@ function createDraft(name, customerID, contractID){
   }
   if(contractID == null){
     contract_ID = createAgreement(customer_ID, customerLink);
-    agreementLink = "drafts.agreements";     
+    agreementLink = "drafts.agreements";
   }
-    
+
   createService(customer_ID, contract_ID, customerLink, agreementLink);
 
 }
 
 /*
-  1. create or exist customer  
+  1. create or exist customer
 */
 function createCustomer(name){
     var ret = 0;
@@ -965,7 +982,7 @@ function createService(customerID, agreementId, customerLink, agreementLink){
           location.href = "index.html?action=draft&draft_id=" + data.drafts.id;
         }
       }
-    }); 
+    });
 }
 /*
   4. create connection
@@ -1022,7 +1039,7 @@ function serializeCustomer(customerName){
       entitySpate: "",
       entityName: customerName,
       owner:user_id,
-      status: "DRAFT"      
+      status: "DRAFT"
   };
   return JSON.stringify(data, null, 0);
 }
@@ -1039,35 +1056,35 @@ function serializeAgreement(customerId, customerLink){
       entitySpate: operation_country,
       entityName: "",
       owner:user_id,
-      status: "DRAFT"      
+      status: "DRAFT"
   };
-  
+
   links[customerLink] = customerId;
   data.drafts.links = links;
-  
+
   return JSON.stringify(data, null, 0);
 }
 
 /*
-  serialize JSON service 
+  serialize JSON service
 */
 function serializeService(customerId, agreementId, customerLink, agreementLink){
 
-  var data = {}; 
-  var links = {};      
+  var data = {};
+  var links = {};
   data.drafts = {
       entityType: "services",
       entitySpate: agreementId.toString(),
       entityName: "",
       owner:user_id,
-      status: "DRAFT"      
-  };      
-  
+      status: "DRAFT"
+  };
+
   links[customerLink] = customerId;
   links[agreementLink] = agreementId;
   data.drafts.links = links;
-  
-  return JSON.stringify(data, null, 0); 
+
+  return JSON.stringify(data, null, 0);
 }
 
 function deserializeNewDraft(data){
@@ -1101,10 +1118,10 @@ function deserializeNewDraft(data){
   $("#country").val(data.customer.country);
   $("#contact_name").val(data.customer.contact_name);
   $("#info").val(data.customer.info);
-  $("#customer_status").val(data.customer.customer_status);  
-  
+  $("#customer_status").val(data.customer.customer_status);
+
   initAuthentification();
-  
+
 }
 
 /*
