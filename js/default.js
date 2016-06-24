@@ -679,6 +679,12 @@ function deserializeDraftDataService(jsonData){
     }
     $("#service_status").val(jsonData.status);
   }
+  if (data.ip) {
+    $("#ip").val(data.ip);
+    if(data.is_ip_public){
+     $("#is_ip_public").prop("checked", true);
+    }
+  }
   updateParamProduct();
   updateStatusButton();
   initAuthentification();
@@ -970,19 +976,19 @@ function createAgreement(customerId, customerLink){
   3. create service
 */
 function createService(customerID, agreementId, customerLink, agreementLink){
-   $.ajax({
-      type: "POST",
-      async: false,
-      data: serializeService(customerID, agreementId, customerLink, agreementLink),
-      dataType: "json",
-      contentType:"application/json",
-      url: address + "drafts2",
-      statusCode: {
-        201: function (data){
-          location.href = "index.html?action=draft&draft_id=" + data.drafts.id;
-        }
+  $.ajax({
+    type: "POST",
+    async: false,
+    data: serializeNewService(customerID, agreementId, customerLink, agreementLink),
+    dataType: "json",
+    contentType:"application/json",
+    url: address + "drafts2",
+    statusCode: {
+      201: function (data){
+        location.href = "index.html?action=draft&draft_id=" + data.drafts.id;
       }
-    });
+    }
+  });
 }
 /*
   4. create connection
@@ -1068,16 +1074,17 @@ function serializeAgreement(customerId, customerLink){
 /*
   serialize JSON service
 */
-function serializeService(customerId, agreementId, customerLink, agreementLink){
-
-  var data = {};
-  var links = {};
+function serializeNewService(customerId, agreementId, customerLink, agreementLink){
+  var data = {},
+    links = {},
+    default_ip = agreementId.toString().substring(0, 1) === '1' ? 'internal-cz' : 'public-pl';
   data.drafts = {
       entityType: "services",
       entitySpate: agreementId.toString(),
       entityName: "",
       owner:user_id,
-      status: "DRAFT"
+      status: "DRAFT",
+      data: { ip: default_ip, is_ip_public: false }
   };
 
   links[customerLink] = customerId;
