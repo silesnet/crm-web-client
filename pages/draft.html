@@ -1,35 +1,35 @@
 <div id="data" class="container">
-  
+
   <p><strong id="customer_title"></strong><strong id="service_title">Služba:&#160;</strong></p>
-          
+
   <ul id="tabs" class="nav nav-tabs">
     <li><a data-toggle="tab" href="#customer">Zákazník</a></li>
     <li><a data-toggle="tab" href="#services">Služba</a></li>
     <li><a data-toggle="tab" href="#connections">Připojení</a></li>
-  </ul>  
-                                                        
+  </ul>
+
   <form id="draft" class="form-horizontal" role="form">
-  
+
     <input id="customer_id" type="hidden" name="customer_id" value="0">
     <input id="service_id" type="hidden" name="service_id" value="0">
     <input id="contract" type="hidden" name="contract" value="0">
     <!-- input id="connection_id" type="hidden" name="connection_id" value="0" -->
     <input id="service_status" type="hidden" name="service_status" value="DRAFT">
     <input id="customer_status" type="hidden" name="customer_status" value="DRAFT">
-        
+
     <div class="panel panel-default panel-tab tab-content">
       <div id="customer" class="tab-pane fade active in">
-      <div class="panel-heading">  
+      <div class="panel-heading">
             <div class="row">
                 <div class="col-xs-12">
                   <div class="btn-group pull-right customer-type">
-                    <input id="customer_type_1" type="radio" value="1" name="customer_type" checked>    
-                    <label for="customer_type_1">Zákazník</label>    
-                    <input id="customer_type_2" type="radio" value="2" name="customer_type"> 
-                    <label for="customer_type_2">Firma</label>  
+                    <input id="customer_type_1" type="radio" value="1" name="customer_type" checked>
+                    <label for="customer_type_1">Zákazník</label>
+                    <input id="customer_type_2" type="radio" value="2" name="customer_type">
+                    <label for="customer_type_2">Firma</label>
                   </div>
                 </div>
-            </div>      
+            </div>
             <div class="row">
                 <div class="col-xs-6"><label for="surname">Příjmení</label><input type="text" name="surname" class="form-control col-md-5" id="surname" required="required" maxlength="20" placeholder="Příjmení zákazníka"></div>
                 <div class="col-xs-6"><label for="supplementary_name">Firma</label><input type="text" name="supplementary_name" class="form-control" id="supplementary_name" maxlength="50" placeholder="Firma" disabled></div>
@@ -50,7 +50,7 @@
                 <div class="col-xs-6"><label for="street">Ulice</label><input type="text" name="street" class="form-control" id="street" required="required" maxlength="40" placeholder="Ulice"></div>
                 <div class="col-xs-3"><label for="descriptive_number">Číslo popisné</label><input type="text" name="descriptive_number" class="form-control" id="descriptive_number" required="required" maxlength="10" placeholder="Číslo popisné"></div>
                 <div class="col-xs-3"><label for="orientation_number">Číslo orientační</label><input type="text" name="orientation_number" class="form-control" id="orientation_number" maxlength="10" placeholder="Číslo orientační"></div>
-            </div>    
+            </div>
             <div class="row">
                 <div class="col-xs-5"><label for="town">Město</label><input type="text" name="town" class="form-control col-md-5" id="town" required="required" maxlength="40" placeholder="Město"></div>
                 <div class="col-xs-3"><label for="postal_code">PSČ</label><input type="text" maxlength="6" name="postal_code" class="form-control col-md-5" id="postal_code" required="required" placeholder="PSČ"></div>
@@ -61,15 +61,15 @@
                     <option value="20" code="PL">Polska</option>
                 </select>
               </div>
-            </div> 
+            </div>
             <div class="row">
                 <div class="col-xs-12"><label for="contact_name">Kontakt</label><input type="text" name="contact_name" class="form-control col-md-5" id="contact_name" maxlength="50" placeholder="Kontaktní osoba"></div>
             </div>
             <div class="row">
               <div class="col-xs-12"><label for="info">Informace</label><textarea name="info" id="info" class="form-control" maxlength="150" placeholder="Podrobné informace"></textarea></div>
             </div>
-      </div> 
-      </div><!-- /.customer -->      
+      </div>
+      </div><!-- /.customer -->
       <div id="services" class="tab-pane fade">
         <div class="panel-heading">
           <div class="row">
@@ -98,10 +98,10 @@
                 </select>
               </div>
               <div class="col-xs-2"><label for="cus_add">&#160;</label><a class="btn btn-sm btn-primary copy-address"><span class="glyphicon glyphicon-share"></span> Kopírovat adresu</a></div>
-          </div>                 
+          </div>
           <div class="row">
               <div class="col-xs-12"><label for="device">Zařízení</label></div>
-          </div>    
+          </div>
           <div class="row device first">
               <div class="col-xs-6"><input type="text" id="device_1" name="device_1" class="form-control" maxlength="50" placeholder="Zařízení"></div>
               <div class="col-xs-1">
@@ -109,7 +109,7 @@
                   <input type="radio" id="owner_1_1" name="owner_1" value="silesnet" checked>
                   SilesNet
                 </label>
-              </div>  
+              </div>
               <div class="col-xs-1">
                 <label class="radio">
                   <input type="radio" id="owner_1_2" name="owner_1" value="customer">
@@ -134,7 +134,7 @@
           <div class="row">
               <div class="col-xs-12"><label for="info">Informace</label><textarea name="info_service" id="info_service" class="form-control" maxlength="150" placeholder="Podrobné informace"></textarea></div>
           </div>
-        </div>        
+        </div>
       </div><!-- /.services -->
       <div id="connections" class="tab-pane fade">
         <div class="panel-heading">
@@ -147,8 +147,8 @@
               <div class="col-xs-6"><label for="ssid">MAC</label><input type="text" name="mac_address" class="form-control" id="mac_address" maxlength="23" placeholder="AB:CD:EF:01:23:45:67:89"></div>
           </div>
           <div class="row">
-              <div class="col-xs-6"><label for="ip">IP</label><input type="text" name="ip" class="form-control" id="ip" maxlength="15" placeholder="0.0.0.0"></div>
-              <div class="col-xs-2"><label for="is_ip_public">Veřejná IP<input type="checkbox" name="is_ip_public" class="form-control" id="is_ip_public"></label></div>
+              <div class="col-xs-6"><label for="ip">IP</label><input type="text" name="ip" class="form-control" id="ip" maxlength="15" placeholder="0.0.0.0" disabled="true"></div>
+              <div class="col-xs-2 hidden"><label for="is_ip_public">Veřejná IP<input type="checkbox" name="is_ip_public" class="form-control" id="is_ip_public" disabled="true"></label></div>
           </div>
           <div class="row">
               <div class="col-xs-6"><label for="auth_a">Login / Switch</label><select name="auth_a" class="form-control" id="auth_a_switch"></select><input type="text" name="auth_a" class="form-control ds-none" id="auth_a" maxlength="15" placeholder="" disabled></div>
@@ -156,11 +156,11 @@
           </div>
         </div>
       </div><!-- /.connections -->
-      
+
     </div>
     <div class='pull-left'>
       <input type="button" class="btn btn-lg btn-warning" value="Smazat službu" name="delete">
-    </div>    
+    </div>
     <div class='pull-right'>
       <div class="btn-group open">
         <button class="btn btn-lg btn-default" type="button">Tisk</button>
@@ -175,7 +175,7 @@
     </div>
       <input type="button" class="btn btn-lg btn-primary" value="Oveřit" name="status" rel="SUBMITTED" msg="ověřen" />
       <input type="button" class="btn btn-lg btn-danger ds-none" value="Zamítnout" name="statusBack" rel="DRAFT" />
-      <input type="button" class="btn btn-lg btn-success" value="Uložit" name="save" />   
+      <input type="button" class="btn btn-lg btn-success" value="Uložit" name="save" />
     </div>
-  </form>  
+  </form>
 </div><!-- /.container -->
