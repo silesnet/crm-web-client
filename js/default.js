@@ -255,23 +255,23 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
         contentType:"application/json",
         data: serializeDraftDataService(status),
         success: function() {
-            var authType = $("#auth_type").val(),
-            pppoeLogin = $("#auth_a").val(),
-            pppoeMaster = $("#core_router option:selected").text();
-            if (authType === '2' && pppoeLogin && pppoeMaster) {
-              console.log('#####' + authType + '#' + pppoeLogin + '#' + pppoeMaster);
-              $.ajax({
-                type: "PUT",
-                url: address + 'networks/pppoe/' + pppoeLogin + '/kick/' + pppoeMaster,
-                dataType: "json",
-                contentType:"application/json",
-                data: "{}",
-                success: function() {
-                  localStorage.setItem("infoClass", "success");
-                  localStorage.setItem("infoData", "'" + pppoeMaster + "' kicked '" + pppoeLogin + "'");
-                }
-              });
-            }
+            // var authType = $("#auth_type").val(),
+            // pppoeLogin = $("#auth_a").val(),
+            // pppoeMaster = $("#core_router option:selected").text();
+            // if (authType === '2' && pppoeLogin && pppoeMaster) {
+            //   console.log('#####' + authType + '#' + pppoeLogin + '#' + pppoeMaster);
+            //   $.ajax({
+            //     type: "PUT",
+            //     url: address + 'networks/pppoe/' + pppoeLogin + '/kick/' + pppoeMaster,
+            //     dataType: "json",
+            //     contentType:"application/json",
+            //     data: "{}",
+            //     success: function() {
+            //       localStorage.setItem("infoClass", "success");
+            //       localStorage.setItem("infoData", "'" + pppoeMaster + "' kicked '" + pppoeLogin + "'");
+            //     }
+            //   });
+            // }
             localStorage.setItem("infoClass", "success");
             localStorage.setItem("infoData", message);
             location.href = "index.html";
