@@ -228,6 +228,15 @@ function initDraftSaveAction() {
 
 */
 function saveDraft(idCustomer, idAgreement, idService, message, status){
+   var mac = $("#mac_address").val();
+   if (mac && (
+        !mac.match(/^([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}$/) &&
+        !mac.match(/^([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2}$/) &&
+        !mac.match(/^[A-Fa-f0-9]{12}$/) 
+      )) {
+     alert('MAC adresa není zadána správně, nelze uložit.');
+     return false;
+   }
    if (status != "IMPORTED") {
      if(idCustomer > 0) {
        $.ajax({
