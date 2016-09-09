@@ -52,3 +52,6 @@ input[type=checkbox].glyphicon {
     visibility: hidden;
 }
 
+input#auth_b {
+  font-family: Verdana
+}
