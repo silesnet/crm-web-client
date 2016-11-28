@@ -80,7 +80,7 @@ td span {float: left;}
 .header span {color: #656565; font-size: 1.3em; padding-left: 135px;}
 
 .bold {font-weight: bold;}
-.break:before {content: " "; width: 2em; height: 1.2em; float: left;}
+.break:before {content: ""; width: 2em; height: 1em; float: left;}
 
 .nowrap {white-space: nowrap;}
 
