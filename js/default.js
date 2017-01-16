@@ -267,6 +267,7 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
           data: serializeDraftDataService(status),
           success: function(response) {
             appendFlashMessage('success', message);
+            appendResponseFlashMessages(response);
             location.href = "index.html";
           },
           error: function(response) {
@@ -532,6 +533,23 @@ function fetchFlashMessages() {
 
 function clearFlashMessages() {
   localStorage.removeItem('flashMessages');
+}
+
+function appendResponseFlashMessages(response) {
+  var 
+    messages = response.messages || [],
+    msg, flash, match,
+    pattern = /^(success|info|warning|danger): (.+)$/;
+  for (var i = 0; i < messages.length; i++) {
+    msg = messages[i];
+    match = pattern.exec(msg);
+    if (match) {
+      flash = { type: match[1], message: match[2] };
+    } else {
+      flash = { type: 'success', message: msg };
+    }
+    appendFlashMessage(flash.type, flash.message);
+  }
 }
 
 /*
