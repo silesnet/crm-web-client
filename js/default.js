@@ -260,31 +260,17 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
      }
      if(idService > 0) {
        $.ajax({
-        type: "PUT",
-        url: address + "drafts2/" + idService,
-        dataType: "json",
-        contentType:"application/json",
-        data: serializeDraftDataService(status),
-        success: function() {
-            // var authType = $("#auth_type").val(),
-            // pppoeLogin = $("#auth_a").val(),
-            // pppoeMaster = $("#core_router option:selected").text();
-            // if (authType === '2' && pppoeLogin && pppoeMaster) {
-            //   console.log('#####' + authType + '#' + pppoeLogin + '#' + pppoeMaster);
-            //   $.ajax({
-            //     type: "PUT",
-            //     url: address + 'networks/pppoe/' + pppoeLogin + '/kick/' + pppoeMaster,
-            //     dataType: "json",
-            //     contentType:"application/json",
-            //     data: "{}",
-            //     success: function() {
-            //       localStorage.setItem("infoClass", "success");
-            //       localStorage.setItem("infoData", "'" + pppoeMaster + "' kicked '" + pppoeLogin + "'");
-            //     }
-            //   });
-            // }
-            localStorage.setItem("infoClass", "success");
-            localStorage.setItem("infoData", message);
+          type: "PUT",
+          url: address + "drafts2/" + idService,
+          dataType: "json",
+          contentType:"application/json",
+          data: serializeDraftDataService(status),
+          success: function(response) {
+            appendFlashMessage('success', message);
+            location.href = "index.html";
+          },
+          error: function(response) {
+            appendFlashMessage('danger', response.errors.detail);
             location.href = "index.html";
           }
         });
@@ -297,13 +283,14 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
           url: address + "drafts2/" + idService,
           dataType: "json",
           contentType:"application/json",
-          success: function() {
-            localStorage.setItem("infoClass", "success");
-            localStorage.setItem("infoData", message);
+          success: function(response) {
+            appendFlashMessage('success', message);
             location.href = sisBaseUrl + '/customer/view.html?action=showDetail&_navPushUrl=1&customerId=' + $("#customer_id").val();
           },
-          error: function(err) {
-            console.log('IMPORT ERROR: ' + err);
+          error: function(response) {
+            console.log('IMPORT ERROR: ' + response);
+            appendFlashMessage('danger', response.errors.detail);
+            location.href = "index.html";
           }
         });
       }
@@ -503,13 +490,48 @@ function currentUser() {
 /*
   show info action
 */
-function showInfoAction(){
-  if(localStorage.getItem("infoData") != null){
-    $("#content").append("<div class='container'><div class='alert alert-" + localStorage.getItem("infoClass") + "' alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>" + localStorage.getItem("infoData") + "</div></div>");
-    localStorage.removeItem("infoClass");
-    localStorage.removeItem("infoData");
-    setTimeout(function(){$(".alert").slideUp("slow");}, 1000);
+function showInfoAction() {
+  var message = localStorage.getItem("infoData"),
+    type = localStorage.getItem('infoClass') || 'success';
+  if (message) {
+    appendFlashMessage(type, message);
+    localStorage.removeItem('infoData');
+    localStorage.removeItem('infoClass');
   }
+  displayFlashMessages();
+}
+
+function displayFlashMessages() {
+  var messages = fetchFlashMessages(),
+    size = messages.length,
+    i,
+    entry = $('#flashMessages');
+  for (i = 0; i < size; i++) {
+    entry.append(
+      "<div class='container'>" +
+        "<div class='alert alert-" + messages[i].type + " alert-dismissable'>" +
+        "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>" +
+          messages[i].message +
+        "</div>" +
+      "</div>"
+    );
+  }
+  setTimeout(function() { $(".alert-success").slideUp("slow"); }, 2000);
+  clearFlashMessages();
+}
+
+function appendFlashMessage(type, message) {
+  var container = fetchFlashMessages();
+  container.push({ type: type, message: message });
+  localStorage.setItem('flashMessages', JSON.stringify(container));
+}
+
+function fetchFlashMessages() {
+  return JSON.parse(localStorage.getItem('flashMessages')) || [];
+}
+
+function clearFlashMessages() {
+  localStorage.removeItem('flashMessages');
 }
 
 /*
