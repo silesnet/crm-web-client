@@ -906,6 +906,21 @@ function updateAuthentication(event) {
       }
     }
     accessPreviousValue = access;
+    updateServiceNameAndAccess();
+}
+
+function updateServiceNameAndAccess() {
+  $('#serviceName').text($('#product option:selected').text());
+  $('#serviceAccess').text($("#product option:selected").attr("chl") + '/' + resolveAccessProtocol());
+}
+
+function resolveAccessProtocol() {
+  var config = $('#config').val(),
+    protocol = $('#auth_type').val();
+  if (config == 2) {
+    return 'STATIC';
+  }
+  return protocol == 1 ? 'DHCP' : 'PPPoE';
 }
 
 function initCustomerAddressCopy(){
@@ -1211,16 +1226,17 @@ function deserializeNewDraft(data){
 */
 function initConfigComboBox() {
   $("#config").change(function (){
-    if($(this).val() == 3){
-      $("#auth_type").val(2);
-      $("#auth_a").prop("disabled", true);
-      $("#auth_a").removeClass("ds-none");
-      $("#auth_a_switch").prop("disabled", true);
-      $("#auth_a_switch").addClass("ds-none");
-      $("#auth_a").val($("#service_id").val());
-      if($("#auth_b").val() == ''){
-        $("#auth_b").val(generatePassword(8));
-      }
-    }
-  })
+    // if($(this).val() == 3){
+    //   $("#auth_type").val(2);
+    //   $("#auth_a").prop("disabled", true);
+    //   $("#auth_a").removeClass("ds-none");
+    //   $("#auth_a_switch").prop("disabled", true);
+    //   $("#auth_a_switch").addClass("ds-none");
+    //   $("#auth_a").val($("#service_id").val());
+    //   if($("#auth_b").val() == ''){
+    //     $("#auth_b").val(generatePassword(8));
+    //   }
+    // }
+    updateServiceNameAndAccess();
+  });
 }
