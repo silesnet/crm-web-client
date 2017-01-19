@@ -11,7 +11,7 @@ var agreementDraftId = 0;
 var tabId = 2;
 var pppoePassword = '';
 var dhcpPort = '';
-var authTypePreviousValue = '';
+var accessPreviousValue = '';
 jQuery(document).ready(function() {
   initLoadPages();
 });
@@ -809,6 +809,7 @@ function updateParamProduct(mode){
   if($("#service_status").val() == "APPROVED") {
     $('#core_router').attr('disabled', 'disabled');
   }
+  updateAuthentication();
 }
 
 /*
@@ -868,32 +869,43 @@ function initAuthentification(){
     $("#auth_a").removeClass("ds-none");
     $("#auth_a_switch").addClass("ds-none");
   }
-  $("#auth_type").change(function (event){
-    var currentValue = $(this).val();
-    if (currentValue == authTypePreviousValue) {
+  $("#auth_type").change(updateAuthentication);
+}
+
+function updateAuthentication(event) {
+    var protocol = $("#auth_type").val(),
+      channel = $("#product option:selected").attr("chl"),
+      access = channel + '_' + protocol;
+    if (access == accessPreviousValue) {
       return;
     }
-    if(currentValue == 2){
+    if (protocol == 2) { // PPPoE
       $("#auth_a").prop("disabled", true);
       $("#auth_a").removeClass("ds-none");
       $("#auth_a_switch").prop("disabled", true);
       $("#auth_a_switch").addClass("ds-none");
       $("#auth_a").val($("#service_id").val());
-      if(pppoePassword == ''){
+      if (pppoePassword == '') {
         pppoePassword = generatePassword(8);
       }
       dhcpPort = $('#auth_b').val();
       $("#auth_b").val(pppoePassword);
-    }else{
+      $("#auth_b").prop("disabled", false);
+    } else { // DHCP
       $("#auth_a").prop("disabled", true);
       $("#auth_a").addClass("ds-none");
-      $("#auth_a_switch").prop("disabled", false);
-      $("#auth_a_switch").removeClass("ds-none");
       pppoePassword = $('#auth_b').val();
       $("#auth_b").val(dhcpPort);
+      $("#auth_a_switch").removeClass("ds-none");
+      if (channel === 'wireless') {
+        $("#auth_a_switch").prop("disabled", true);
+        $("#auth_b").prop("disabled", true);
+      } else {
+        $("#auth_a_switch").prop("disabled", false);
+        $("#auth_b").prop("disabled", false);
+      }
     }
-    authTypePreviousValue = currentValue;
-  });
+    accessPreviousValue = access;
 }
 
 function initCustomerAddressCopy(){
