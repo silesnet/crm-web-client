@@ -38,6 +38,7 @@ input[type=number] {
 
 .btn.copy-address {display: block;}
 #service_title {float: right;}
+#serviceAccess {float: right;}
 
 /*  glyph icon check boxes */
 input[type=checkbox].glyphicon:before {
