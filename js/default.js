@@ -724,8 +724,12 @@ function deserializeDraftDataService(jsonData){
     if(data.auth_type == 1){
       //alert(data.auth_a);
       $("#auth_a_switch").val(data.auth_a);
+      pppoePassword = '';
+      dhcpPort = data.auth_b;
     }else{
       $("#auth_a").val(data.auth_a);
+      pppoePassword = data.auth_b;
+      dhcpPort = '';
     }
     $("#auth_b").val(data.auth_b);
     $("#ip").val(data.ip);
@@ -740,6 +744,8 @@ function deserializeDraftDataService(jsonData){
      $("#is_ip_public").prop("checked", true);
     }
   }
+  accessPreviousValue = 
+    (data.product_channel !== 'wireless' ? 'lan' : 'wireless') + '_' + data.auth_type;
   updateParamProduct();
   updateStatusButton();
   initAuthentification();
@@ -875,11 +881,12 @@ function initAuthentification(){
 function updateAuthentication(event) {
     var protocol = $("#auth_type").val(),
       channel = $("#product option:selected").attr("chl"),
-      access = channel + '_' + protocol;
+      access = (channel !== 'wireless' ? 'lan' : channel) + '_' + protocol;
+      // console.log('1. ' + access + ' ' + pppoePassword + ' ' + dhcpPort);
     if (access == accessPreviousValue) {
       return;
     }
-    if (protocol == 2) { // PPPoE
+    if (access === 'lan_2' || access ==='wireless_2') { // PPPoE
       $("#auth_a").prop("disabled", true);
       $("#auth_a").removeClass("ds-none");
       $("#auth_a_switch").prop("disabled", true);
@@ -887,24 +894,38 @@ function updateAuthentication(event) {
       $("#auth_a").val($("#service_id").val());
       if (pppoePassword == '') {
         pppoePassword = generatePassword(8);
+      } 
+      if (accessPreviousValue === 'lan_1') {
+        dhcpPort = $('#auth_b').val();
       }
-      dhcpPort = $('#auth_b').val();
       $("#auth_b").val(pppoePassword);
       $("#auth_b").prop("disabled", false);
-    } else { // DHCP
+    }
+
+    if (access === 'lan_1') { // DHCP
       $("#auth_a").prop("disabled", true);
       $("#auth_a").addClass("ds-none");
-      pppoePassword = $('#auth_b').val();
+      if (accessPreviousValue === 'lan_2' || accessPreviousValue === 'wireless_2') {
+        pppoePassword = $('#auth_b').val();
+      }
       $("#auth_b").val(dhcpPort);
       $("#auth_a_switch").removeClass("ds-none");
-      if (channel === 'wireless') {
-        $("#auth_a_switch").prop("disabled", true);
-        $("#auth_b").prop("disabled", true);
-      } else {
-        $("#auth_a_switch").prop("disabled", false);
-        $("#auth_b").prop("disabled", false);
-      }
+      $("#auth_a_switch").prop("disabled", false);
+      $("#auth_b").prop("disabled", false);
     }
+
+    if (access === 'wireless_1') { // DHCP wireless
+      $("#auth_a").prop("disabled", true);
+      $("#auth_a").addClass("ds-none");
+      if (accessPreviousValue === 'lan_2' || accessPreviousValue === 'wireless_2') {
+        pppoePassword = $('#auth_b').val();
+      }
+      $("#auth_b").val(dhcpPort);
+      $("#auth_a_switch").removeClass("ds-none");
+      $("#auth_a_switch").prop("disabled", true);
+      $("#auth_b").prop("disabled", true);
+    }
+    // console.log('2. ' + access + ' ' + pppoePassword + ' ' + dhcpPort);
     accessPreviousValue = access;
     updateServiceNameAndAccess();
 }
