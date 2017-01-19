@@ -270,8 +270,10 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
             appendResponseFlashMessages(response);
             location.href = "index.html";
           },
-          error: function(response) {
-            appendFlashMessage('danger', response.errors.detail);
+          error: function(err) {
+            console.log(err);
+            var error = 'Návrh služby se nepodařilo uložit: ' + err.responseJSON.errors.detail;
+            appendFlashMessage('danger', error);
             location.href = "index.html";
           }
         });
@@ -518,8 +520,8 @@ function displayFlashMessages() {
     );
   }
   setTimeout(function() { $(".alert-success").slideUp("slow"); }, 2000);
-  setTimeout(function() { $(".alert-info").slideUp("slow"); }, 3000);
-  setTimeout(function() { $(".alert-warning").slideUp("slow"); }, 4000);
+  setTimeout(function() { $(".alert-info").slideUp("slow"); }, 4000);
+  setTimeout(function() { $(".alert-warning").slideUp("slow"); }, 8000);
   clearFlashMessages();
 }
 
