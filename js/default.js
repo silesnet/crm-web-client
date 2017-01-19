@@ -274,7 +274,7 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
             console.log(err);
             var error = 'Návrh služby se nepodařilo uložit: ' + err.responseJSON.errors.detail;
             appendFlashMessage('danger', error);
-            location.href = "index.html";
+            displayFlashMessages();
           }
         });
      }
