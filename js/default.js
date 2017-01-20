@@ -320,10 +320,16 @@ function initDraftDeleteAction() {
     $.ajax({
       type: "DELETE",
       url: address + "drafts2/" + getURLParameter("draft_id"),
-      success: function() {
-        localStorage.setItem("infoClass", "success");
-        localStorage.setItem("infoData", "Návrh služby byl smazán!");
-        location.href = "index.html"
+      success: function(response) {
+        appendFlashMessage('success', 'Návrh služby byl smazán!');
+        appendResponseFlashMessages(response);
+        location.href = "index.html";
+      },
+      error: function(err) {
+        console.log(err);
+        var error = 'Návrh služby se nepodařilo smazat: ' + err.responseJSON.errors.detail;
+        appendFlashMessage('danger', error);
+        displayFlashMessages();
       }
     });
   });
@@ -746,6 +752,7 @@ function deserializeDraftDataService(jsonData){
   }
   accessPreviousValue = 
     (data.product_channel !== 'wireless' ? 'lan' : 'wireless') + '_' + data.auth_type;
+  updateServiceNameAndAccess();
   updateParamProduct();
   updateStatusButton();
   initAuthentification();
@@ -883,6 +890,7 @@ function updateAuthentication(event) {
       channel = $("#product option:selected").attr("chl"),
       access = (channel !== 'wireless' ? 'lan' : channel) + '_' + protocol;
       // console.log('1. ' + access + ' ' + pppoePassword + ' ' + dhcpPort);
+    updateServiceNameAndAccess();
     if (access == accessPreviousValue) {
       return;
     }
@@ -924,12 +932,16 @@ function updateAuthentication(event) {
     }
     // console.log('2. ' + access + ' ' + pppoePassword + ' ' + dhcpPort);
     accessPreviousValue = access;
-    updateServiceNameAndAccess();
 }
 
 function updateServiceNameAndAccess() {
   $('#serviceName').text($('#product option:selected').text());
-  $('#serviceAccess').text($("#product option:selected").attr("chl") + '/' + resolveAccessProtocol());
+  $('#serviceAccess').text(resolveAccessChannel() + '-' + resolveAccessProtocol());
+}
+
+function resolveAccessChannel() {
+  var productChannel = $("#product option:selected").attr("chl");
+  return productChannel === 'wireless' ? 'WIRELESS' : 'LAN';
 }
 
 function resolveAccessProtocol() {
