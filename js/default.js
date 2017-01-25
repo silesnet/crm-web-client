@@ -1,6 +1,6 @@
 var homeUrl = 'http://localhost';
 var address = "http://localhost:8090/";
-var sisBaseUrl = 'https://localhost:8443/sis';
+var sisBaseUrl = 'https://localhost:8443/account';
 var defaultSessionId = 'test';
 var products;
 var users;
@@ -288,7 +288,8 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
           contentType:"application/json",
           success: function(response) {
             appendFlashMessage('success', message);
-            location.href = sisBaseUrl + '/customer/view.html?action=showDetail&_navPushUrl=1&customerId=' + $("#customer_id").val();
+            window.open(sisBaseUrl + '/customer/view.html?action=showDetail&_navPushUrl=1&customerId=' + $("#customer_id").val());
+            location.href = "index.html";
           },
           error: function(response) {
             console.log('IMPORT ERROR: ' + response);
