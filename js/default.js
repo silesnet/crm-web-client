@@ -230,36 +230,37 @@ function initDraftSaveAction() {
 
 */
 function saveDraft(idCustomer, idAgreement, idService, message, status){
-   var mac = $("#mac_address").val();
-   if (mac && (
-        !mac.match(/^([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}$/) &&
-        !mac.match(/^([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2}$/) &&
-        !mac.match(/^[A-Fa-f0-9]{12}$/) 
-      )) {
-     alert('MAC adresa není zadána správně, nelze uložit.');
-     return false;
-   }
-   if (status != "IMPORTED") {
-     if(idCustomer > 0) {
-       $.ajax({
-        type: "PUT",
-        url: address + "drafts2/" + idCustomer,
-        dataType: "json",
-        contentType:"application/json",
-        data: serializeDraftDataCustomer(status)
+  var mac = $("#mac_address").val();
+  if (mac && (
+      !mac.match(/^([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}$/) &&
+      !mac.match(/^([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2}$/) &&
+      !mac.match(/^[A-Fa-f0-9]{12}$/) 
+  )) {
+    alert('MAC adresa není zadána správně, nelze uložit.');
+    return false;
+  }
+  if (status != "IMPORTED") {
+    if (status == 'DRAFT') {
+      if (idCustomer > 0) {
+        $.ajax({
+          type: "PUT",
+          url: address + "drafts2/" + idCustomer,
+          dataType: "json",
+          contentType:"application/json",
+          data: serializeDraftDataCustomer(status)
         });
-     }
-     if(idAgreement > 0) {
-      $.ajax({
-        type: "PUT",
-        url: address + "drafts2/" + idAgreement,
-        dataType: "json",
-        contentType:"application/json",
-        data: serializeDraftDataAgreement(status)
+      }
+      if (idAgreement > 0) {
+        $.ajax({
+          type: "PUT",
+          url: address + "drafts2/" + idAgreement,
+          dataType: "json",
+          contentType:"application/json",
+          data: serializeDraftDataAgreement(status)
         });
-     }
-     if(idService > 0) {
-       $.ajax({
+      }
+      if (idService > 0) {
+        $.ajax({
           type: "PUT",
           url: address + "drafts2/" + idService,
           dataType: "json",
@@ -272,35 +273,69 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
           },
           error: function(err) {
             console.log(err);
-            var error = 'Návrh služby se nepodařilo uložit: ' + err.responseJSON.errors.detail;
+            var error = 'Návrh služby se nepodařilo uložit: ' + fetchErrorMessage(err);
             appendFlashMessage('danger', error);
             displayFlashMessages();
           }
         });
-     }
-   } else {
-      // import service draft
+      }
+    } // status == 'DRAFT'
+    else {
       if (idService > 0) {
         $.ajax({
-          type: "POST",
-          url: address + "drafts2/" + idService,
+          type: "PUT",
+          url: address + "drafts2/" + idService + '/status',
           dataType: "json",
           contentType:"application/json",
+          data: JSON.stringify({ status: status }, null, 0),
           success: function(response) {
-            appendFlashMessage('success', message);
-            window.open(sisBaseUrl + '/customer/view.html?action=showDetail&_navPushUrl=1&customerId=' + $("#customer_id").val());
+            appendFlashMessage('success', 'Status návrhu služby ' + idService + ' byl změněn na ' + status);
+            appendResponseFlashMessages(response);
             location.href = "index.html";
           },
-          error: function(response) {
-            console.log('IMPORT ERROR: ' + response);
-            appendFlashMessage('danger', response.errors.detail);
-            location.href = "index.html";
+          error: function(err) {
+            console.log(err);
+            var error = 'Nový status návrhu služby se nepodařilo uložit: ' + fetchErrorMessage(err);
+            appendFlashMessage('danger', error);
+            displayFlashMessages();
           }
         });
       }
-   }
+    }
+  } // status != 'IMPORTED'
+  else {
+    if (idService > 0) {
+      $.ajax({
+        type: "POST",
+        url: address + "drafts2/" + idService,
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+          appendFlashMessage('success', message);
+          window.open(sisBaseUrl + '/customer/view.html?action=showDetail&_navPushUrl=1&customerId=' + $("#customer_id").val());
+          location.href = "index.html";
+        },
+        error: function(err) {
+          console.log('IMPORT ERROR: ' + err);
+          appendFlashMessage('danger', fetchErrorMessage(err));
+          location.href = "index.html";
+        }
+      });
+    }
+  } // status == 'IMPORTED'
 }
 
+function fetchErrorMessage(err) {
+  if (err.responseJSON) {
+    if (err.responseJSON.errors && err.responseJSON.errors.detail) {
+      return err.responseJSON.errors.detail;
+    }
+    if (err.responseJSON.message) {
+      return err.responseJSON.message;
+    }
+  }
+  return err.responseText ? err.responseText : err;
+}
 /*
   inicialize action onclick delete in draft form
 */
