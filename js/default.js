@@ -214,14 +214,16 @@ function loadUsers(){
   inicilize draft form submit action
 */
 function initDraftSaveAction() {
+  var originalStatus = $("#service_status").val();
+  console.log(originalStatus);
   $("#draft input[name=save]").click(function (event){
-    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Návrh služby byl uložen!", $("#service_status").val());
+    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Návrh služby byl uložen!", $("#service_status").val(), originalStatus);
   });
   $("#draft input[name=status]").click(function (event){
-    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Návrh služby byl " + $(this).attr('msg') + "!", $(this).attr('rel'));
+    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Návrh služby byl " + $(this).attr('msg') + "!", $(this).attr('rel'), originalStatus);
   });
   $("#draft input[name=statusBack]").click(function (event){
-    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Návrh služby byl zamítnut!", $(this).attr('rel'));
+    saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Návrh služby byl zamítnut!", $(this).attr('rel'), originalStatus);
   });
 }
 
@@ -229,7 +231,7 @@ function initDraftSaveAction() {
   action save draft
 
 */
-function saveDraft(idCustomer, idAgreement, idService, message, status){
+function saveDraft(idCustomer, idAgreement, idService, message, status, originalStatus){
   var mac = $("#mac_address").val();
   if (mac && (
       !mac.match(/^([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}$/) &&
@@ -239,8 +241,8 @@ function saveDraft(idCustomer, idAgreement, idService, message, status){
     alert('MAC adresa není zadána správně, nelze uložit.');
     return false;
   }
-  if (status != "IMPORTED") {
-    if (status == 'DRAFT') {
+  if (originalStatus != "IMPORTED") {
+    if (status == 'DRAFT' && originalStatus != 'SUBMITTED') {
       if (idCustomer > 0) {
         $.ajax({
           type: "PUT",
