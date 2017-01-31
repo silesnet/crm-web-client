@@ -12,6 +12,7 @@ var tabId = 2;
 var pppoePassword = '';
 var dhcpPort = '';
 var accessPreviousValue = '';
+var draftPopulated = false;
 jQuery(document).ready(function() {
   initLoadPages();
 });
@@ -22,7 +23,6 @@ jQuery(document).ready(function() {
 function initLoadPages(){
   $('a#sis_home').attr('href', homeUrl);
   loadUserName().done(function() {
-    console.log('user loaded: ' + user_id);
     if(getURLParameter("action") != null){
       $( "#content" ).load("pages/" + getURLParameter("action") + ".html #data", function(){
         if(getURLParameter("action") == 'draft'){
@@ -69,7 +69,6 @@ function initDraft(){
     loadUsers(),
     loadProducts()
   ).then(function() {
-    console.log('prerequisites loaded...');
     initFormDefaults(operation_country); // has to be called before loadDraft()
     loadDraft(getURLParameter("draft_id"));
     // inicialize click action button
@@ -94,7 +93,6 @@ function loadDraft(id){
     async:false,
     url: address + "drafts2/" + id,
     success: function(jsondata) {
-      console.log('got draft');
 
       var tmpCustomerId = jsondata.drafts.links["customers"] || jsondata.drafts.links["drafts.customers"];
       var tmpAgreementId = jsondata.drafts.links["agreements"] || jsondata.drafts.links["drafts.agreements"];
@@ -124,7 +122,6 @@ function loadDraft(id){
       }
 
       deserializeDraftDataService(jsondata.drafts);
-
       updateParamProduct(0);
       setTitleDraft();
       setEditableDraft();
@@ -138,7 +135,6 @@ function loadProducts() {
     type: "GET",
     url: address + "products?country=" + operation_country,
     success: function(data) {
-      console.log('got products');
       $.each(data.products,function(key, value) {
         productName = value.name;
         if (!value.is_dedicated) {
@@ -156,7 +152,6 @@ function loadNetworks(){
     type: "GET",
     url: address + "networks/ssids",
     success: function(data) {
-      console.log('got networks');
       $.each(data.ssids,function(key, value) {
         $("#ssid").append("<option value='" + value.id + "' master='" + value.master + "'>" + value.ssid + " (" + value.master + ")</option>");
       });
@@ -169,7 +164,6 @@ function loadSwitches(){
     type: "GET",
     url: address + "networks/" + operation_country + "/devices?deviceType=switch",
     success: function(data) {
-      console.log('got switch');
       $.each(data.devices,function(key, value) {
         $("#auth_a_switch").append("<option value='" + value.id + "' rel='" + value.master + "'>" + value.name + "</option>");
       });
@@ -186,7 +180,6 @@ function loadRouters(){
     type: "GET",
     url: address + "networks/routers",
     success: function(data) {
-        console.log('got routers');
         $.each(data.core_routers,function(key, value) {
           $("#core_router").append("<option value='" + value.id + "' name='" + value.name + "'>" + value.name + "</option>");
         });
@@ -199,7 +192,6 @@ function loadUsers(){
     type: "GET",
     url: address + "users",
     success: function(data) {
-          console.log('got users');
           $.each(data.users,function(key, value) {
             $("#operator").append("<option value='" + value.id + "' login='" + value.login + "'>" + value.fullName + "</option>");
           });
@@ -215,7 +207,6 @@ function loadUsers(){
 */
 function initDraftSaveAction() {
   var originalStatus = $("#service_status").val();
-  console.log(originalStatus);
   $("#draft input[name=save]").click(function (event){
     saveDraft(customerDraftId, agreementDraftId, getURLParameter("draft_id"), "Návrh služby byl uložen!", $("#service_status").val(), originalStatus);
   });
@@ -788,13 +779,11 @@ function deserializeDraftDataService(jsonData){
      $("#is_ip_public").prop("checked", true);
     }
   }
-  accessPreviousValue = 
-    (data.product_channel !== 'wireless' ? 'lan' : 'wireless') + '_' + data.auth_type;
-  updateServiceNameAndAccess();
+  draftPopulated = true;
   updateParamProduct();
-  updateStatusButton();
   initAuthentification();
   initTabs();
+  updateStatusButton();
 }
 
 /*
@@ -837,28 +826,31 @@ function addDevice(){
 /*
   update parameters product
 */
-function updateParamProduct(mode){
-  if($("#product option:selected").attr("rel") == "false"){
-    $("#downlink, #uplink, #price").prop("readonly", true);
-  }else{
-    $("#downlink, #uplink, #price").prop("readonly", false);
-  }
-  if(mode == 0 && $("#product option:selected").attr("rel") == "false") {
-    $("#downlink").val($("#product option:selected").attr("dl"));
-    $("#uplink").val($("#product option:selected").attr("ul"));
-    $("#price").val($("#product option:selected").attr("prc"));
-  }
-  if($("#product option:selected").attr("chl") == 'wireless'){
-    $("#ssid").prop("disabled", false);
-    $("#mac_address").prop("disabled", false);
-    $("#core_router").prop("disabled", true);
-  }else{
-    $("#ssid").prop("disabled", true);
-    $("#mac_address").prop("disabled", true);
-    $("#core_router").prop("disabled", false);
-  }
-  if($("#service_status").val() == "APPROVED") {
-    $('#core_router').attr('disabled', 'disabled');
+function updateParamProduct(mode) {
+  var status = $('#service_status').val();
+  if (status == 'DRAFT') {
+    if ($("#product option:selected").attr("rel") == "false") {
+      $("#downlink, #uplink, #price").prop("readonly", true);
+    } else {
+      $("#downlink, #uplink, #price").prop("readonly", false);
+    }
+    if (mode == 0 && $("#product option:selected").attr("rel") == "false") {
+      $("#downlink").val($("#product option:selected").attr("dl"));
+      $("#uplink").val($("#product option:selected").attr("ul"));
+      $("#price").val($("#product option:selected").attr("prc"));
+    }
+    if ($("#product option:selected").attr("chl") == 'wireless'){
+      $("#ssid").prop("disabled", false);
+      $("#mac_address").prop("disabled", false);
+      $("#core_router").prop("disabled", true);
+    } else {
+      $("#ssid").prop("disabled", true);
+      $("#mac_address").prop("disabled", true);
+      $("#core_router").prop("disabled", false);
+    }
+    if ($("#service_status").val() == "APPROVED") {
+      $('#core_router').attr('disabled', 'disabled');
+    }
   }
   updateAuthentication();
 }
@@ -926,12 +918,14 @@ function initAuthentification(){
 function updateAuthentication(event) {
     var protocol = $("#auth_type").val(),
       channel = $("#product option:selected").attr("chl"),
-      access = (channel !== 'wireless' ? 'lan' : channel) + '_' + protocol;
-      // console.log('1. ' + access + ' ' + pppoePassword + ' ' + dhcpPort);
-    updateServiceNameAndAccess();
-    if (access == accessPreviousValue) {
+      access = (channel != 'wireless' ? 'lan' : channel) + '_' + protocol,
+      status = $('#service_status').val(),
+      enable = [], disable = [], show = [], hide = [];
+
+    if (!draftPopulated || access == accessPreviousValue) {
       return;
     }
+    updateServiceNameAndAccess();
     if (accessPreviousValue === 'lan_1') {
         dhcpPort = $('#auth_b').val();
     }
@@ -939,36 +933,37 @@ function updateAuthentication(event) {
       pppoePassword = $('#auth_b').val();
     }
     if (access === 'lan_2' || access ==='wireless_2') { // PPPoE
-      $("#auth_a").prop("disabled", true);
-      $("#auth_a").removeClass("ds-none");
-      $("#auth_a_switch").prop("disabled", true);
-      $("#auth_a_switch").addClass("ds-none");
       $("#auth_a").val($("#service_id").val());
       if (pppoePassword == '') {
         pppoePassword = generatePassword(8);
       } 
       $("#auth_b").val(pppoePassword);
-      $("#auth_b").prop("disabled", false);
+      enable.push('#auth_b');
+      show.push('#auth_a');
+      disable.push('#auth_a', '#auth_a_switch');
+      hide.push('#auth_a_switch');
     }
 
     if (access === 'lan_1') { // DHCP
-      $("#auth_a").prop("disabled", true);
-      $("#auth_a").addClass("ds-none");
       $("#auth_b").val(dhcpPort);
-      $("#auth_a_switch").removeClass("ds-none");
-      $("#auth_a_switch").prop("disabled", false);
-      $("#auth_b").prop("disabled", false);
+      enable.push('#auth_a_switch', '#auth_b');
+      show.push('#auth_a_switch');
+      disable.push('#auth_a');
+      hide.push('#auth_a');
     }
 
     if (access === 'wireless_1') { // DHCP wireless
-      $("#auth_a").prop("disabled", true);
-      $("#auth_a").addClass("ds-none");
       $("#auth_b").val(dhcpPort);
-      $("#auth_a_switch").removeClass("ds-none");
-      $("#auth_a_switch").prop("disabled", true);
-      $("#auth_b").prop("disabled", true);
+      show.push('#auth_a_switch');
+      disable.push('#auth_a', '#auth_b', '#auth_a_switch');
+      hide.push('#auth_a');
     }
-    // console.log('2. ' + access + ' ' + pppoePassword + ' ' + dhcpPort);
+
+    enable.forEach(function(id) { $(id).prop('disabled', false); });
+    show.forEach(function(id) { $(id).removeClass('ds-none');  });
+    disable.forEach(function(id) { $(id).prop('disabled', true);});
+    hide.forEach(function(id) { $(id).addClass('ds-none'); });
+
     accessPreviousValue = access;
 }
 
@@ -1047,19 +1042,23 @@ function serializeToPrint(form, draftId){
    return params;
 }
 
-function updateStatusButton(){
-  if($("#service_status").val() == "SUBMITTED"){
+function updateStatusButton() {
+  if ($("#service_status").val() != "DRAFT") {
+    $('#draft input, #draft textarea, #draft select, #draft a.btn').attr('disabled', 'disabled');
+    $("#draft input[name=status]").attr('disabled', false);
+  }
+  if ($("#service_status").val() == "SUBMITTED") {
     $("#draft input[name=status]").val('Akceptovat');
     $("#draft input[name=status]").attr('rel', 'APPROVED');
     $("#draft input[name=status]").attr('msg', 'akceptován');
+    $("#draft input[name=statusBack]").attr('disabled', false);
     $("#draft input[name=statusBack]").removeClass("ds-none");
-  } else if($("#service_status").val() == "APPROVED"){
+  } else if ($("#service_status").val() == "APPROVED") {
     $("#draft input[name=delete]").attr('disabled', 'disabled');
     $("#draft input[name=status]").val('Importovat');
     $("#draft input[name=status]").attr('rel', 'IMPORTED');
     $("#draft input[name=status]").attr('msg', 'importován');
     $("#draft input[name=save]").attr('disabled', 'disabled');
-    $('#draft input, #draft textarea, #draft select, #draft a.btn').attr('disabled', 'disabled');
     $("#draft input[name=status]").attr('disabled', false);
   }
 }
