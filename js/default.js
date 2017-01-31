@@ -925,7 +925,6 @@ function updateAuthentication(event) {
     var protocol = $("#auth_type").val(),
       channel = $("#product option:selected").attr("chl"),
       access = (channel != 'wireless' ? 'lan' : channel) + '_' + protocol,
-      status = $('#service_status').val(),
       enable = [], disable = [], show = [], hide = [];
 
     if (!draftPopulated || access == accessPreviousValue) {
@@ -962,6 +961,12 @@ function updateAuthentication(event) {
       $("#auth_b").val(dhcpPort);
       disable.push('#auth_a', '#auth_b', '#auth_a_switch');
       hide.push('#auth_a', '#auth_a_switch', '#auth_b', 'label[for=auth_a]', 'label[for=auth_b]');
+    }
+
+    if (serviceCountry($("#service_id").val()) == 'PL' && protocol == '2') {
+      enable.push("#ip");
+    } else {
+      disable.push("#ip");
     }
 
     enable.forEach(function(id) { $(id).prop('disabled', false); });
@@ -1311,4 +1316,8 @@ function initConfigComboBox() {
     // }
     updateServiceNameAndAccess();
   });
+}
+
+function serviceCountry(serviceId) {
+  return ('' + serviceId).substring(0, 1) == '1' ? 'CZ' : 'PL';
 }
