@@ -938,25 +938,24 @@ function updateAuthentication(event) {
         pppoePassword = generatePassword(8);
       } 
       $("#auth_b").val(pppoePassword);
+      show.push('#auth_a', '#auth_b', 'label[for=auth_a]', 'label[for=auth_b]');
       enable.push('#auth_b');
-      show.push('#auth_a');
       disable.push('#auth_a', '#auth_a_switch');
       hide.push('#auth_a_switch');
     }
 
     if (access === 'lan_1') { // DHCP
       $("#auth_b").val(dhcpPort);
+      show.push('#auth_a_switch', '#auth_b', 'label[for=auth_a]', 'label[for=auth_b]');
       enable.push('#auth_a_switch', '#auth_b');
-      show.push('#auth_a_switch');
       disable.push('#auth_a');
       hide.push('#auth_a');
     }
 
     if (access === 'wireless_1') { // DHCP wireless
       $("#auth_b").val(dhcpPort);
-      show.push('#auth_a_switch');
       disable.push('#auth_a', '#auth_b', '#auth_a_switch');
-      hide.push('#auth_a');
+      hide.push('#auth_a', '#auth_a_switch', '#auth_b', 'label[for=auth_a]', 'label[for=auth_b]');
     }
 
     enable.forEach(function(id) { $(id).prop('disabled', false); });
