@@ -851,6 +851,12 @@ function updateParamProduct(mode) {
     if ($("#service_status").val() == "APPROVED") {
       $('#core_router').attr('disabled', 'disabled');
     }
+    if (draftPopulated && /^WIRELESSmax min\..*$/.test($('#product option:selected').attr('service'))) {
+      $('#auth_type').val('1');
+      $('#auth_type').attr('disabled', true);
+    } else {
+      $('#auth_type').attr('disabled', false);
+    }
   }
   updateAuthentication();
 }
