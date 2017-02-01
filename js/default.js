@@ -232,7 +232,7 @@ function saveDraft(idCustomer, idAgreement, idService, message, status, original
     alert('MAC adresa není zadána správně, nelze uložit.');
     return false;
   }
-  if (originalStatus != "IMPORTED") {
+  if (status != "IMPORTED") {
     if (status == 'DRAFT' && originalStatus != 'SUBMITTED') {
       if (idCustomer > 0) {
         $.ajax({
