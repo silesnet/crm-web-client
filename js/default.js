@@ -26,7 +26,7 @@ function initLoadPages(){
   $('a#version').attr('href',
     'https://github.com/silesnet/crm-web-client/commit/' +
       version.substring(version.indexOf('+') + 1));
-  $('a#version').text('v' + version);
+  $('span#versionShort').text('v' + version.substring(0, version.indexOf('+')));
   loadUserName().done(function() {
     if(getURLParameter("action") != null){
       $( "#content" ).load("pages/" + getURLParameter("action") + ".html #data", function(){
