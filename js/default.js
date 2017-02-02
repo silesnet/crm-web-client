@@ -2,6 +2,7 @@ var homeUrl = 'http://localhost';
 var address = "http://localhost:8090/";
 var sisBaseUrl = 'https://localhost:8443/account';
 var defaultSessionId = 'test';
+var version = '14.3.19-1844+19ee665';
 var products;
 var users;
 var user_id = "";
@@ -22,6 +23,10 @@ jQuery(document).ready(function() {
 */
 function initLoadPages(){
   $('a#sis_home').attr('href', homeUrl);
+  $('a#version').attr('href',
+    'https://github.com/silesnet/crm-web-client/commit/' +
+      version.substring(version.indexOf('+') + 1));
+  $('a#version').text('v' + version);
   loadUserName().done(function() {
     if(getURLParameter("action") != null){
       $( "#content" ).load("pages/" + getURLParameter("action") + ".html #data", function(){
