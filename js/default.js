@@ -29,7 +29,8 @@ function initLoadPages(){
   $('span#versionShort').text('v' + version.substring(0, version.indexOf('+')));
   loadUserName().done(function() {
     if(getURLParameter("action") != null){
-      $( "#content" ).load("pages/" + getURLParameter("action") + ".html #data", function(){
+      console.log(getURLParameter("action"));
+      $( "#content" ).load("pages/" + getURLParameter("action") + ".html?v=${VERSION} #data", function(){
         if(getURLParameter("action") == 'draft'){
           inicialize();
           initCustomerType();
@@ -1019,13 +1020,13 @@ function initPrintDraft(){
       if($("#service_id").val().substr(0,1) == 2){
         lng = "pl"
       }
-      window.open("pages/protokol-" + lng + ".html?" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
+      window.open("pages/protokol-" + lng + ".html??v=${VERSION}&" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
   });
   $("#print_contract").click(function (event){
       if($("#service_id").val().substr(0,1) == 2){
         lng = "pl"
       }
-      window.open("pages/smlouva-" + lng + ".html?" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
+      window.open("pages/smlouva-" + lng + ".html?v=${VERSION}&" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
   });
 }
 
