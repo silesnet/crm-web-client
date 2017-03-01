@@ -380,7 +380,9 @@ function initTabs(){
     $("#tabs li:nth-child(" + tabId + ") a").tab("show");
   }
 
-  new AddressSelector('customer_address')
+  new AddressSelector('customer_address', {
+      maxItems: 25
+    })
     .onSearch(findAddress)
     .onAddress(populateCustomerAddress)
   ;

@@ -38,7 +38,7 @@ var selector = new AddressSelector('inputId', {
 
     var defaults = {
       minQueryLength: 3,
-      maxItems: 10,
+      maxItems: 30,
       listClass: 'addressesList',
       itemClass: 'addressItem',
       selectedItemClass: 'selectedAddressItem'
