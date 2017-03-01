@@ -16,7 +16,7 @@ var selector = new AddressSelector('inputId', {
 (function() {
   this.AddressSelector = function() {
     this.input = {
-      query: null
+      query: ''
     };
     this.list =  {
       selected: -1,
@@ -105,21 +105,24 @@ var selector = new AddressSelector('inputId', {
 
     this.input.element.addEventListener('keydown', function(e) {
       if (this.overrideKeys.indexOf(e.key) > -1) {
-        e.preventDefault();
         switch (e.key) {
           case 'Enter':
+            e.preventDefault();
             onEnter.call(this, e);
             break;
           case 'Tab':
             onTab.call(this, e);
             break;
           case 'ArrowDown':
+            e.preventDefault();
             moveItemSelectionBy.call(this, 1);
             break;
           case 'ArrowUp':
+            e.preventDefault();
             moveItemSelectionBy.call(this, -1);
             break;
           case 'Escape':
+            e.preventDefault();
             reset.call(this);
             break;
           default:
@@ -130,7 +133,10 @@ var selector = new AddressSelector('inputId', {
   }
 
   function onTab(e) {
-    moveItemSelectionBy.call(this, (e.shiftKey ? -1 : 1));
+    if (this.input.query && hasItems(this.list.addresses)) {
+      e.preventDefault();
+      moveItemSelectionBy.call(this, (e.shiftKey ? -1 : 1));
+    }
   }
 
   function onEnter(e) {
@@ -208,6 +214,7 @@ var selector = new AddressSelector('inputId', {
   function reset() {
     clearList.call(this);
     this.input.element.value = '';
+    this.input.query = '';
     this.input.element.focus();
   }
 
