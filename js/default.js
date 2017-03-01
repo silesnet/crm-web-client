@@ -402,6 +402,7 @@ function findAddress(query, cb) {
 
 function populateCustomerAddress(address) {
   var parsed = parseAddress(address);
+  $('#customer_address_id').val(parsed.id);
   $('#street').val(parsed.street);
   $('#descriptive_number').val(parsed.number);
   $('#orientation_number').val(parsed.orientationNumber);
@@ -412,6 +413,7 @@ function populateCustomerAddress(address) {
 
 function populateServiceAddress(address) {
   var parsed = parseAddress(address);
+  $('#service_address_id').val(parsed.id);
   $('#location_street').val(parsed.street);
   $('#location_descriptive_number').val(parsed.number);
   $('#location_orientation_number').val(parsed.orientationNumber);
@@ -424,12 +426,14 @@ function parseAddress(address) {
  var streetMatch = /^(.+) (\d+)\/?(\d+\w?)?$/.exec(address.street);
  var cityMatch = /^([\d-]{5,6}) (.+)$/.exec(address.city);
  return {
+   id: address.externalId,
    street: streetMatch[1],
    number: streetMatch[2],
    orientationNumber: streetMatch[3],
    zip: cityMatch[1],
    city: cityMatch[2],
    country: address.country,
+   gps: address.gps,
    label: address.label
  };
 }
@@ -693,7 +697,8 @@ function serializeDraftDataService(status){
     auth_a:auth_a_tmp,
     auth_b:$("#auth_b").val(),
     ip:$("#ip").val(),
-    is_ip_public:$("#is_ip_public").is(":checked")
+    is_ip_public:$("#is_ip_public").is(":checked"),
+    address_id: $('#service_address_id').val()
   };
 
   jsonData.drafts.data.devices = [];
@@ -753,7 +758,8 @@ function serializeDraftDataCustomer(status){
     orientation_number:$("#orientation_number").val(),
     town:$("#town").val(),
     postal_code:$("#postal_code").val(),
-    country:$("#country").val()
+    country:$("#country").val(),
+    address_id: $('#customer_address_id').val()
   };
   return JSON.stringify(jsonData);
 }
@@ -780,6 +786,7 @@ function deserializeDraftDataCustomer(jsonData){
   $("#country").val(data.country);
   $("#contact_name").val(data.contact_name);
   $("#info").val(data.info);
+  $("#customer_address_id").val(data.address_id);
   }
 }
 
@@ -807,6 +814,7 @@ function deserializeDraftDataService(jsonData){
     $("#activation_fee").val(data.activation_fee);
     $("#operator").val(data.operator);
     $("#info_service").val(data.info_service);
+    $("#service_address_id").val(data.address_id);
     for(i = 2; i<=data.devices.length; i++){
         addDevice();
     }
