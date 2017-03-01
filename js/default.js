@@ -423,7 +423,7 @@ function populateServiceAddress(address) {
 }
 
 function parseAddress(address) {
- var streetMatch = /^(.+) (\d+)\/?(\d+\w?)?$/.exec(address.street);
+ var streetMatch = /^(.+) ([\d\w]+)\/?(\d+\w?)?$/.exec(address.street);
  var cityMatch = /^([\d-]{5,6}) (.+)$/.exec(address.city);
  return {
    id: address.externalId,
