@@ -72,18 +72,10 @@ var selector = new AddressSelector('inputId', {
     this.input.element = inputElement;
 
     var listElement = document.createElement('div');
-    var inputPosition = inputElement.getBoundingClientRect();
-    var listElementPosition =
-        'position: absolute; ' +
-        'left: ' + inputPosition.left + 'px; ' +
-        'top: ' + inputPosition.bottom + 'px; ' +
-        'min-width: ' + inputPosition.width + 'px; ' +
-        'z-index: 10;'
-    ;
-    listElement.style = listElementPosition;
+    listElement.style.position = 'absolute';
+    listElement.style['z-index'] = 10;
     listElement.style.display = 'none';
     listElement.className = this.options.listClass;
-    listElement.style.border = '1px solid gray';
     this.list.element = listElement;
     document.body.appendChild(listElement);
   } 
@@ -180,6 +172,10 @@ var selector = new AddressSelector('inputId', {
         this.list.element.appendChild(item);
       }, this);
       selectItem.call(this, 0);
+      var inputPosition = this.input.element.getBoundingClientRect();
+      this.list.element.style.left = inputPosition.left + 'px';
+      this.list.element.style.top = inputPosition.bottom + 'px';
+      this.list.element.style['min-width'] = inputPosition.width + 'px';
       this.list.element.style.display = 'block';
     }
   }
@@ -253,9 +249,10 @@ var selector = new AddressSelector('inputId', {
     var list = '.' + this.options.listClass;
     var item = '.' + this.options.itemClass;
     var selectedItem = '.' + this.options.selectedItemClass;
-    style.sheet.insertRule(list + ' { background-color: #fff }', 0);
+    style.sheet.insertRule(list + ' { background-color: #fff; padding: 5px 5px; border: 1px solid gray }', 0);
     style.sheet.insertRule(item + ' { cursor: default; }', 1);
     style.sheet.insertRule(item + ':hover { background-color: #eee }', 2);
     style.sheet.insertRule(selectedItem + ' { background-color: #eee; }', 3);
   }
+
 }());
