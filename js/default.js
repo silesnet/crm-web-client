@@ -380,25 +380,58 @@ function initTabs(){
     $("#tabs li:nth-child(" + tabId + ") a").tab("show");
   }
 
-  window.cas = new AddressSelector('street')
-    .onSearch(function(query, cb) {
-      $.getJSON(address + 'addresses?q=' + query)
-      .then(function(addresses) {
-        cb(null, addresses);
-      }, function(err) {
-        cb(err);
-      });
-    });
+  new AddressSelector('customer_address')
+    .onSearch(findAddress)
+    .onAddress(populateCustomerAddress)
+  ;
 
-  window.sas = new AddressSelector('location_street')
-    .onSearch(function(query, cb) {
-      $.getJSON(address + 'addresses?q=' + query)
-      .then(function(addresses) {
-        cb(null, addresses);
-      }, function(err) {
-        cb(err);
-      });
-    });
+  new AddressSelector('service_address')
+    .onSearch(findAddress)
+    .onAddress(populateServiceAddress)
+  ;
+}
+
+function findAddress(query, cb) {
+  $.getJSON(address + 'addresses?q=' + query)
+  .then(function(addresses) {
+    cb(null, addresses);
+  }, function(err) {
+    cb(err);
+  });
+}
+
+function populateCustomerAddress(address) {
+  var parsed = parseAddress(address);
+  $('#street').val(parsed.street);
+  $('#descriptive_number').val(parsed.number);
+  $('#orientation_number').val(parsed.orientationNumber);
+  $('#town').val(parsed.city);
+  $('#postal_code').val(parsed.zip);
+  $('#country').val(parsed.country === 'CZ' ? '10' : '20');
+}
+
+function populateServiceAddress(address) {
+  var parsed = parseAddress(address);
+  $('#location_street').val(parsed.street);
+  $('#location_descriptive_number').val(parsed.number);
+  $('#location_orientation_number').val(parsed.orientationNumber);
+  $('#location_town').val(parsed.city);
+  $('#location_postal_code').val(parsed.zip);
+  $('#location_country').val(parsed.country === 'CZ' ? '10' : '20');
+}
+
+function parseAddress(address) {
+ var streetMatch = /^(.+) (\d+)\/?(\d+\w?)?$/.exec(address.street);
+ var cityMatch = /^([\d-]{5,6}) (.+)$/.exec(address.city);
+ return {
+   street: streetMatch[1],
+   number: streetMatch[2],
+   orientationNumber: streetMatch[3],
+   zip: cityMatch[1],
+   city: cityMatch[2],
+   country: address.country,
+   label: address.label
+ };
 }
 
 /*
