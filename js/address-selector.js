@@ -38,6 +38,7 @@ var selector = new AddressSelector('inputId', {
 
     var defaults = {
       minQueryLength: 3,
+      maxItems: 10,
       listClass: 'addressesList',
       itemClass: 'addressItem',
       selectedItemClass: 'selectedAddressItem'
@@ -87,8 +88,8 @@ var selector = new AddressSelector('inputId', {
         return;
       }
       this.input.query = query;
-      clearList.call(this);
       if (query.length < this.options.minQueryLength) {
+        clearList.call(this);
         return;
       }
       this.onSearchFn(query, function(err, addresses) {
@@ -97,7 +98,8 @@ var selector = new AddressSelector('inputId', {
           return;
         }
         if (hasItems(addresses)) {
-          this.list.addresses = addresses;
+          clearList.call(this);
+          this.list.addresses = addresses.slice(0, this.options.maxItems);
           populateList.call(this);
         }
       }.bind(this));
