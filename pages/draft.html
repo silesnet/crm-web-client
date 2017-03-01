@@ -51,7 +51,10 @@
                 <div class="col-xs-6"><label for="phone">Telefon</label><input type="text" name="phone" class="form-control col-md-5" id="phone" maxlength="70" placeholder="Telefon"></div>
             </div>
             <div class="row">
-                <div class="col-xs-12"><label for="customer_address">Adresa</label><input type="text" name="customer_address" class="form-control" id="customer_address" placeholder="Adresa"></div>
+                <div class="col-xs-12">
+                  <label for="customer_address">Adresa - výběr ze seznamu</label>
+                  <input type="text" name="customer_address" class="form-control" id="customer_address" placeholder="Seznam adres" style="background-color: #ffe;">
+                </div>
             </div>
             <div class="row">
                 <div class="col-xs-6"><label for="street">Ulice</label><input type="text" name="street" class="form-control" id="street" required="required" maxlength="40" placeholder="Ulice"></div>
@@ -89,7 +92,10 @@
               <div class="col-xs-2"><label for="price">Cena</label><div class="input-group"><input type="text" name="price" class="form-control" id="price" maxlength="50" placeholder="Cena" readonly><span class="input-group-addon" id="service_currency">Kč</span></div></div>
           </div>
           <div class="row">
-              <div class="col-xs-12"><label for="service_address">Adresa přípojky</label><input type="text" name="service_address" class="form-control" id="service_address" placeholder="Adresa"></div>
+              <div class="col-xs-12">
+                <label for="service_address">Adresa přípojky - výběr ze seznamu</label>
+                <input type="text" name="service_address" class="form-control" id="service_address" placeholder="Seznam adres" style="background-color: #ffe;">
+              </div>
           </div>
           <div class="row">
               <div class="col-xs-5"><label for="location_street">Ulice</label><input type="text" name="location_street" class="form-control" id="location_street" maxlength="50" placeholder="Ulice"></div>
