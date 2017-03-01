@@ -379,6 +379,26 @@ function initTabs(){
   } else{
     $("#tabs li:nth-child(" + tabId + ") a").tab("show");
   }
+
+  window.cas = new AddressSelector('street')
+    .onSearch(function(query, cb) {
+      $.getJSON(address + 'addresses?q=' + query)
+      .then(function(addresses) {
+        cb(null, addresses);
+      }, function(err) {
+        cb(err);
+      });
+    });
+
+  window.sas = new AddressSelector('location_street')
+    .onSearch(function(query, cb) {
+      $.getJSON(address + 'addresses?q=' + query)
+      .then(function(addresses) {
+        cb(null, addresses);
+      }, function(err) {
+        cb(err);
+      });
+    });
 }
 
 /*
