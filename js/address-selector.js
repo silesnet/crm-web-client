@@ -97,8 +97,8 @@ var selector = new AddressSelector('inputId', {
           console.error(err);
           return;
         }
+        clearList.call(this);
         if (hasItems(addresses)) {
-          clearList.call(this);
           this.list.addresses = addresses.slice(0, this.options.maxItems);
           populateList.call(this);
         }
