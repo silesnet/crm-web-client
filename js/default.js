@@ -82,6 +82,7 @@ function initDraft(){
     initDraftAddDeviceAction();
     initDraftDeleteAction();
     initPrintDraft();
+    initAddressFieldsActions();
   });
 }
 
@@ -1092,6 +1093,17 @@ function initPrintDraft(){
       }
       window.open("pages/smlouva-" + lng + ".html?v=${VERSION}&" + serializeToPrint($("#draft"), getURLParameter("draft_id")));
   });
+}
+
+function initAddressFieldsActions() {
+  $('#street, #descriptive_number, #orientation_number, #town, #postal_code, #country')
+    .on('change', function(evt) {
+      $('#customer_address_id').val('');
+    });
+  $('#location_street, #location_descriptive_number, #location_orientation_number, #location_town, #location_postal_code, #location_country')
+    .on('change', function(evt) {
+      $('#service_address_id').val('');
+    });
 }
 
 function serializeToPrint(form, draftId){
