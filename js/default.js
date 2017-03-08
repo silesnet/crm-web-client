@@ -1073,6 +1073,7 @@ function initCustomerAddressCopy(){
         $("#location_town").val($("#town").val());
         $("#location_postal_code").val($("#postal_code").val());
         $("#location_country").val($("#country").val());
+        $('#service_address_id').val($('#customer_address_id').val());
     }
   );
 }
