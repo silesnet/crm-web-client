@@ -1204,6 +1204,7 @@ function updateStatusButton() {
   if ($("#service_status").val() != "DRAFT") {
     $('#draft input, #draft textarea, #draft select, #draft a.btn').attr('disabled', 'disabled');
     $("#draft input[name=status]").attr('disabled', false);
+    $('.clear-address').css('display', 'none');
   }
   if ($("#service_status").val() == "SUBMITTED") {
     $("#draft input[name=status]").val('Akceptovat');
