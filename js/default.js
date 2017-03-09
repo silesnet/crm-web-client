@@ -238,11 +238,18 @@ function saveDraft(idCustomer, idAgreement, idService, message, status, original
       !mac.match(/^([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2}$/) &&
       !mac.match(/^[A-Fa-f0-9]{12}$/) 
   )) {
-    alert('MAC adresa není zadána správně, nelze uložit.');
+    showFlashMessage('danger', 'MAC adresa není zadána správně, nelze uložit.');
+    return false;
+  }
+  if (status == 'SUBMITTED' &&
+      !$('#service_address_place').val() &&
+      !$('#service_place').val())
+  {
+    showFlashMessage('danger', 'Chybí GPS, zadej adresu nebo GPS lokaci služby.');
     return false;
   }
   if (status != "IMPORTED") {
-    if (status == 'DRAFT' && originalStatus != 'SUBMITTED') {
+    if ((status == 'DRAFT' || status == 'SUBMITTED') && originalStatus != 'SUBMITTED') {
       if (idCustomer > 0) {
         $.ajax({
           type: "PUT",
@@ -281,7 +288,7 @@ function saveDraft(idCustomer, idAgreement, idService, message, status, original
           }
         });
       }
-    } // status == 'DRAFT'
+    } // status == 'DRAFT' || status == 'SUBMITTED'
     else {
       if (idService > 0) {
         $.ajax({
@@ -648,6 +655,11 @@ function displayFlashMessages() {
   setTimeout(function() { $(".alert-info").slideUp("slow"); }, 4000);
   setTimeout(function() { $(".alert-warning").slideUp("slow"); }, 8000);
   clearFlashMessages();
+}
+
+function showFlashMessage(type, message) {
+  appendFlashMessage(type, message);
+  displayFlashMessages();
 }
 
 function appendFlashMessage(type, message) {
