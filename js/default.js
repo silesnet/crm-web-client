@@ -94,10 +94,10 @@ function initFormDefaults(operation_country) {
   }
 }
 
-function loadDraft(id){
-   return $.ajax({
+function loadDraft(id) {
+  return $.ajax({
     type: "GET",
-    async:false,
+    async: false,
     url: address + "drafts2/" + id,
     success: function(jsondata) {
 
@@ -110,9 +110,10 @@ function loadDraft(id){
       $("#customer_id").val(tmpCustomerId);
       $("#service_title").append(jsondata.drafts.entityId);
 
-      if(jsondata.drafts.links["customers"] != null){
+      if (jsondata.drafts.links["customers"] != null) {
         deserializeNewDraft(loadDraftCustomer(tmpCustomerId, "customers/"));
-      }else {
+      }
+      else {
         tabId = 1;
         var tmpCustomerDraft = loadDraftCustomer(tmpCustomerId, "drafts2/customers/");
         customerDraftId = tmpCustomerDraft.drafts.id;
@@ -120,9 +121,10 @@ function loadDraft(id){
         $("#name").val(tmpCustomerDraft.drafts.entityName.split(' ')[1]);
         deserializeDraftDataCustomer(tmpCustomerDraft.drafts);
       }
-      if(jsondata.drafts.links["agreements"] != null){
+      if (jsondata.drafts.links["agreements"] != null) {
         // TODO load and deserialize agreements
-      }else {
+      }
+      else {
         var tmpAgreementDraft = loadDraftCustomer(tmpAgreementId, "drafts2/agreements/");
         agreementDraftId = tmpAgreementDraft.drafts.id;
         // TODO deserialize agreements
@@ -661,11 +663,11 @@ function appendResponseFlashMessages(response) {
   serialize JSON draft data for service
 */
 function serializeDraftDataService(status){
-
   var auth_a_tmp = "";
-  if($("#auth_type").val() == 1){
+  if ($("#auth_type").val() == 1) {
     auth_a_tmp = $("#auth_a_switch").val();
-  }else {
+  }
+  else {
     auth_a_tmp = $("#auth_a").val();
   }
   var jsonData = {};
@@ -701,19 +703,20 @@ function serializeDraftDataService(status){
     auth_b:$("#auth_b").val(),
     ip:$("#ip").val(),
     is_ip_public:$("#is_ip_public").is(":checked"),
-    address_id: $('#service_address_id').val()
+    address_id: $('#service_address_id').val(),
+    place: $('#service_place').val()
   };
 
   jsonData.drafts.data.devices = [];
 
-$(".row.device").each(function (i){
-  jsonData.drafts.data.devices[i] = {
-    name:$(this).find("input").val(),
-    owner:$(this).find("input:radio:checked").val()
-  }
-});
+  $(".row.device").each(function (i) {
+    jsonData.drafts.data.devices[i] = {
+      name:$(this).find("input").val(),
+      owner:$(this).find("input:radio:checked").val()
+    };
+  });
 
- return JSON.stringify(jsonData, null, 0);
+  return JSON.stringify(jsonData, null, 0);
 }
 
 /*
@@ -793,9 +796,9 @@ function deserializeDraftDataCustomer(jsonData){
   }
 }
 
-function deserializeDraftDataService(jsonData){
+function deserializeDraftDataService(jsonData) {
   var data = jsonData.data;
-  if(data.contract_no != null){
+  if(data.contract_no != null) {
     $("#contract").val(data.contract_no);
     $("#service_id").val(data.service_id);
     $("#product").val(data.product);
@@ -818,35 +821,38 @@ function deserializeDraftDataService(jsonData){
     $("#operator").val(data.operator);
     $("#info_service").val(data.info_service);
     $("#service_address_id").val(data.address_id);
-    for(i = 2; i<=data.devices.length; i++){
-        addDevice();
+    $("#service_place").val(data.place);
+    onServicePlaceChange();
+    for (i = 2; i<=data.devices.length; i++) {
+      addDevice();
     }
-    $(".row.device").each(function (i){
+    $(".row.device").each(function (i) {
       $(this).find("input:text").val(data.devices[i].name);
       $(this).find("input:radio[value=" + data.devices[i].owner + "]").attr('checked',true);
     });
     $("#auth_type").val(data.auth_type);
-    if(data.auth_type == 1){
+    if (data.auth_type == 1) {
       //alert(data.auth_a);
       $("#auth_a_switch").val(data.auth_a);
       pppoePassword = '';
       dhcpPort = data.auth_b;
-    }else{
+    }
+    else {
       $("#auth_a").val(data.auth_a);
       pppoePassword = data.auth_b;
       dhcpPort = '';
     }
     $("#auth_b").val(data.auth_b);
     $("#ip").val(data.ip);
-    if(data.is_ip_public){
-     $("#is_ip_public").prop("checked", true);
+    if (data.is_ip_public) {
+      $("#is_ip_public").prop("checked", true);
     }
     $("#service_status").val(jsonData.status);
   }
   if (data.ip) {
     $("#ip").val(data.ip);
-    if(data.is_ip_public){
-     $("#is_ip_public").prop("checked", true);
+    if (data.is_ip_public) {
+      $("#is_ip_public").prop("checked", true);
     }
   }
   draftPopulated = true;
@@ -1104,6 +1110,24 @@ function initAddressFieldsActions() {
     .on('change', function(evt) {
       $('#service_address_id').val('');
     });
+  $('#service_place').on('change', onServicePlaceChange);
+}
+
+function onServicePlaceChange(evt) {
+  var pos = parseDmsLocation($('#service_place').val());
+  var value = '';
+  var href = '#';
+  if (pos[0] && pos[1]) {
+    pos = [roundTo5Dec(pos[0]), roundTo5Dec(pos[1])];
+    value = pos.join(', ');
+    href = 'https://www.google.com/maps/place/' + pos.join(',');
+  }
+  $('#service_place').val(value);
+  $('#service_place_view').attr('href', href).html(value);
+}
+
+function roundTo5Dec(num) {
+  return Math.round(num * 100000) / 100000;
 }
 
 function serializeToPrint(form, draftId){

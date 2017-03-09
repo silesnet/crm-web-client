@@ -92,9 +92,16 @@
               <div class="col-xs-2"><label for="price">Cena</label><div class="input-group"><input type="text" name="price" class="form-control" id="price" maxlength="50" placeholder="Cena" readonly><span class="input-group-addon" id="service_currency">Kč</span></div></div>
           </div>
           <div class="row">
-              <div class="col-xs-12">
+              <div class="col-xs-6">
                 <label for="service_address">Adresa přípojky - výběr ze seznamu</label>
                 <input type="text" name="service_address" class="form-control" id="service_address" placeholder="Seznam adres" style="background-color: #ffe;">
+              </div>
+              <div class="col-xs-3">
+                <label for="service_place">GPS lokace přípojky</label>
+                <input type="text" name="service_place" class="form-control" id="service_place" placeholder="GPS souřadnice" />
+              </div>
+              <div class="col-xs-3 service_place_view">
+                <p><i class="glyphicon glyphicon-map-marker"></i> <a id="service_place_view" href="#" target="_blank"></a></p>
               </div>
           </div>
           <div class="row">
