@@ -414,7 +414,7 @@ function populateCustomerAddress(address) {
   $('#orientation_number').val(parsed.orientationNumber);
   $('#town').val(parsed.city);
   $('#postal_code').val(parsed.zip);
-  $('#country').val(parsed.country === 'CZ' ? '10' : '20');
+  $('#country').val(parsed.country === 'PL' ? '20' : '10');
 }
 
 function populateServiceAddress(address) {
@@ -430,7 +430,12 @@ function populateServiceAddress(address) {
   $('#location_orientation_number').val(parsed.orientationNumber);
   $('#location_town').val(parsed.city);
   $('#location_postal_code').val(parsed.zip);
-  $('#location_country').val(parsed.country === 'CZ' ? '10' : '20');
+  $('#location_country').val(parsed.country === 'PL' ? '20' : '10');
+}
+
+function clearServiceAddress() {
+  populateServiceAddress({});
+  $('#location_flat').val('');
 }
 
 function isServiceAddressPlaceSameAsServicePlace() {
@@ -444,17 +449,19 @@ function setServicePlace(place) {
 
 function parseAddress(address) {
  var streetMatch = /^(.+) ([\d\w]+)\/?(\d+\w?)?$/.exec(address.street);
+ streetMatch = streetMatch || [];
  var cityMatch = /^([\d-]{5,6}) (.+)$/.exec(address.city);
+ cityMatch = cityMatch || [];
  return {
-   id: address.externalId,
-   street: streetMatch[1],
-   number: streetMatch[2],
-   orientationNumber: streetMatch[3],
-   zip: cityMatch[1],
-   city: cityMatch[2],
-   country: address.country,
-   gps: address.gps,
-   label: address.label
+   id: address.externalId || '',
+   street: streetMatch[1] || '',
+   number: streetMatch[2] || '',
+   orientationNumber: streetMatch[3] || '',
+   zip: cityMatch[1] || '',
+   city: cityMatch[2] || '',
+   country: address.country || '',
+   gps: address.gps || [],
+   label: address.label || ''
  };
 }
 
