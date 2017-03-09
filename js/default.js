@@ -408,6 +408,7 @@ function findAddress(query, cb) {
 function populateCustomerAddress(address) {
   var parsed = parseAddress(address);
   $('#customer_address_id').val(parsed.id);
+  $('#customer_address_place').val(normalizeGps(parsed.gps).join(', '));
   $('#street').val(parsed.street);
   $('#descriptive_number').val(parsed.number);
   $('#orientation_number').val(parsed.orientationNumber);
@@ -418,13 +419,27 @@ function populateCustomerAddress(address) {
 
 function populateServiceAddress(address) {
   var parsed = parseAddress(address);
+  var place = normalizeGps(parsed.gps).join(', ');
   $('#service_address_id').val(parsed.id);
+  if (isServiceAddressPlaceSameAsServicePlace() || $('#service_place').val().trim() === '') {
+    setServicePlace(place);
+  }
+  $('#service_address_place').val(place);
   $('#location_street').val(parsed.street);
   $('#location_descriptive_number').val(parsed.number);
   $('#location_orientation_number').val(parsed.orientationNumber);
   $('#location_town').val(parsed.city);
   $('#location_postal_code').val(parsed.zip);
   $('#location_country').val(parsed.country === 'CZ' ? '10' : '20');
+}
+
+function isServiceAddressPlaceSameAsServicePlace() {
+  return $('#service_place').val() === $('#service_address_place').val();
+}
+
+function setServicePlace(place) {
+  $('#service_place').val(place);
+  onServicePlaceChange();
 }
 
 function parseAddress(address) {
@@ -704,6 +719,7 @@ function serializeDraftDataService(status){
     ip:$("#ip").val(),
     is_ip_public:$("#is_ip_public").is(":checked"),
     address_id: $('#service_address_id').val(),
+    address_place: $('#service_address_place').val(),
     place: $('#service_place').val()
   };
 
@@ -765,7 +781,8 @@ function serializeDraftDataCustomer(status){
     town:$("#town").val(),
     postal_code:$("#postal_code").val(),
     country:$("#country").val(),
-    address_id: $('#customer_address_id').val()
+    address_id: $('#customer_address_id').val(),
+    address_place: $('#customer_address_place').val()
   };
   return JSON.stringify(jsonData);
 }
@@ -774,25 +791,26 @@ function serializeDraftDataCustomer(status){
 */
 function deserializeDraftDataCustomer(jsonData){
   var data = jsonData.data;
-  if(data.name != null){
-  $(".customer-type input:radio[value=" + data.customer_type + "]").click();
-  $("#name").val(data.name);
-  $("#surname").val(data.surname);
-  $("#supplementary_name").val(data.supplementary_name);
-  $("#public_id").val(data.public_id);
-  $("#dic").val(data.dic);
-  $("#representative").val(data.representative);
-  $("#email").val(data.email);
-  $("#phone").val(data.phone);
-  $("#street").val(data.street);
-  $("#descriptive_number").val(data.descriptive_number);
-  $("#orientation_number").val(data.orientation_number);
-  $("#town").val(data.town);
-  $("#postal_code").val(data.postal_code);
-  $("#country").val(data.country);
-  $("#contact_name").val(data.contact_name);
-  $("#info").val(data.info);
-  $("#customer_address_id").val(data.address_id);
+  if (data.name != null) {
+    $(".customer-type input:radio[value=" + data.customer_type + "]").click();
+    $("#name").val(data.name);
+    $("#surname").val(data.surname);
+    $("#supplementary_name").val(data.supplementary_name);
+    $("#public_id").val(data.public_id);
+    $("#dic").val(data.dic);
+    $("#representative").val(data.representative);
+    $("#email").val(data.email);
+    $("#phone").val(data.phone);
+    $("#street").val(data.street);
+    $("#descriptive_number").val(data.descriptive_number);
+    $("#orientation_number").val(data.orientation_number);
+    $("#town").val(data.town);
+    $("#postal_code").val(data.postal_code);
+    $("#country").val(data.country);
+    $("#contact_name").val(data.contact_name);
+    $("#info").val(data.info);
+    $("#customer_address_id").val(data.address_id);
+    $("#customer_address_place").val(data.address_place);
   }
 }
 
@@ -821,8 +839,8 @@ function deserializeDraftDataService(jsonData) {
     $("#operator").val(data.operator);
     $("#info_service").val(data.info_service);
     $("#service_address_id").val(data.address_id);
-    $("#service_place").val(data.place);
-    onServicePlaceChange();
+    $("#service_address_place").val(data.address_place);
+    setServicePlace(data.place || data.address_place);
     for (i = 2; i<=data.devices.length; i++) {
       addDevice();
     }
@@ -1081,6 +1099,10 @@ function initCustomerAddressCopy(){
         $("#location_postal_code").val($("#postal_code").val());
         $("#location_country").val($("#country").val());
         $('#service_address_id').val($('#customer_address_id').val());
+        if (isServiceAddressPlaceSameAsServicePlace() || $('#service_place').val().trim() === '') {
+          setServicePlace($('#customer_address_place').val());
+        }
+        $('#service_address_place').val($('#customer_address_place').val());
     }
   );
 }
@@ -1105,10 +1127,15 @@ function initAddressFieldsActions() {
   $('#street, #descriptive_number, #orientation_number, #town, #postal_code, #country')
     .on('change', function(evt) {
       $('#customer_address_id').val('');
+      $('#customer_address_place').val('');
     });
   $('#location_street, #location_descriptive_number, #location_orientation_number, #location_town, #location_postal_code, #location_country')
     .on('change', function(evt) {
+      if (isServiceAddressPlaceSameAsServicePlace()) {
+        setServicePlace('');
+      }
       $('#service_address_id').val('');
+      $('#service_address_place').val('');
     });
   $('#service_place').on('change', onServicePlaceChange);
 }
@@ -1118,16 +1145,12 @@ function onServicePlaceChange(evt) {
   var value = '';
   var href = '#';
   if (pos[0] && pos[1]) {
-    pos = [roundTo5Dec(pos[0]), roundTo5Dec(pos[1])];
+    pos = normalizeGps(pos);
     value = pos.join(', ');
     href = 'https://www.google.com/maps/place/' + pos.join(',');
   }
   $('#service_place').val(value);
   $('#service_place_view').attr('href', href).html(value);
-}
-
-function roundTo5Dec(num) {
-  return Math.round(num * 100000) / 100000;
 }
 
 function serializeToPrint(form, draftId){

@@ -1,3 +1,11 @@
+function normalizeGps(gps) {
+  return (gps && gps.length === 2) ? [roundTo5Dec(gps[0]), roundTo5Dec(gps[1])] : [];
+}
+
+function roundTo5Dec(num) {
+  return Math.round(num * 100000) / 100000;
+}
+
 function parseDmsLocation(input) {
   var coors = String(input).trim().split(/[^\dNSEW.'"°*-]+/i);
   var lat, lon;
