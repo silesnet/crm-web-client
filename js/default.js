@@ -395,7 +395,7 @@ function initTabs(){
     })
     .onSearch(findAddress)
     .onAddress(populateCustomerAddress)
-  ;
+  
 
   new AddressSelector('service_address')
     .onSearch(findAddress)
@@ -414,7 +414,7 @@ function findAddress(query, cb) {
 
 function populateCustomerAddress(address) {
   var parsed = parseAddress(address);
-  $('#customer_address_id').val(parsed.id);
+  $('#customer_address_id').val(parsed.addressFk);
   $('#customer_address_place').val(normalizeGps(parsed.gps).join(', '));
   $('#street').val(parsed.street);
   $('#descriptive_number').val(parsed.number);
@@ -427,7 +427,7 @@ function populateCustomerAddress(address) {
 function populateServiceAddress(address) {
   var parsed = parseAddress(address);
   var place = normalizeGps(parsed.gps).join(', ');
-  $('#service_address_id').val(parsed.id);
+  $('#service_address_id').val(parsed.addressFk);
   if (isServiceAddressPlaceSameAsServicePlace() || $('#service_place').val().trim() === '') {
     setServicePlace(place);
   }
@@ -455,19 +455,19 @@ function setServicePlace(place) {
 }
 
 function parseAddress(address) {
- var streetMatch = /^(.+) ([\d\w]+)\/?(\d+\w?)?$/.exec(address.street);
- streetMatch = streetMatch || [];
- var cityMatch = /^([\d-]{5,6}) (.+)$/.exec(address.city);
- cityMatch = cityMatch || [];
+ var match = /^(.+) ([\d\w]+)\/?(\d+\w?)?, (\d{2,3}[ \-]?\d{2,3}) ([^,]+), (\w{2})$/.exec(address.label);
+ match = match || [];
  return {
-   id: address.externalId || '',
-   street: streetMatch[1] || '',
-   number: streetMatch[2] || '',
-   orientationNumber: streetMatch[3] || '',
-   zip: cityMatch[1] || '',
-   city: cityMatch[2] || '',
-   country: address.country || '',
-   gps: address.gps || [],
+   addressId: address.address_id || '',
+   addressFk: address.address_fk || '',
+   street: match[1] || '',
+   number: match[2] || '',
+   orientationNumber: match[3] || '',
+   zip: match[4] || '',
+   city: match[5] || '',
+   country: match[6] || '',
+   gps: address.gps_cord ? address.gps_cord.split(' ') : [],
+   placeId: address.place_id,
    label: address.label || ''
  };
 }
