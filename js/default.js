@@ -131,7 +131,6 @@ function loadDraft(id) {
       }
 
       deserializeDraftDataService(jsondata.drafts);
-      updateParamProduct(0);
       setTitleDraft();
       setEditableDraft();
     }
@@ -140,13 +139,18 @@ function loadDraft(id) {
 
 function loadProducts() {
    var productName;
+   var country = operation_country; 
+   console.log('country', country);
+   var isPlSerice = (country == 'PL');
    return $.ajax({
     type: "GET",
-    url: address + "products?country=" + operation_country,
+    url: address + "products?country=" + country,
     success: function(data) {
       $.each(data.products,function(key, value) {
         productName = value.name;
-        productName = productName + " " + value.downlink + "/" + value.uplink + " Mbps";
+        if (!(value.is_dedicated && isPlSerice)) {
+          productName = productName + " " + value.downlink + "/" + value.uplink + " Mbps";
+        }
         $("#product").append("<option value='" + value.id + "' rel='" + value.is_dedicated + "' dl='" + value.downlink + "' ul='" + value.uplink + "' prc='" + value.price + "' chl='" + value.channel+ "' service='" + value.name + "'>" + productName + "</option>");
       });
       updateParamProduct(0);
@@ -230,14 +234,11 @@ function initDraftSaveAction() {
 
 */
 function saveDraft(idCustomer, idAgreement, idService, message, status, originalStatus){
-  var is_dedicated = ($("#product option:selected").attr("rel") == "true");
-  if (is_dedicated) {
-    var price = Number($("#price").val());
-    if (!(price === 1 || price >= 500)) {
-      showFlashMessage('danger', 'Cena dedikované služby musí být 1 Kč nebo nad 500 Kč včetně.');
-      return false;
-    }
-  }
+  var isDedicated = ($("#product option:selected").attr("rel") == "true");
+  var isCzService = (serviceCountry($("#service_id").val()) == 'CZ');
+  var price = $('#price').val().trim();
+  var downlink = $('#downlink').val().trim();
+  var uplink = $('#uplink').val().trim();
   var mac = $("#mac_address").val();
   if (mac && (
       !mac.match(/^([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}$/) &&
@@ -254,6 +255,23 @@ function saveDraft(idCustomer, idAgreement, idService, message, status, original
     showFlashMessage('danger', 'Chybí GPS, zadej adresu nebo GPS lokaci služby.');
     return false;
   }
+
+  if (status == 'SUBMITTED') {
+    price = Number(price); 
+    downlink = Number(downlink); 
+    uplink = Number(uplink); 
+    if (price < 0 || downlink <= 0 || uplink <= 0) {
+      showFlashMessage('danger', 'Není spávně nastavený downlink, uplink nebo cena.');
+      return false;
+    }
+    if (isDedicated && isCzService) {
+      if (!(price === 1 || price >= 500)) {
+        showFlashMessage('danger', 'Cena dedikované služby musí být 1 Kč nebo nad 500 Kč včetně.');
+        return false;
+      }
+    }
+  }
+  
   if (status != "IMPORTED") {
     if ((status == 'DRAFT' || status == 'SUBMITTED') && originalStatus != 'SUBMITTED') {
       if (idCustomer > 0) {
@@ -899,7 +917,7 @@ function deserializeDraftDataService(jsonData) {
     }
   }
   draftPopulated = true;
-  updateParamProduct();
+  updateParamProduct(1);
   initAuthentification();
   initTabs();
   updateStatusButton();
@@ -947,20 +965,41 @@ function addDevice(){
 */
 function updateParamProduct(mode) {
   var status = $('#service_status').val();
+  var isDedicated = ($("#product option:selected").attr("rel") == "true");
+  var isCzService = (serviceCountry($("#service_id").val()) == 'CZ');
   if (status == 'DRAFT') {
-    if ($("#product option:selected").attr("rel") == "false") {
-      $("#downlink, #uplink, #price").prop("readonly", true);
-    } else {
+    if (isDedicated) {
       $("#price").prop("readonly", false);
-      $("#downlink, #uplink").prop("readonly", true);
+      if (isCzService) {
+        $("#downlink, #uplink").prop("readonly", true);
+      }
+      else {
+        $("#downlink, #uplink").prop("readonly", false);
+      }
     }
-    $("#downlink").val($("#product option:selected").attr("dl"));
-    $("#uplink").val($("#product option:selected").attr("ul"));
-    if (mode == 0 && $("#product option:selected").attr("rel") == "false") {
-      $("#price").val($("#product option:selected").attr("prc"));
-    } else {
-      $("#price").val('500');
+    else {
+      $("#downlink, #uplink, #price").prop("readonly", true);
     }
+
+    if (mode == 0) { // Product selection changed
+      var downlink = $("#product option:selected").attr("dl");
+      var uplink = $("#product option:selected").attr("ul");
+      var price = $("#product option:selected").attr("prc");
+      if (isDedicated) {
+        if (isCzService) {
+          price = 500;
+        }
+        else {
+          downlink = '';
+          uplink = '';
+          price = '';
+        }
+      }
+      $("#downlink").val(downlink);
+      $("#uplink").val(uplink);
+      $("#price").val(price);
+    }
+
     if ($("#product option:selected").attr("chl") == 'wireless'){
       $("#ssid").prop("disabled", false);
       $("#mac_address").prop("disabled", false);
