@@ -146,9 +146,7 @@ function loadProducts() {
     success: function(data) {
       $.each(data.products,function(key, value) {
         productName = value.name;
-        if (!value.is_dedicated) {
-          productName = productName + " " + value.downlink + "/" + value.uplink + " Mbps";
-        }
+        productName = productName + " " + value.downlink + "/" + value.uplink + " Mbps";
         $("#product").append("<option value='" + value.id + "' rel='" + value.is_dedicated + "' dl='" + value.downlink + "' ul='" + value.uplink + "' prc='" + value.price + "' chl='" + value.channel+ "' service='" + value.name + "'>" + productName + "</option>");
       });
       updateParamProduct(0);
@@ -232,6 +230,14 @@ function initDraftSaveAction() {
 
 */
 function saveDraft(idCustomer, idAgreement, idService, message, status, originalStatus){
+  var is_dedicated = ($("#product option:selected").attr("rel") == "true");
+  if (is_dedicated) {
+    var price = Number($("#price").val());
+    if (!(price === 1 || price >= 500)) {
+      showFlashMessage('danger', 'Cena dedikované služby musí být 1 Kč nebo nad 500 Kč včetně.');
+      return false;
+    }
+  }
   var mac = $("#mac_address").val();
   if (mac && (
       !mac.match(/^([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}$/) &&
@@ -945,12 +951,15 @@ function updateParamProduct(mode) {
     if ($("#product option:selected").attr("rel") == "false") {
       $("#downlink, #uplink, #price").prop("readonly", true);
     } else {
-      $("#downlink, #uplink, #price").prop("readonly", false);
+      $("#price").prop("readonly", false);
+      $("#downlink, #uplink").prop("readonly", true);
     }
+    $("#downlink").val($("#product option:selected").attr("dl"));
+    $("#uplink").val($("#product option:selected").attr("ul"));
     if (mode == 0 && $("#product option:selected").attr("rel") == "false") {
-      $("#downlink").val($("#product option:selected").attr("dl"));
-      $("#uplink").val($("#product option:selected").attr("ul"));
       $("#price").val($("#product option:selected").attr("prc"));
+    } else {
+      $("#price").val('500');
     }
     if ($("#product option:selected").attr("chl") == 'wireless'){
       $("#ssid").prop("disabled", false);
