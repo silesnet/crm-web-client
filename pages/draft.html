@@ -6,7 +6,7 @@
   <ul id="tabs" class="nav nav-tabs">
     <li><a data-toggle="tab" href="#customer">Zákazník</a></li>
     <li><a data-toggle="tab" href="#services">Služba</a></li>
-    <li><a data-toggle="tab" href="#connections">Připojení</a></li>
+    <li id="connections_tab"><a data-toggle="tab" href="#connections">Připojení</a></li>
   </ul>
 
   <form id="draft" class="form-horizontal" role="form">
@@ -89,8 +89,6 @@
           </div>
           <div class="row">
               <div class="col-xs-6"><label for="product">Produkt</label><select class="form-control" name="product" id="product"></select></div>
-              <div class="col-xs-2"><label for="downlink">Downlink</label><div class="input-group"><input type="text" name="downlink" class="form-control" id="downlink" maxlength="50" placeholder="Downlink" readonly><span class="input-group-addon">Mb/s</span></div></div>
-              <div class="col-xs-2"><label for="uplink">Uplink</label><div class="input-group"><input type="text" name="uplink" class="form-control" id="uplink" maxlength="50" placeholder="Uplink" readonly><span class="input-group-addon">Mb/s</span></div></div>
               <div class="col-xs-2"><label for="price">Cena</label><div class="input-group"><input type="text" name="price" class="form-control" id="price" maxlength="50" placeholder="Cena" readonly><span class="input-group-addon" id="service_currency">Kč</span></div></div>
           </div>
           <div class="row">
