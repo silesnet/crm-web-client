@@ -920,6 +920,7 @@ function serializeDraftDataService(status) {
     price: $('#price')
       .val()
       .trim(),
+    additional_name: $('#additionalName').val(),
     ssid: $('#ssid').val(),
     mac_address: $('#mac_address').val(),
     core_router: $('#core_router').val(),
@@ -1048,6 +1049,7 @@ function deserializeDraftDataService(jsonData) {
     $('#contract').val(data.contract_no);
     $('#service_id').val(data.service_id);
     $('#product').val(data.product);
+    $('#additionalName').val(data.additional_name);
     $('#price').val(data.price);
     $('#ssid').val(data.ssid);
     $('#mac_address').val(data.mac_address);
