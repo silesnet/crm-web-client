@@ -405,7 +405,7 @@ function saveDraft(
           url: address + 'drafts2/' + idService + '/status',
           dataType: 'json',
           contentType: 'application/json',
-          data: JSON.stringify({status: status}, null, 0),
+          data: JSON.stringify({ status: status }, null, 0),
           success: function(response) {
             appendFlashMessage(
               'success',
@@ -749,7 +749,7 @@ function loadDraftCustomer(customerId, urlParams) {
           ', skipping it, ERROR: ' +
           err
       );
-      ret = {drafts: {}, customer: {}};
+      ret = { drafts: {}, customer: {} };
     }
   });
   return ret;
@@ -867,7 +867,7 @@ function showFlashMessage(type, message) {
 
 function appendFlashMessage(type, message) {
   var container = fetchFlashMessages();
-  container.push({type: type, message: message});
+  container.push({ type: type, message: message });
   localStorage.setItem('flashMessages', JSON.stringify(container));
 }
 
@@ -889,9 +889,9 @@ function appendResponseFlashMessages(response) {
     msg = messages[i];
     match = pattern.exec(msg);
     if (match) {
-      flash = {type: match[1], message: match[2]};
+      flash = { type: match[1], message: match[2] };
     } else {
-      flash = {type: 'success', message: msg};
+      flash = { type: 'success', message: msg };
     }
     appendFlashMessage(flash.type, flash.message);
   }
@@ -1202,8 +1202,7 @@ function updateParamProduct(mode) {
     }
     if (channel === 'none') {
       $('#connections_tab').hide();
-    }
-    else {
+    } else {
       $('#connections_tab').show();
     }
   }
@@ -1764,7 +1763,7 @@ function serializeNewService(
     entityName: '',
     owner: user_id,
     status: 'DRAFT',
-    data: {ip: default_ip, is_ip_public: false}
+    data: { ip: default_ip, is_ip_public: false }
   };
 
   links[customerLink] = customerId;
