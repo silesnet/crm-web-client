@@ -343,7 +343,7 @@ function saveDraft(
       return false;
     }
     if (isDedicated && isCzService) {
-      if (!(price === 1 || price >= 500)) {
+      if (!(price === 0 || price === 1 || price >= 500)) {
         showFlashMessage(
           'danger',
           'Cena dedikované služby musí být 1 Kč nebo nad 500 Kč včetně.'
