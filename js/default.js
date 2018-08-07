@@ -342,11 +342,12 @@ function saveDraft(
       showFlashMessage('danger', 'Cena služby musí být větší než nula');
       return false;
     }
-    if (isDedicated && isCzService) {
-      if (!(price === 0 || price === 1 || price >= 500)) {
+    var priceThreshold = operation_country === 'CZ' ? 500 : 100;
+    if (isDedicated) {
+      if (!(price === 0 || price === 1 || price >= priceThreshold)) {
         showFlashMessage(
           'danger',
-          'Cena dedikované služby musí být 1 Kč nebo nad 500 Kč včetně.'
+          `Cena dedikované služby musí být 0, 1 nebo nad ${priceThreshold} včetně.`
         );
         return false;
       }
@@ -1179,8 +1180,8 @@ function updateParamProduct(mode) {
   var canChangePrice = selected.attr('data-can-change-price') === 'true';
   if (status == 'DRAFT') {
     if (mode === 0) {
-      if (isCzService && canChangePrice) {
-        price = 500;
+      if (canChangePrice) {
+        price = operation_country === 'CZ' ? 500 : 100;
       }
       $('#price').val(price);
     }
